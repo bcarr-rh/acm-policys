@@ -3,7 +3,7 @@
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
-  name: policy-advanced-cluster-security-central
+  name: policy-acs-central
   annotations:
     policy.open-cluster-management.io/standards: NIST SP 800-53
     policy.open-cluster-management.io/categories: CM Configuration Management
@@ -16,7 +16,7 @@ spec:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: advanced-cluster-security-namespace
+          name: acs-namespace
         spec:
           remediationAction: inform
           severity: high
@@ -45,7 +45,7 @@ spec:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: advanced-cluster-security-operator-subscription
+          name: acs-operator-subscription
         spec:
           remediationAction: inform
           severity: high
@@ -58,16 +58,16 @@ spec:
                   name: rhacs-operator
                   namespace: rhacs-operator
                 spec:
-                  channel: latest
+                  channel: stable
                   installPlanApproval: Automatic
                   name: rhacs-operator
-                  source: redhat-operators
+                  source: cs-scitec-redhat-operator-index-1
                   sourceNamespace: openshift-marketplace
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: advanced-cluster-security-central
+          name: acs-central
         spec:
           remediationAction: inform
           severity: high
@@ -106,7 +106,7 @@ spec:
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
 metadata:
-  name: policy-advanced-cluster-security-central-placement
+  name: policy-acs-central-placement
   namespace: open-cluster-policies
 spec:
   clusterSets:
@@ -120,13 +120,13 @@ spec:
 apiVersion: policy.open-cluster-management.io/v1
 kind: PlacementBinding
 metadata:
-  name: policy-advanced-cluster-security-central-placement
+  name: policy-acs-central-placement
   namespace: open-cluster-policies
 placementRef:
-  name: policy-advanced-cluster-security-central-placement
+  name: policy-acs-central-placement
   apiGroup: cluster.open-cluster-management.io
   kind: Placement
 subjects:
-  - name: policy-advanced-cluster-security-central
+  - name: policy-acs-central
     apiGroup: policy.open-cluster-management.io
     kind: Policy

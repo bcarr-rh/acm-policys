@@ -3,7 +3,7 @@
 # enforce by default and it requires RHACM 2.3 template support.
 #
 # Prior to applying this policy you must visit 
-# https://github.com/stolostron/advanced-cluster-security 
+# https://github.com/stolostron/acs 
 # and follow the instructions there to deploy prerequisite bundles
 # needed by the Secure Cluster Services for communicating with the
 # Central server.
@@ -11,7 +11,7 @@
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
-  name: policy-advanced-managed-cluster-security
+  name: policy-acs-secured-cluster
   annotations:
     policy.open-cluster-management.io/standards: NIST SP 800-53
     policy.open-cluster-management.io/categories: CM Configuration Management
@@ -66,10 +66,10 @@ spec:
                   name: rhacs-operator
                   namespace: rhacs-operator
                 spec:
-                  channel: latest
+                  channel: stable
                   installPlanApproval: Automatic
                   name: rhacs-operator
-                  source: redhat-operators
+                  source: cs-scitec-redhat-operator-index-1
                   sourceNamespace: openshift-marketplace
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
@@ -107,11 +107,12 @@ spec:
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
 metadata:
-  name: policy-advanced-cluster-security-central-placement
+  name: policy-acs-central-placement
   namespace: open-cluster-policies
 spec:
   clusterSets:
     - dev
+    - hub
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists
@@ -121,13 +122,13 @@ spec:
 apiVersion: policy.open-cluster-management.io/v1
 kind: PlacementBinding
 metadata:
-  name: policy-advanced-cluster-security-central-placement
+  name: policy-acs-central-placement
   namespace: open-cluster-policies
 placementRef:
-  name: policy-advanced-cluster-security-central-placement
+  name: policy-acs-central-placement
   apiGroup: cluster.open-cluster-management.io
   kind: Placement
 subjects:
-  - name: policy-advanced-cluster-security-central
+  - name: policy-acs-secured-cluster
     apiGroup: policy.open-cluster-management.io
     kind: Policy
