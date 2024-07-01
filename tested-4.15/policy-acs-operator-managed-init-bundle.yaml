@@ -300,7 +300,7 @@ spec:
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
 metadata:
-  name: policy-acs-central-placement
+  name: policy-acs-init-bundle-placement
   namespace: open-cluster-policies
 spec:
   clusterSets:
@@ -314,10 +314,10 @@ spec:
 apiVersion: policy.open-cluster-management.io/v1
 kind: PlacementBinding
 metadata:
-  name: policy-acs-central-placement
+  name: policy-acs-init-bundle-placement
   namespace: open-cluster-policies
 placementRef:
-  name: policy-acs-central-placement
+  name: policy-acs-init-bundle-placement
   apiGroup: cluster.open-cluster-management.io
   kind: Placement
 subjects:
