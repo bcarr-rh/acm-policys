@@ -1,0 +1,81 @@
+# This policy assumes that the Compliance Operator is installed and running on
+# the managed clusters. It deploys a scan that checks the master and worker
+# nodes, and verifies compliance with the OpenShift CIS security benchmark.
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: policy-auto-remediate
+  namespace: open-cluster-policies
+  annotations:
+    policy.open-cluster-management.io/standards: NIST SP 800-53
+    policy.open-cluster-management.io/categories: CM Configuration Management
+    policy.open-cluster-management.io/controls: CM-2 Baseline Configuration
+spec:
+  remediationAction: enforce
+  disabled: false
+  dependencies:
+  - apiVersion: policy.open-cluster-management.io/v1
+    compliance: Compliant
+    kind: Policy
+    name: policy-stig-scan
+    namespace: open-cluster-policies
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: auto-remediate
+          namespace: open-cluster-policies
+        spec:
+          remediationAction: inform
+          severity: high
+          pruneObjectBehavior: None
+          object-templates-raw: |
+          {{- range (hub fromConfigMap "open-cluster-policies" "stig-remediation" "ocp4-stig" hub)}}
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: compliance.openshift.io/v1alpha1
+                kind: ComplianceRemediation
+                metadata:
+                  name: '{{ . }}'
+                spec:
+                  apply: true
+          {{- end }}
+          {{- range (hub fromConfigMap "open-cluster-policies" "stig-remediation" "rhcos4-stig" hub)}}
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: compliance.openshift.io/v1alpha1
+                kind: ComplianceRemediation
+                metadata:
+                  name: '{{ . }}'
+                spec:
+                  apply: true
+          {{- end }}
+---
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: placement-policy-auto-remediate
+  namespace: open-cluster-policies
+spec:
+  clusterSets:
+    - hub
+  tolerations:
+    - key: cluster.open-cluster-management.io/unreachable
+      operator: Exists
+    - key: cluster.open-cluster-management.io/unavailable
+      operator: Exists
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: placement-policy-auto-remediate
+  namespace: open-cluster-policies
+placementRef:
+  name: placement-policy-auto-remediate
+  apiGroup: cluster.open-cluster-management.io
+  kind: Placement
+subjects:
+  - name: policy-auto-remediate
+    apiGroup: policy.open-cluster-management.io
+    kind: Policy

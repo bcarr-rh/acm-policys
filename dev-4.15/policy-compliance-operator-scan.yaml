@@ -4,7 +4,7 @@
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
-  name: policy-cis-scan
+  name: policy-stig-scan
   annotations:
     policy.open-cluster-management.io/standards: NIST SP 800-53
     policy.open-cluster-management.io/categories: CM Configuration Management
@@ -12,30 +12,39 @@ metadata:
 spec:
   remediationAction: inform
   disabled: false
+  dependencies:
+  - apiVersion: policy.open-cluster-management.io/v1
+    compliance: Compliant
+    kind: Policy
+    name: policy-comp-operator
+    namespace: open-cluster-policies
   policy-templates:
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: compliance-cis-scan
+          name: compliance-stig-scan
         spec:
-          remediationAction: inform
+          remediationAction: enforce
           severity: high
           object-templates:
-            - complianceType: musthave # this template creates ScanSettingBinding:cis
+            - complianceType: musthave # this template creates ScanSettingBinding:stig
               objectDefinition:
                 apiVersion: compliance.openshift.io/v1alpha1
                 kind: ScanSettingBinding
                 metadata:
-                  name: cis
+                  name: stig
                   namespace: openshift-compliance
                 profiles:
                   - apiGroup: compliance.openshift.io/v1alpha1
                     kind: Profile
-                    name: ocp4-cis
+                    name: ocp4-stig
                   - apiGroup: compliance.openshift.io/v1alpha1
                     kind: Profile
-                    name: ocp4-cis-node
+                    name: ocp4-stig-node
+                  - apiGroup: compliance.openshift.io/v1alpha1
+                    kind: Profile
+                    name: rhcos4-stig
                 settingsRef:
                   apiGroup: compliance.openshift.io/v1alpha1
                   kind: ScanSetting
@@ -44,7 +53,7 @@ spec:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: compliance-suite-cis
+          name: compliance-suite-stig
         spec:
           remediationAction: inform
           severity: high
@@ -62,7 +71,7 @@ spec:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: compliance-suite-cis-results
+          name: compliance-suite-stig-results
         spec:
           remediationAction: inform
           severity: high
