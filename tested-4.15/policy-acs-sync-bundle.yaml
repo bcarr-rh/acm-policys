@@ -41,7 +41,7 @@ spec:
                   labels:
                     certificate_key_name: admission-control-cert.pem
                   name: admission-control-tls
-                  namespace: policies
+                  namespace: stackrox
                 type: Opaque
             - complianceType: musthave
               objectDefinition:
@@ -55,7 +55,7 @@ spec:
                   labels:
                     certificate_key_name: collector-cert.pem
                   name: collector-tls
-                  namespace: policies
+                  namespace: stackrox
                 type: Opaque
             - complianceType: musthave
               objectDefinition:
@@ -70,7 +70,7 @@ spec:
                   labels:
                     certificate_key_name: sensor-cert.pem
                   name: sensor-tls
-                  namespace: policies
+                  namespace: stackrox
                 type: Opaque
 ---
 apiVersion: cluster.open-cluster-management.io/v1beta1
