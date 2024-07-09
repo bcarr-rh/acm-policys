@@ -25,32 +25,34 @@ spec:
         kind: ConfigurationPolicy
         metadata:
           name: auto-remediate
-          namespace: open-cluster-policies
+          namespace: openshift-compliance
         spec:
           remediationAction: inform
           severity: high
           pruneObjectBehavior: None
           object-templates-raw: |
-          {{- range (hub fromConfigMap "open-cluster-policies" "stig-remediation" "ocp4-stig" hub)}}
-            - complianceType: musthave
-              objectDefinition:
-                apiVersion: compliance.openshift.io/v1alpha1
-                kind: ComplianceRemediation
-                metadata:
-                  name: '{{ . }}'
-                spec:
-                  apply: true
-          {{- end }}
-          {{- range (hub fromConfigMap "open-cluster-policies" "stig-remediation" "rhcos4-stig" hub)}}
-            - complianceType: musthave
-              objectDefinition:
-                apiVersion: compliance.openshift.io/v1alpha1
-                kind: ComplianceRemediation
-                metadata:
-                  name: '{{ . }}'
-                spec:
-                  apply: true
-          {{- end }}
+            {{- range (hub fromConfigMap "open-cluster-policies" "stig-remediation" "ocp4-stig" hub)}}
+              - complianceType: musthave
+                objectDefinition:
+                  apiVersion: compliance.openshift.io/v1alpha1
+                  kind: ComplianceRemediation
+                  metadata:
+                    name: '{{ . }}'
+                    namespace: openshift-compliance
+                  spec:
+                    apply: true
+            {{- end }}
+            {{- range (hub fromConfigMap "open-cluster-policies" "stig-remediation" "rhcos4-stig" hub)}}
+              - complianceType: musthave
+                objectDefinition:
+                  apiVersion: compliance.openshift.io/v1alpha1
+                  kind: ComplianceRemediation
+                  metadata:
+                    name: '{{ . }}'
+                    namespace: openshift-compliance
+                  spec:
+                    apply: true
+            {{- end }}
 ---
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
