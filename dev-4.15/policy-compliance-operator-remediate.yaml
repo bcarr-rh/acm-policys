@@ -1,58 +1,81 @@
-# This policy assumes that the Compliance Operator is installed and running on
-# the managed clusters. It deploys a scan that checks the master and worker
-# nodes, and verifies compliance with the OpenShift CIS security benchmark.
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
   name: policy-auto-remediate
   namespace: open-cluster-policies
   annotations:
-    policy.open-cluster-management.io/standards: NIST SP 800-53
     policy.open-cluster-management.io/categories: CM Configuration Management
     policy.open-cluster-management.io/controls: CM-2 Baseline Configuration
+    policy.open-cluster-management.io/standards: NIST SP 800-53
 spec:
-  remediationAction: enforce
-  disabled: false
   dependencies:
-  - apiVersion: policy.open-cluster-management.io/v1
-    compliance: Compliant
-    kind: Policy
-    name: policy-stig-scan
-    namespace: open-cluster-policies
+    - name: policy-stig-scan
+      namespace: open-cluster-policies
+      apiVersion: policy.open-cluster-management.io/v1
+      compliance: Compliant
+      kind: Policy
+  disabled: false
+  remediationAction: enforce
   policy-templates:
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: auto-remediate
-          namespace: openshift-compliance
+          name: copy-configmap-stig
         spec:
+          object-templates-raw: >
+            - complianceType: musthave
+              objectDefinition:
+                  kind: ConfigMap
+                  apiVersion: v1
+                  metadata:
+                    name: stig-remediation
+                    namespace: openshift-compliance
+                  data: '{{ copyConfigMapData "open-cluster-policies" "stig-remediation" }}'
+          pruneObjectBehavior: None
+          remediationAction: enforce
+          severity: high
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: auto-remediate
+        spec:
+          object-templates-raw: >
+            {{ $ocp4_stigs := (fromConfigMap "openshift-compliance" "stig-remediation" "ocp4-stig") }}
+
+            {{ $ocp4_stigs := ($ocp4_stigs | trim | split "\n") }} 
+
+            {{ range $ocp4_stig := $ocp4_stigs }}
+              - complianceType: musthave
+                objectDefinition:
+                  apiVersion: compliance.openshift.io/v1alpha1
+                  kind: ComplianceRemediation
+                  metadata:
+                    name: "{{ $ocp4_stig }}"
+                    namespace: openshift-compliance
+                  spec:
+                    apply: true
+            {{ end }} 
+
+            {{ $rhcos4_stigs := (fromConfigMap "openshift-compliance" "stig-remediation" "rhcos4-stig") }}
+
+            {{ $rhcos4_stigs := ($rhcos4_stigs | trim | split "\n" ) }}
+
+            {{ range $rhcos4_stig := $rhcos4_stigs }}
+              - complianceType: musthave
+                objectDefinition:
+                  apiVersion: compliance.openshift.io/v1alpha1
+                  kind: ComplianceRemediation
+                  metadata:
+                    name: "{{ $rhcos4_stig }}"
+                    namespace: openshift-compliance
+                  spec:
+                    apply: true
+            {{ end }}
+          pruneObjectBehavior: None
           remediationAction: inform
           severity: high
-          pruneObjectBehavior: None
-          object-templates-raw: |
-            {{- range (hub fromConfigMap "open-cluster-policies" "stig-remediation" "ocp4-stig" hub)}}
-              - complianceType: musthave
-                objectDefinition:
-                  apiVersion: compliance.openshift.io/v1alpha1
-                  kind: ComplianceRemediation
-                  metadata:
-                    name: '{{ . }}'
-                    namespace: openshift-compliance
-                  spec:
-                    apply: true
-            {{- end }}
-            {{- range (hub fromConfigMap "open-cluster-policies" "stig-remediation" "rhcos4-stig" hub)}}
-              - complianceType: musthave
-                objectDefinition:
-                  apiVersion: compliance.openshift.io/v1alpha1
-                  kind: ComplianceRemediation
-                  metadata:
-                    name: '{{ . }}'
-                    namespace: openshift-compliance
-                  spec:
-                    apply: true
-            {{- end }}
 ---
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
