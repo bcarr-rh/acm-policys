@@ -42,27 +42,27 @@ spec:
           name: auto-remediate
         spec:
           object-templates-raw: >
-            '{{ "{{" }} range (fromConfigMap "openshift-compliance" "stig-remediation" "ocp4-stig" | trim | split "\n") {{ "}}" }}'
+            {{ "{{" }} range (fromConfigMap "openshift-compliance" "stig-remediation" "ocp4-stig" | trim | split "\n") {{ "}}" }}
               - complianceType: musthave
                 objectDefinition:
                   kind: ConfigMap
                   apiVersion: v1
                   metadata:
-                    name: '{{ "{{" }} .{{ "}}" }}'
+                    name: {{ "{{" }} .{{ "}}" }}
                     namespace: default
-            '{{ "{{" }} end {{ "}}" }}'
+            {{ "{{" }} end {{ "}}" }}
 
-            '{{ "{{" }} range (fromConfigMap "openshift-compliance" "stig-remediation" "rhcos4-stig" | trim | split "\n") {{ "}}" }}'
+            {{ "{{" }} range (fromConfigMap "openshift-compliance" "stig-remediation" "rhcos4-stig" | trim | split "\n") {{ "}}" }}
               - complianceType: musthave
                 objectDefinition:
                   apiVersion: compliance.openshift.io/v1alpha1
                   kind: ComplianceRemediation
                   metadata:
-                    name: '{{ "{{" }} . {{ "}}" }}'
+                    name: {{ "{{" }} . {{ "}}" }}
                     namespace: openshift-compliance
                   spec:
                     apply: true
-            '{{ "{{" }} end {{ "}}" }}'
+            {{ "{{" }} end {{ "}}" }}
           pruneObjectBehavior: None
           remediationAction: inform
           severity: high
