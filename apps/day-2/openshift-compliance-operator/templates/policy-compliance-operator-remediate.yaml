@@ -31,7 +31,7 @@ spec:
                   metadata:
                     name: stig-remediation
                     namespace: openshift-compliance
-                  data: {{ '{{ copyConfigMapData "open-cluster-policies" "stig-remediation" }}' }}
+                  data: '{{ "{{" }} copyConfigMapData "open-cluster-policies" "stig-remediation" {{ "}}" }}'
           pruneObjectBehavior: None
           remediationAction: enforce
           severity: high
@@ -42,35 +42,27 @@ spec:
           name: auto-remediate
         spec:
           object-templates-raw: >
-            {{ '{{ $ocp4_stigs := (fromConfigMap "openshift-compliance" "stig-remediation" "ocp4-stig") }}' }}
-
-            {{ '{{ $ocp4_stigs := ($ocp4_stigs | trim | split "\n") }}' }}
-
-            {{ '{{ range (fromConfigMap "default" "my-config-map" "one" | trim | split "\n") }}' }}
+            '{{ "{{" }} range (fromConfigMap "openshift-compliance" "stig-remediation" "ocp4-stig" | trim | split "\n") {{ "}}" }}'
               - complianceType: musthave
                 objectDefinition:
                   kind: ConfigMap
                   apiVersion: v1
                   metadata:
-                    name: {{ . }}
+                    name: '{{ "{{" }} .{{ "}}" }}'
                     namespace: default
-            {{ '{{ end }}' }}
+            '{{ "{{" }} end {{ "}}" }}'
 
-            {{ '{{ $rhcos4_stigs := (fromConfigMap "openshift-compliance" "stig-remediation" "rhcos4-stig") }}' }}
-
-            {{'{{ $rhcos4_stigs := ($rhcos4_stigs | trim | split "\n" ) }}'}}
-
-            {{ '{{ range $rhcos4_stig := $rhcos4_stigs }}' }}
+            '{{ "{{" }} range (fromConfigMap "openshift-compliance" "stig-remediation" "rhcos4-stig" | trim | split "\n") {{ "}}" }}'
               - complianceType: musthave
                 objectDefinition:
                   apiVersion: compliance.openshift.io/v1alpha1
                   kind: ComplianceRemediation
                   metadata:
-                    name: "{{ $rhcos4_stig }}"
+                    name: '{{ "{{" }} . {{ "}}" }}'
                     namespace: openshift-compliance
                   spec:
                     apply: true
-            {{ '{{ end }}' }}
+            '{{ "{{" }} end {{ "}}" }}'
           pruneObjectBehavior: None
           remediationAction: inform
           severity: high
