@@ -2,16 +2,16 @@ apiVersion: apps.open-cluster-management.io/v1beta1
 kind: GitOpsCluster
 metadata:
   name: argo-acm-importer
-  namespace: {{ .Values.acm.gitops_namespace | default 'openshift-gitops'}}
+  namespace: {{ .Values.acm.gitops_namespace | default "openshift-gitops"}}
   annotations:
     argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
     argocd.argoproj.io/sync-wave: "7"
 spec:
   argoServer:
     cluster: notused
-    argoNamespace: {{ .Values.acm.gitops_namespace | default 'openshift-gitops'}}
+    argoNamespace: {{ .Values.acm.gitops_namespace | default "openshift-gitops"}}
   placementRef:
     kind: Placement
     apiVersion: cluster.open-cluster-management.io/v1alpha1
     name: momot-clusters
-    namespace: {{ .Values.acm.gitops_namespace | default 'openshift-gitops'}}
+    namespace: {{ .Values.acm.gitops_namespace | default "openshift-gitops"}}
