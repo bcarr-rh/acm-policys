@@ -24,7 +24,7 @@ spec:
   disabled: false
   dependencies:
     - name: policy-acs-sync-bundle
-      namespace: open-cluster-policies
+      namespace: stackrox
       apiVersion: policy.open-cluster-management.io/v1
       compliance: Compliant
       kind: Policy
