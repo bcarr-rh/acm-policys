@@ -44,7 +44,7 @@ spec:
             - complianceType: musthave
               objectDefinition:
                 apiVersion: operators.coreos.com/v1
-                kind: OperatorGroupß
+                kind: OperatorGroup
                 metadata:
                   name: compliance-operator
                   namespace: openshift-compliance
