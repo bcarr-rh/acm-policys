@@ -1,0 +1,110 @@
+# This policy deploys the Red Hat Advanced Cluster Security Secure Cluster
+# Services to all OpenShift managed clusters.  Note that it is set to
+# enforce by default and it requires RHACM 2.3 template support.
+#
+# Prior to applying this policy you must visit 
+# https://github.com/stolostron/acs 
+# and follow the instructions there to deploy prerequisite bundles
+# needed by the Secure Cluster Services for communicating with the
+# Central server.
+#
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: policy-acs-sync-bundle
+  annotations:
+    argocd.argoproj.io/sync-options: Prune=false,SkipDryRunOnMissingResource=true
+    argocd.argoproj.io/compare-options: IgnoreExtraneous
+    policy.open-cluster-management.io/standards: NIST SP 800-53
+    policy.open-cluster-management.io/categories: CM Configuration Management
+    policy.open-cluster-management.io/controls: CM-2 Baseline Configuration
+spec:
+  remediationAction: enforce
+  disabled: false
+  dependencies:
+    - name: policy-acs-central
+      namespace: open-cluster-policies
+      apiVersion: policy.open-cluster-management.io/v1
+      compliance: Compliant
+      kind: Policy
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: acs-sync-bundle
+        spec:
+          remediationAction: inform
+          severity: high
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: v1
+                data:
+                  admission-control-cert.pem: {{'{{ hub fromSecret "stackrox" "admission-control-tls" "admission-control-cert.pem"| protect hub }}'}}
+                  admission-control-key.pem: {{'{{ hub fromSecret "stackrox" "admission-control-tls" "admission-control-key.pem"| protect hub }}'}}
+                  ca.pem: {{'{{ hub fromSecret "stackrox" "admission-control-tls" "ca.pem"| protect hub }}'}}
+                kind: Secret
+                metadata:
+                  labels:
+                    certificate_key_name: admission-control-cert.pem
+                  name: admission-control-tls
+                  namespace: stackrox
+                type: Opaque
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: v1
+                data:
+                  collector-cert.pem: {{'{{ hub fromSecret "stackrox" "collector-tls" "collector-cert.pem"| protect hub }}'}}
+                  collector-key.pem: {{'{{ hub fromSecret "stackrox" "collector-tls" "collector-key.pem"| protect hub }}'}}
+                  ca.pem: {{'{{ hub fromSecret "stackrox" "collector-tls" "ca.pem"| protect hub }}'}}
+                kind: Secret
+                metadata:
+                  labels:
+                    certificate_key_name: collector-cert.pem
+                  name: collector-tls
+                  namespace: stackrox
+                type: Opaque
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: v1
+                data:
+                  sensor-cert.pem: {{'{{ hub fromSecret "stackrox" "sensor-tls" "sensor-cert.pem"| protect hub }}'}}
+                  sensor-key.pem: {{'{{ hub fromSecret "stackrox" "sensor-tls" "sensor-key.pem"| protect hub }}'}}
+                  ca.pem: {{'{{ hub fromSecret "stackrox" "sensor-tls" "ca.pem"| protect hub }}'}}
+                  acs-host: {{'{{ hub fromSecret "stackrox" "sensor-tls" "acs-host"| protect hub }}'}}
+                kind: Secret
+                metadata:
+                  labels:
+                    certificate_key_name: sensor-cert.pem
+                  name: sensor-tls
+                  namespace: stackrox
+                type: Opaque
+---
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: policy-acs-sync-bundle-placement
+  namespace: open-cluster-policies
+spec:
+  clusterSets:
+    - dev
+  tolerations:
+    - key: cluster.open-cluster-management.io/unreachable
+      operator: Exists
+    - key: cluster.open-cluster-management.io/unavailable
+      operator: Exists
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: policy-acs-sync-bundle-placement
+  namespace: open-cluster-policies
+placementRef:
+  name: policy-acs-sync-bundle-placement
+  apiGroup: cluster.open-cluster-management.io
+  kind: Placement
+subjects:
+  - name: policy-acs-sync-bundle
+    apiGroup: policy.open-cluster-management.io
+    kind: Policy

@@ -1,0 +1,10 @@
+apiVersion: cluster.open-cluster-management.io/v1beta2
+kind: ManagedClusterSetBinding
+metadata:
+  name: hub
+  namespace: "{{ .Values.acm.policy_namespace }}"
+  annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+    argocd.argoproj.io/sync-wave: "6"
+spec:
+  clusterSet: hub

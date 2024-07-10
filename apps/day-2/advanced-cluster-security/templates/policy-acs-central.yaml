@@ -1,0 +1,89 @@
+# This policy installs the Advanced Cluster Security Operator on the ACM hub
+# cluster and it create the Central Server.
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: policy-acs-central
+  annotations:
+    argocd.argoproj.io/sync-options: Prune=false,SkipDryRunOnMissingResource=true
+    argocd.argoproj.io/compare-options: IgnoreExtraneous
+    policy.open-cluster-management.io/standards: NIST SP 800-53
+    policy.open-cluster-management.io/categories: CM Configuration Management
+    policy.open-cluster-management.io/controls: CM-2 Baseline Configuration
+spec:
+  remediationAction: enforce
+  disabled: false
+  dependencies:
+    - name: policy-acs-operator-install
+      namespace: open-cluster-policies
+      apiVersion: policy.open-cluster-management.io/v1
+      compliance: Compliant
+      kind: Policy
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: acs-central
+        spec:
+          remediationAction: inform
+          severity: high
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: platform.stackrox.io/v1alpha1
+                kind: Central
+                metadata:
+                  namespace: stackrox
+                  name: stackrox-central-services
+                spec:
+                  central:
+                    exposure:
+                      loadBalancer:
+                        enabled: false
+                        port: 443
+                      nodePort:
+                        enabled: false
+                      route:
+                        enabled: true
+                    persistence:
+                      persistentVolumeClaim:
+                        claimName: stackrox-db
+                  egress:
+                    connectivityPolicy: Online
+                  scanner:
+                    analyzer:
+                      scaling:
+                        autoScaling: Enabled
+                        maxReplicas: 5
+                        minReplicas: 2
+                        replicas: 3
+                    scannerComponent: Enabled
+---
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: policy-acs-central-placement
+  namespace: open-cluster-policies
+spec:
+  clusterSets:
+    - hub
+  tolerations:
+    - key: cluster.open-cluster-management.io/unreachable
+      operator: Exists
+    - key: cluster.open-cluster-management.io/unavailable
+      operator: Exists
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: policy-acs-central-placement
+  namespace: open-cluster-policies
+placementRef:
+  name: policy-acs-central-placement
+  apiGroup: cluster.open-cluster-management.io
+  kind: Placement
+subjects:
+  - name: policy-acs-central
+    apiGroup: policy.open-cluster-management.io
+    kind: Policy

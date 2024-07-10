@@ -1,0 +1,10 @@
+kind: ManagedClusterSet
+apiVersion: clusterview.open-cluster-management.io/v1alpha1
+metadata:
+  name: managed
+  annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+    argocd.argoproj.io/sync-wave: "5"
+spec:
+  clusterSelector:
+    selectorType: ExclusiveClusterSetLabel

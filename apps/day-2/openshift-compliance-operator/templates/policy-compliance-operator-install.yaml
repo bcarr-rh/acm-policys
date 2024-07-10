@@ -1,0 +1,122 @@
+# This policy verifies the installation of the official & supported version of
+# the Compliance Operator on the managed clusters.
+#
+# If set to "enforce" it'll install the operator.
+#
+# Note that OpenShift 4.6 is required.
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: policy-comp-operator
+  namespace: open-cluster-policies
+  annotations:
+    policy.open-cluster-management.io/standards: NIST SP 800-53
+    policy.open-cluster-management.io/categories: CA Security Assessment and Authorization
+    policy.open-cluster-management.io/controls: CA-2 Security Assessments, CA-7 Continuous Monitoring
+spec:
+  remediationAction: enforce
+  disabled: false
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: comp-operator-ns
+        spec:
+          remediationAction: inform # will be overridden by remediationAction in parent policy
+          severity: high
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: v1
+                kind: Namespace
+                metadata:
+                  name: openshift-compliance
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: comp-operator-operator-group
+        spec:
+          remediationAction: inform # will be overridden by remediationAction in parent policy
+          severity: high
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: operators.coreos.com/v1
+                kind: OperatorGroup
+                metadata:
+                  name: compliance-operator
+                  namespace: openshift-compliance
+                spec:
+                  targetNamespaces:
+                    - openshift-compliance
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: comp-operator-subscription
+        spec:
+          remediationAction: inform # will be overridden by remediationAction in parent policy
+          severity: high
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: operators.coreos.com/v1alpha1
+                kind: Subscription
+                metadata:
+                  name: {{ .Values.compliance.subName default "compliance-operator"}}
+                  namespace: openshift-compliance
+                spec:
+                  installPlanApproval: {{ .Values.compliance.installPlanApproval default "Automatic"}}
+                  channel: {{ .Values.compliance.channel default "stable"}}
+                  name: {{ .Values.compliance.name default "compliance-operator"}}
+                  source: {{ .Values.compliance.source default "redhat-operators"}}
+                  sourceNamespace: {{ .Values.compliance.sourceNamespace default "openshift-marketplace"}}
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: comp-operator-status
+        spec:
+          remediationAction: inform # will be overridden by remediationAction in parent policy
+          severity: high
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: operators.coreos.com/v1alpha1
+                kind: ClusterServiceVersion
+                metadata:
+                  namespace: openshift-compliance
+                spec:
+                  displayName: Compliance Operator
+                status:
+                  phase: Succeeded # check the csv status to determine if operator is running or not
+---
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: placement-policy-comp-operator
+  namespace: open-cluster-policies
+spec:
+  clusterSets:
+    - hub
+  tolerations:
+    - key: cluster.open-cluster-management.io/unreachable
+      operator: Exists
+    - key: cluster.open-cluster-management.io/unavailable
+      operator: Exists
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: placement-policy-comp-operator
+  namespace: open-cluster-policies
+placementRef:
+  name: placement-policy-comp-operator
+  apiGroup: cluster.open-cluster-management.io
+  kind: Placement
+subjects:
+  - name: policy-comp-operator
+    apiGroup: policy.open-cluster-management.io
+    kind: Policy
