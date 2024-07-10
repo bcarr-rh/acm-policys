@@ -8,8 +8,9 @@ metadata:
     argocd.argoproj.io/sync-wave: "3"
 spec:
   availabilityConfig: High
+{{ if .Values.acm.disable_hub_self_management }}
   disableHubSelfManagement: {{ .Values.acm.disable_hub_self_management }}
-  enableClusterBackup: {{ .Values.acm.enable_backup }}
+{{ end}}
   overrides:
     components:
       - enabled: true
@@ -30,3 +31,9 @@ spec:
         name: app-lifecycle
       - enabled: {{ .Values.acm.enable_backup }}
         name: cluster-backup
+      - enabled: true	
+        name: cluster-permission	
+      - enabled: true	
+        name: multicluster-observability	
+      - enabled: true	
+        name: submariner-addon
