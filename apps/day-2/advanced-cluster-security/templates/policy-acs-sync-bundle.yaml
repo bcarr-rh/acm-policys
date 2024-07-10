@@ -12,6 +12,7 @@ apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
   name: policy-acs-sync-bundle
+  namespace: open-cluster-policies
   annotations:
     argocd.argoproj.io/sync-options: Prune=false,SkipDryRunOnMissingResource=true
     argocd.argoproj.io/compare-options: IgnoreExtraneous
