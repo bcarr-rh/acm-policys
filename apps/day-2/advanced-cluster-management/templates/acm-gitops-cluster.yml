@@ -12,6 +12,6 @@ spec:
     argoNamespace: {{ .Values.acm.gitops_namespace | default "openshift-gitops"}}
   placementRef:
     kind: Placement
-    apiVersion: cluster.open-cluster-management.io/v1alpha1
-    name: momot-clusters
+    apiVersion: cluster.open-cluster-management.io/v1beta1
+    name: managed
     namespace: {{ .Values.acm.gitops_namespace | default "openshift-gitops"}}
