@@ -1,5 +1,5 @@
 kind: ManagedClusterSet
-apiVersion: clusterview.open-cluster-management.io/v1alpha1
+apiVersion: clusterview.open-cluster-management.io/v1beta2
 metadata:
   name: managed
   annotations:
