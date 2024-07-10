@@ -41,9 +41,9 @@ spec:
               objectDefinition:
                 apiVersion: v1
                 data:
-                  admission-control-cert.pem: "{{ '{{ hub fromSecret "stackrox" "admission-control-tls" "admission-control-cert.pem"| protect hub }}' }}"
-                  admission-control-key.pem: "{{ '{{ hub fromSecret "stackrox" "admission-control-tls" "admission-control-key.pem"| protect hub }}' }}"
-                  ca.pem: "{{ '{{hub fromSecret "stackrox" "admission-control-tls" "ca.pem"| protect hub }}' }}"
+                  admission-control-cert.pem: "{{ printf '{{ hub fromSecret "stackrox" "admission-control-tls" "admission-control-cert.pem"| protect hub }}' }}"
+                  admission-control-key.pem: "{{ printf '{{ hub fromSecret "stackrox" "admission-control-tls" "admission-control-key.pem"| protect hub }}' }}"
+                  ca.pem: "{{ printf '{{hub fromSecret "stackrox" "admission-control-tls" "ca.pem"| protect hub }}' }}"
                 kind: Secret
                 metadata:
                   labels:
@@ -55,9 +55,9 @@ spec:
               objectDefinition:
                 apiVersion: v1
                 data:
-                  collector-cert.pem: "{{ '{{hub fromSecret "stackrox" "collector-tls" "collector-cert.pem"| protect hub }}' }}"
-                  collector-key.pem: "{{ '{{hub fromSecret "stackrox" "collector-tls" "collector-key.pem"| protect hub }}' }}"
-                  ca.pem: "{{ '{{hub fromSecret "stackrox" "collector-tls" "ca.pem"| protect hub }}' }}"
+                  collector-cert.pem: "{{ printf '{{hub fromSecret "stackrox" "collector-tls" "collector-cert.pem"| protect hub }}' }}"
+                  collector-key.pem: "{{ printf '{{hub fromSecret "stackrox" "collector-tls" "collector-key.pem"| protect hub }}' }}"
+                  ca.pem: "{{ printf '{{hub fromSecret "stackrox" "collector-tls" "ca.pem"| protect hub }}' }}"
                 kind: Secret
                 metadata:
                   labels:
@@ -69,10 +69,10 @@ spec:
               objectDefinition:
                 apiVersion: v1
                 data:
-                  sensor-cert.pem: "{{ '{{hub fromSecret "stackrox" "sensor-tls" "sensor-cert.pem"| protect hub }}' }}"
-                  sensor-key.pem: "{{ '{{hub fromSecret "stackrox" "sensor-tls" "sensor-key.pem"| protect hub }}' }}"
-                  ca.pem: "{{ '{{hub fromSecret "stackrox" "sensor-tls" "ca.pem"| protect hub }}' }}"
-                  acs-host: "{{ '{{hub fromSecret "stackrox" "sensor-tls" "acs-host"| protect hub }}' }}"
+                  sensor-cert.pem: "{{ printf '{{hub fromSecret "stackrox" "sensor-tls" "sensor-cert.pem"| protect hub }}' }}"
+                  sensor-key.pem: "{{ printf '{{hub fromSecret "stackrox" "sensor-tls" "sensor-key.pem"| protect hub }}' }}"
+                  ca.pem: "{{ printf '{{hub fromSecret "stackrox" "sensor-tls" "ca.pem"| protect hub }}' }}"
+                  acs-host: "{{ printf '{{hub fromSecret "stackrox" "sensor-tls" "acs-host"| protect hub }}' }}"
                 kind: Secret
                 metadata:
                   labels:
