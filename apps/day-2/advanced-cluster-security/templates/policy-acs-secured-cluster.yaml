@@ -97,11 +97,11 @@ spec:
                   name: stackrox-secured-cluster-services
                 spec:
                   clusterName: |
-                    {{ {{ fromSecret "open-cluster-management-agent" "hub-kubeconfig-secret" "cluster-name" | base64dec }} }}
+                    {{ `{{ fromSecret "open-cluster-management-agent" "hub-kubeconfig-secret" "cluster-name" | base64dec }}` }}
                   auditLogs:
                     collection: Auto
                   centralEndpoint: |
-                    {{ {{ fromSecret "stackrox" "sensor-tls" "acs-host" | base64dec }} }}
+                    {{ `{{ fromSecret "stackrox" "sensor-tls" "acs-host" | base64dec }}` }}
                   admissionControl:
                     listenOnCreates: false
                     listenOnEvents: true
