@@ -1,0 +1,32 @@
+apiVersion: operator.open-cluster-management.io/v1
+kind: MultiClusterHub
+metadata:
+  name: multiclusterhub
+  namespace: {{ .Values.acm.namespace }}
+  annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+    argocd.argoproj.io/sync-wave: "3"
+spec:
+  availabilityConfig: High
+  disableHubSelfManagement: {{ .Values.acm.disable_hub_self_management }}
+  enableClusterBackup: {{ .Values.acm.enable_backup }}
+  overrides:
+    components:
+      - enabled: true
+        name: console
+      - enabled: true
+        name: insights
+      - enabled: true
+        name: grc
+      - enabled: true
+        name: cluster-lifecycle
+      - enabled: true
+        name: volsync
+      - enabled: true
+        name: multicluster-engine
+      - enabled: true
+        name: search
+      - enabled: true
+        name: app-lifecycle
+      - enabled: {{ .Values.acm.enable_backup }}
+        name: cluster-backup
