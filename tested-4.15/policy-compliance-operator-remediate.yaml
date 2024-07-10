@@ -46,7 +46,7 @@ spec:
 
             {{ $ocp4_stigs := ($ocp4_stigs | trim | split "\n") }} 
 
-            {{ range (fromConfigMap "default" "my-config-map" "one" | trim | split "\n") }}
+            {{ range $ocp4_stigs }}
               - complianceType: musthave
                 objectDefinition:
                   kind: ConfigMap
@@ -83,7 +83,6 @@ metadata:
 spec:
   clusterSets:
     - hub
-    - managed
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists
