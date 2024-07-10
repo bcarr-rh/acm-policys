@@ -44,7 +44,7 @@ spec:
             - complianceType: musthave
               objectDefinition:
                 apiVersion: operators.coreos.com/v1
-                kind: OperatorGroup
+                kind: OperatorGroupß
                 metadata:
                   name: compliance-operator
                   namespace: openshift-compliance
@@ -65,14 +65,14 @@ spec:
                 apiVersion: operators.coreos.com/v1alpha1
                 kind: Subscription
                 metadata:
-                  name: {{ .Values.compliance.nameSub default "compliance-operator"}}
+                  name: {{ .Values.compliance.nameSub | default "compliance-operator"}}
                   namespace: openshift-compliance
                 spec:
-                  installPlanApproval: {{ .Values.compliance.installPlanApproval default "Automatic"}}
-                  channel: {{ .Values.compliance.channel default "stable"}}
-                  name: {{ .Values.compliance.name default "compliance-operator"}}
-                  source: {{ .Values.compliance.source default "redhat-operators"}}
-                  sourceNamespace: {{ .Values.compliance.sourceNamespace default "openshift-marketplace"}}
+                  installPlanApproval: {{ .Values.compliance.installPlanApproval | default "Automatic"}}
+                  channel: {{ .Values.compliance.channel | default "stable"}}
+                  name: {{ .Values.compliance.name | default "compliance-operator"}}
+                  source: {{ .Values.compliance.source | default "redhat-operators"}}
+                  sourceNamespace: {{ .Values.compliance.sourceNamespace | default "openshift-marketplace"}}
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
