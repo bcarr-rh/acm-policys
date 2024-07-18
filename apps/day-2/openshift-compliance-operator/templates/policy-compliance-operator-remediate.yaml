@@ -21,48 +21,32 @@ spec:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: copy-configmap-stig
-        spec:
-          object-templates-raw: >
-            - complianceType: musthave
-              objectDefinition:
-                  kind: ConfigMap
-                  apiVersion: v1
-                  metadata:
-                    name: stig-remediation
-                    namespace: openshift-compliance
-                  data: '{{ "{{" }}hub copyConfigMapData "open-cluster-policies" "stig-remediation" hub{{ "}}" }}'
-          pruneObjectBehavior: None
-          remediationAction: enforce
-          severity: high
-    - objectDefinition:
-        apiVersion: policy.open-cluster-management.io/v1
-        kind: ConfigurationPolicy
-        metadata:
           name: auto-remediate
         spec:
-          object-templates-raw: >
-            {{ "{{" }} range (fromConfigMap "openshift-compliance" "stig-remediation" "ocp4-stig" | trim | split "\n") {{ "}}" }}
-              - complianceType: musthave
-                objectDefinition:
-                  kind: ConfigMap
-                  apiVersion: v1
-                  metadata:
-                    name: {{ "{{" }} .{{ "}}" }}
-                    namespace: default
-            {{ "{{" }} end {{ "}}" }}
-
-            {{ "{{" }} range (fromConfigMap "openshift-compliance" "stig-remediation" "rhcos4-stig" | trim | split "\n") {{ "}}" }}
+          object-templates-raw: |
+              {{ "{{" }}hub range (fromConfigMap "open-cluster-policies" "stig-remediation" "ocp4-stig" | trim | split "\n") hub{{ "}}" }}
               - complianceType: musthave
                 objectDefinition:
                   apiVersion: compliance.openshift.io/v1alpha1
                   kind: ComplianceRemediation
                   metadata:
-                    name: {{ "{{" }} . {{ "}}" }}
+                    name: {{ "{{" }}hub . hub{{ "}}" }}
                     namespace: openshift-compliance
                   spec:
                     apply: true
-            {{ "{{" }} end {{ "}}" }}
+              {{ "{{" }}hub end hub{{ "}}" }}
+
+              {{ "{{" }}hub range (fromConfigMap "open-cluster-policies" "stig-remediation" "rhcos4-stig" | trim | split "\n") hub{{ "}}" }}
+              - complianceType: musthave
+                objectDefinition:
+                  apiVersion: compliance.openshift.io/v1alpha1
+                  kind: ComplianceRemediation
+                  metadata:
+                    name: {{ "{{" }}hub . hub{{ "}}" }}
+                    namespace: openshift-compliance
+                  spec:
+                    apply: true
+              {{ "{{" }}hub end hub{{ "}}" }}
           pruneObjectBehavior: None
           remediationAction: inform
           severity: high
