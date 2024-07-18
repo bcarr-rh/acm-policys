@@ -1,10 +1,13 @@
+{{- range .Values.acs.managedClusterSets}}
+---
 apiVersion: cluster.open-cluster-management.io/v1beta2
 kind: ManagedClusterSetBinding
 metadata:
-  name: managed
-  namespace: "{{ .Values.acm.policy_namespace }}"
+  name: {{ . }}
+  namespace: stackrox
   annotations:
     argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
     argocd.argoproj.io/sync-wave: "6"
 spec:
-  clusterSet: managed
+  clusterSet: {{ . }}
+{{ end }}

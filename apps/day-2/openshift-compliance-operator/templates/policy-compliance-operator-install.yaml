@@ -100,7 +100,9 @@ metadata:
   namespace: open-cluster-policies
 spec:
   clusterSets:
-    - hub
+  {{- range .Values.compliance.clusterSets }}
+    - {{ . }}
+  {{- end }}
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists

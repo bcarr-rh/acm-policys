@@ -8,3 +8,6 @@ acs:
   source: redhat-operators
   sourceNamespace: openshift-marketplace
   namespace: stackrox
+  hubClusterSet: hub
+  managedClusterSets:
+    - managed

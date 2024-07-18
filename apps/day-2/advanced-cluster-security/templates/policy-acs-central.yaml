@@ -60,6 +60,11 @@ spec:
                         minReplicas: 2
                         replicas: 3
                     scannerComponent: Enabled
+        status:
+          conditions:
+            - reason: InstallSuccessful
+              status: 'True'
+              type: Deployed
 ---
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
@@ -68,7 +73,7 @@ metadata:
   namespace: open-cluster-policies
 spec:
   clusterSets:
-    - hub
+    - {{ .Values.acs.hubClusterSet }}
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists

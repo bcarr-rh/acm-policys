@@ -1,0 +1,121 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: policy-infra-nodes
+  namespace: open-cluster-policies
+  annotations:
+    policy.open-cluster-management.io/categories: CM Configuration Management
+    policy.open-cluster-management.io/controls: CM-2 Baseline Configuration
+    policy.open-cluster-management.io/standards: NIST SP 800-53
+spec:
+  disabled: false
+  remediationAction: enforce
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: create-infra-nodes
+        spec:
+          object-templates-raw: >
+            {{ "{{-" }} /* Specify the parameters needed to create the MachineSet  */ {{ "-}}" }}
+            {{ "{{-" }} $machineset_role := "infra" {{ "}}" }}
+            {{ "{{-" }} $zones := list{{ range (toStrings .Values.infraNodes.zones) }} "{{ . }}"{{ end }} {{ "}}" }}
+            {{ "{{-" }} $infrastructure_id := (lookup "config.openshift.io/v1" "Infrastructure" "" "cluster").status.infrastructureName {{ "}}" }}
+            {{ "{{-" }} $worker_ms := (index (lookup "machine.openshift.io/v1beta1" "MachineSet" "openshift-machine-api" "").items 0) {{ "}}" }}
+            {{ "{{-" }} /* Generate the MachineSet for each zone as specified  */ {{ "-}}" }}
+            {{ "{{-" }} range $zone := $zones {{ "}}" }}
+              - complianceType: musthave
+                objectDefinition:
+                  apiVersion: machine.openshift.io/v1beta1
+                  kind: MachineSet
+                  metadata:
+                    labels:
+                      machine.openshift.io/cluster-api-cluster: {{ "{{" }} $infrastructure_id {{ "}}" }}
+                    name: {{ "{{" }} $infrastructure_id {{ "}}" }}-{{ "{{" }} $machineset_role {{ "}}" }}-{{ "{{" }} $zone {{ "}}" }}
+                    namespace: openshift-machine-api
+                  spec:
+                    replicas: {{ "{{" }} fromClusterClaim "infra-nodes" {{ "}}" }}
+                    selector:
+                      matchLabels:
+                        machine.openshift.io/cluster-api-cluster: {{ "{{" }} $infrastructure_id {{ "}}" }}
+                        machine.openshift.io/cluster-api-machineset: {{ "{{" }} $infrastructure_id {{ "}}" }}-{{ "{{" }} $machineset_role {{ "}}" }}-{{ "{{" }} $zone {{ "}}" }}
+                    template:
+                      metadata:
+                        labels:
+                          machine.openshift.io/cluster-api-cluster: {{ "{{" }} $infrastructure_id {{ "}}" }}
+                          machine.openshift.io/cluster-api-machine-role: {{ "{{" }} $machineset_role {{ "}}" }}
+                          machine.openshift.io/cluster-api-machine-type: {{ "{{" }} $machineset_role {{ "}}" }}
+                          machine.openshift.io/cluster-api-machineset: {{ "{{" }} $infrastructure_id {{ "}}" }}-{{ "{{" }} $machineset_role {{ "}}" }}-{{ "{{" }} $zone {{ "}}" }}
+                      spec:
+                        metadata:
+                          labels:
+                            node-role.kubernetes.io/{{ "{{" }} $machineset_role {{ "}}" }}: ""
+                        taints:
+                          - key: node-role.kubernetes.io/{{ "{{" }} $machineset_role {{ "}}" }}
+                            effect: NoSchedule
+                        providerSpec:
+                        {{ "{{-" }} if eq $worker_ms.spec.template.spec.providerSpec.value.kind "VSphereMachineProviderSpec" {{ "}}" }}
+                          value:
+                            numCoresPerSocket: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.numCoresPerSocket {{ "}}" }}
+                            diskGiB: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.diskGiB {{ "}}" }}
+                            snapshot: ''
+                            userDataSecret:
+                              name: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.userDataSecret.name {{ "}}" }}
+                            memoryMiB: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.memoryMiB {{ "}}" }}
+                            credentialsSecret:
+                              name: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.credentialsSecret.name {{ "}}" }}
+                            network:
+                              devices:
+                                - networkName: {{ "{{" }} (index ($worker_ms.spec.template.spec.providerSpec.value.network.devices) 0).networkName {{ "}}" }}
+                            numCPUs: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.numCPUs {{ "}}" }}
+                            kind: VSphereMachineProviderSpec
+                            workspace:
+                              datacenter: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.workspace.datacenter {{ "}}" }}
+                              datastore:  {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.workspace.datastore {{ "}}" }}
+                              folder:  {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.workspace.folder {{ "}}" }}
+                              resourcePool: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.workspace.resourcePool {{ "}}" }}
+                              server: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.workspace.server {{ "}}" }}
+                            template: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.template {{ "}}" }}
+                            apiVersion: machine.openshift.io/v1beta1
+                          {{ "{{-" }} end {{ "}}" }}
+            {{ "{{-" }} end {{ "}}" }}
+          pruneObjectBehavior: None
+          remediationAction: inform
+          severity: high
+---
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: placement-policy-infra-nodes
+  namespace: open-cluster-policies
+spec:
+  clusterSets:
+  {{- range .Values.infraNodes.clusterSets }}
+    - {{ . }}
+  {{- end }}
+  predicates:
+    - requiredClusterSelector:
+        labelSelector:
+          matchExpressions:
+            - key: infra-nodes
+              operator: Exists
+  tolerations:
+    - key: cluster.open-cluster-management.io/unreachable
+      operator: Exists
+    - key: cluster.open-cluster-management.io/unavailable
+      operator: Exists
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: placement-policy-infra-nodes
+  namespace: open-cluster-policies
+placementRef:
+  name: placement-policy-infra-nodes
+  apiGroup: cluster.open-cluster-management.io
+  kind: Placement
+subjects:
+  - name: policy-infra-nodes
+    apiGroup: policy.open-cluster-management.io
+    kind: Policy

@@ -13,5 +13,5 @@ spec:
   placementRef:
     kind: Placement
     apiVersion: cluster.open-cluster-management.io/v1beta1
-    name: managed
+    name: {{ .Values.acm.gitops_auto_clusterset }}
     namespace: {{ .Values.acm.gitops_namespace | default "openshift-gitops"}}
