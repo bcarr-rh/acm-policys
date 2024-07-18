@@ -82,8 +82,10 @@ metadata:
   namespace: open-cluster-policies
 spec:
   clusterSets:
-    - managed
-    - hub
+  {{- range .Values.acs.managedClusterSets }}
+    - {{ . }}
+  {{- end }}
+    - {{ .Values.acs.hubClusterSet }}
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists

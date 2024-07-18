@@ -67,7 +67,7 @@ metadata:
   namespace: open-cluster-policies
 spec:
   clusterSets:
-    - hub
+    - {{ .Values.acs.hubClusterSet }}
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists

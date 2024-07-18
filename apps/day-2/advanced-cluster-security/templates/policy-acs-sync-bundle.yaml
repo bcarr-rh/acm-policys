@@ -12,7 +12,7 @@ apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
   name: policy-acs-sync-bundle
-  namespace: open-cluster-policies
+  namespace: stackrox
   annotations:
     argocd.argoproj.io/sync-options: Prune=false,SkipDryRunOnMissingResource=true
     argocd.argoproj.io/compare-options: IgnoreExtraneous
@@ -23,7 +23,7 @@ spec:
   remediationAction: enforce
   disabled: false
   dependencies:
-    - name: policy-acs-central
+    - name: policy-acs-operator-install
       namespace: open-cluster-policies
       apiVersion: policy.open-cluster-management.io/v1
       compliance: Compliant
@@ -42,9 +42,9 @@ spec:
               objectDefinition:
                 apiVersion: v1
                 data:
-                  admission-control-cert.pem: '{{ "{{" }}hub fromSecret "stackrox" "admission-control-tls" "admission-control-cert.pem"| protect hub{{ "}}" }}'
-                  admission-control-key.pem: '{{ "{{" }}hub fromSecret "stackrox" "admission-control-tls" "admission-control-key.pem"| protect hub{{ "}}" }}'
-                  ca.pem: '{{ "{{" }}hub fromSecret "stackrox" "admission-control-tls" "ca.pem"| protect hub{{ "}}" }}'
+                  admission-control-cert.pem: '{{ "{{" }}hub fromSecret "stackrox" "admission-control-tls" "admission-control-cert.pem" hub{{ "}}" }}'
+                  admission-control-key.pem: '{{ "{{" }}hub fromSecret "stackrox" "admission-control-tls" "admission-control-key.pem" hub{{ "}}" }}'
+                  ca.pem: '{{ "{{" }}hub fromSecret "stackrox" "admission-control-tls" "ca.pem" hub{{ "}}" }}'
                 kind: Secret
                 metadata:
                   labels:
@@ -56,9 +56,9 @@ spec:
               objectDefinition:
                 apiVersion: v1
                 data:
-                  collector-cert.pem: '{{ "{{" }}hub fromSecret "stackrox" "collector-tls" "collector-cert.pem"| protect hub{{ "}}" }}'
-                  collector-key.pem: '{{ "{{" }}hub fromSecret "stackrox" "collector-tls" "collector-key.pem"| protect hub{{ "}}" }}'
-                  ca.pem: '{{ "{{" }}hub fromSecret "stackrox" "collector-tls" "ca.pem"| protect hub{{ "}}" }}'
+                  collector-cert.pem: '{{ "{{" }}hub fromSecret "stackrox" "collector-tls" "collector-cert.pem" hub{{ "}}" }}'
+                  collector-key.pem: '{{ "{{" }}hub fromSecret "stackrox" "collector-tls" "collector-key.pem" hub{{ "}}" }}'
+                  ca.pem: '{{ "{{" }}hub fromSecret "stackrox" "collector-tls" "ca.pem" hub{{ "}}" }}'
                 kind: Secret
                 metadata:
                   labels:
@@ -70,10 +70,10 @@ spec:
               objectDefinition:
                 apiVersion: v1
                 data:
-                  sensor-cert.pem: '{{ "{{" }}hub fromSecret "stackrox" "sensor-tls" "sensor-cert.pem"| protect hub{{ "}}" }}'
-                  sensor-key.pem: '{{ "{{" }}hub fromSecret "stackrox" "sensor-tls" "sensor-key.pem"| protect hub{{ "}}" }}'
-                  ca.pem: '{{ "{{" }}hub fromSecret "stackrox" "sensor-tls" "ca.pem"| protect hub{{ "}}" }}'
-                  acs-host: '{{ "{{" }}hub fromSecret "stackrox" "sensor-tls" "acs-host"| protect hub{{ "}}" }}'
+                  sensor-cert.pem: '{{ "{{" }}hub fromSecret "stackrox" "sensor-tls" "sensor-cert.pem" hub{{ "}}" }}'
+                  sensor-key.pem: '{{ "{{" }}hub fromSecret "stackrox" "sensor-tls" "sensor-key.pem" hub{{ "}}" }}'
+                  ca.pem: '{{ "{{" }}hub fromSecret "stackrox" "sensor-tls" "ca.pem" hub{{ "}}" }}'
+                  acs-host: '{{ "{{" }}hub fromSecret "stackrox" "sensor-tls" "acs-host" hub{{ "}}" }}'
                 kind: Secret
                 metadata:
                   labels:
@@ -86,10 +86,12 @@ apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
 metadata:
   name: policy-acs-sync-bundle-placement
-  namespace: open-cluster-policies
+  namespace: stackrox
 spec:
   clusterSets:
-    - managed
+  {{- range .Values.acs.managedClusterSets }}
+    - {{ . }}
+  {{- end }}
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists
@@ -100,7 +102,7 @@ apiVersion: policy.open-cluster-management.io/v1
 kind: PlacementBinding
 metadata:
   name: policy-acs-sync-bundle-placement
-  namespace: open-cluster-policies
+  namespace: stackrox
 placementRef:
   name: policy-acs-sync-bundle-placement
   apiGroup: cluster.open-cluster-management.io
