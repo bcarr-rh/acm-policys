@@ -5,3 +5,12 @@ infraNodes:
   clusterSets:
     - hub
     - managed
+  imageRegistry: 
+    migrate: true
+    remediationAction: enforce
+  ingress: 
+    migrate: true
+    remediationAction: enforce
+  monitoring: 
+    migrate: true
+    remediationAction: enforce
