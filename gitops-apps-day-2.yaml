@@ -1,8 +1,8 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: argo-apps-day-1
-  namespace: {{ gitops_namespace }}
+  name: argo-apps-day-2
+  namespace: openshift-gitops
   labels:
     velero.io/exclude-from-backup: "true"
 spec:
@@ -11,12 +11,12 @@ spec:
       repoURL: https://github.com/bcarr-rh/acm-policys
       revision: main
       directories:
-      - path: 'apps/day-1/*'
+      - path: 'apps/day-2/*'
   template:
     metadata:
       name: '{{ path.basename }}'
       labels:
-        app: argo-apps-day-1
+        app: argo-apps-day-2
         velero.io/exclude-from-backup: "true"
     spec:
       project: default
@@ -42,4 +42,4 @@ spec:
         - RespectIgnoreDifferences=true
       destination:
         server: https://kubernetes.default.svc
-        namespace: {{ gitops_namespace }}
+        namespace: openshift-gitops
