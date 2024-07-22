@@ -6,23 +6,25 @@ metadata:
   labels:
     velero.io/exclude-from-backup: "true"
 spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
   generators:
   - git:
-      repoURL: https://github.com/bcarr-rh/acm-policys
+      repoURL: https://github.com/bcarr-rh/acm-policys.git
       revision: main
       directories:
       - path: 'apps/day-1/*'
   template:
     metadata:
-      name: '{{ path.basename }}'
+      name: '{{ .path.basename }}'
       labels:
         app: argo-apps-day-1
         velero.io/exclude-from-backup: "true"
     spec:
       project: default
       source:
-        path: '{{ path.path }}'
-        repoURL: https://github.com/bcarr-rh/acm-policys
+        path: '{{ .path.path }}'
+        repoURL: https://github.com/bcarr-rh/acm-policys.git
         targetRevision: main
         helm:
           valueFiles:
