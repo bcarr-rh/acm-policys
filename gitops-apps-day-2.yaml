@@ -1,0 +1,45 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: argo-apps-day-1
+  namespace: {{ gitops_namespace }}
+  labels:
+    velero.io/exclude-from-backup: "true"
+spec:
+  generators:
+  - git:
+      repoURL: https://github.com/bcarr-rh/acm-policys
+      revision: main
+      directories:
+      - path: 'apps/day-1/*'
+  template:
+    metadata:
+      name: '{{ path.basename }}'
+      labels:
+        app: argo-apps-day-1
+        velero.io/exclude-from-backup: "true"
+    spec:
+      project: default
+      source:
+        path: '{{ path.path }}'
+        repoURL: https://github.com/bcarr-rh/acm-policys
+        targetRevision: main
+        helm:
+          valueFiles:
+          - values.yaml
+      ignoreDifferences:
+      - group: "apps"
+        kind: "Project"
+        jsonPointers:
+        - /metadata/annotations
+        - /metadata/labels
+      syncPolicy:
+        preserveResourcesOnDeletion: true
+        automated:
+          prune: false
+          selfHeal: true
+        syncOptions:
+        - RespectIgnoreDifferences=true
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: {{ gitops_namespace }}
