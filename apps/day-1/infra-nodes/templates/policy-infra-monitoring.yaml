@@ -9,7 +9,7 @@ metadata:
     policy.open-cluster-management.io/standards: NIST SP 800-53
 spec:
   disabled: {{ not .Values.infraNodes.monitoring.migrate }}
-  remediationAction: {{ not .Values.infraNodes.monitoring.remediationAction }}
+  remediationAction: {{ .Values.infraNodes.monitoring.remediationAction }}
   dependencies:
   - apiVersion: policy.open-cluster-management.io/v1
     compliance: Compliant
