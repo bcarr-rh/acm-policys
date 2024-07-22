@@ -1,7 +1,0 @@
-kind: ManagedClusterSet
-apiVersion: clusterview.open-cluster-management.io/v1alpha1
-metadata:
-  name: hub
-spec:
-  clusterSelector:
-    selectorType: ExclusiveClusterSetLabel
