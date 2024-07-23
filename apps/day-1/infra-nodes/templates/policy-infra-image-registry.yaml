@@ -24,20 +24,22 @@ spec:
           name: create-infra-image-registry
         spec:
           object-templates: |
-            apiVersion: imageregistry.operator.openshift.io/v1
-            kind: Config
-            metadata:
-              name: cluster
-            spec:
-              nodeSelector: 
-                node-role.kubernetes.io/infra: ""
-              tolerations:
-              - effect: NoSchedule
-                key: node-role.kubernetes.io/infra
-                value: reserved
-              - effect: NoExecute
-                key: node-role.kubernetes.io/infra
-                value: reserved
+              - complianceType: musthave
+                objectDefinition:
+                  apiVersion: imageregistry.operator.openshift.io/v1
+                  kind: Config
+                  metadata:
+                    name: cluster
+                  spec:
+                    nodeSelector: 
+                      node-role.kubernetes.io/infra: ""
+                    tolerations:
+                    - effect: NoSchedule
+                      key: node-role.kubernetes.io/infra
+                      value: reserved
+                    - effect: NoExecute
+                      key: node-role.kubernetes.io/infra
+                      value: reserved
           pruneObjectBehavior: None
           remediationAction: inform
           severity: high
