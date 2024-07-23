@@ -23,7 +23,7 @@ spec:
         metadata:
           name: create-infra-monitoring
         spec:
-          object-templates: >
+          object-templates: |
             apiVersion: v1
             kind: ConfigMap
             metadata:

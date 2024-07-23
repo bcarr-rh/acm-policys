@@ -23,7 +23,7 @@ spec:
         metadata:
           name: create-infra-image-registry
         spec:
-          object-templates: >
+          object-templates: |
             apiVersion: imageregistry.operator.openshift.io/v1
             kind: Config
             metadata:
