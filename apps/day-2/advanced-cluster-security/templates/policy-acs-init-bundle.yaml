@@ -20,7 +20,6 @@ metadata:
     policy.open-cluster-management.io/categories: CM Configuration Management
     policy.open-cluster-management.io/controls: CM-2 Baseline Configuration
 spec:
-  remediationAction: enforce
   disabled: false
   dependencies:
     - name: policy-acs-central
@@ -35,7 +34,7 @@ spec:
         metadata:
           name: managed-cluster-security-endpoints-init-bundle
         spec:
-          remediationAction: inform
+          remediationAction: enforce
           severity: high
           object-templates:
             - complianceType: musthave
@@ -50,7 +49,7 @@ spec:
         metadata:
           name: create-cluster-init-sa
         spec:
-          remediationAction: inform
+          remediationAction: enforce
           severity: high
           object-templates:
             - complianceType: musthave
@@ -68,7 +67,7 @@ spec:
         metadata:
           name: create-cluster-init-role
         spec:
-          remediationAction: inform
+          remediationAction: enforce
           severity: high
           object-templates:
             - complianceType: musthave
@@ -114,7 +113,7 @@ spec:
         metadata:
           name: create-cluster-init-role-binding
         spec:
-          remediationAction: inform
+          remediationAction: enforce
           severity: high
           object-templates:
             - complianceType: musthave
@@ -140,7 +139,7 @@ spec:
         metadata:
           name: create-cluster-init-bundle
         spec:
-          remediationAction: inform
+          remediationAction: enforce
           severity: high
           object-templates:
             - complianceType: musthave
@@ -254,6 +253,26 @@ spec:
                       serviceAccount: create-cluster-init
                       serviceAccountName: create-cluster-init
                       terminationGracePeriodSeconds: 30
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: check-cluster-init-bundle
+        spec:
+          remediationAction: inform
+          severity: high
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: batch/v1
+                kind: Job
+                metadata:
+                  name: create-cluster-init-bundle-v2
+                  namespace: stackrox
+                status:
+                  condition:
+                    - type: Complete
+                      status: 'True'
 ---
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
