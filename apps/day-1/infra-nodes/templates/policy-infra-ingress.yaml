@@ -23,26 +23,26 @@ spec:
         metadata:
           name: create-infra-ingress
         spec:
-          object-templates: |
-              - complianceType: musthave
-                objectDefinition:
-                  apiVersion: operator.openshift.io/v1
-                  kind: IngressController
-                  metadata:
-                    name: default
-                    namespace: openshift-ingress-operator
-                    spec:
-                      nodePlacement:
-                        nodeSelector: 
-                          matchLabels:
-                            node-role.kubernetes.io/infra: ""
-                        tolerations:
-                        - effect: NoSchedule
-                          key: node-role.kubernetes.io/infra
-                          value: reserved
-                        - effect: NoExecute
-                          key: node-role.kubernetes.io/infra
-                          value: reserved
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: operator.openshift.io/v1
+                kind: IngressController
+                metadata:
+                  name: default
+                  namespace: openshift-ingress-operator
+                  spec:
+                    nodePlacement:
+                      nodeSelector: 
+                        matchLabels:
+                          node-role.kubernetes.io/infra: ""
+                      tolerations:
+                      - effect: NoSchedule
+                        key: node-role.kubernetes.io/infra
+                        value: reserved
+                      - effect: NoExecute
+                        key: node-role.kubernetes.io/infra
+                        value: reserved
           pruneObjectBehavior: None
           remediationAction: inform
           severity: high
