@@ -246,7 +246,7 @@ spec:
                             secretKeyRef:
                               key: password
                               name: central-htpasswd
-                        image: image-registry.openshift-image-registry.svc:5000/openshift/cli:latest
+                        image: {{ .Values.acs.cliImage }}
                         imagePullPolicy: Always
                         name: create-cluster-init-bundle
                       dnsPolicy: ClusterFirst
