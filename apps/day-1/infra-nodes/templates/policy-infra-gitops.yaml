@@ -30,7 +30,7 @@ spec:
                 kind: GitopsService
                 metadata:
                   name: cluster
-                  namespace: {{ .Values.gitops.namespace }}
+                  namespace: {{ .Values.infraNodes.gitops.namespace }}
                 spec:
                   runOnInfra: true
                   tolerations:
