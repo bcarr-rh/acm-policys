@@ -44,13 +44,15 @@ spec:
                       metadata:
                         labels:
                           machine.openshift.io/cluster-api-cluster: {{ "{{" }} $infrastructure_id {{ "}}" }}
-                          machine.openshift.io/cluster-api-machine-role: {{ "{{" }} $machineset_role {{ "}}" }}
-                          machine.openshift.io/cluster-api-machine-type: {{ "{{" }} $machineset_role {{ "}}" }}
+                          machine.openshift.io/cluster-api-machine-role: infra
+                          machine.openshift.io/cluster-api-machine-type: infra
                           machine.openshift.io/cluster-api-machineset: {{ "{{" }} $infrastructure_id {{ "}}" }}-{{ "{{" }} $machineset_role {{ "}}" }}-{{ "{{" }} $zone {{ "}}" }}
                       spec:
                         metadata:
                           labels:
-                            node-role.kubernetes.io/{{ "{{" }} $machineset_role {{ "}}" }}: ""
+                            cluster.ocs.openshift.io/openshift-storage: ''
+                            node-role.kubernetes.io/infra: ''
+                            node-role.kubernetes.io/worker: ''
                         taints:
                           - key: node-role.kubernetes.io/{{ "{{" }} $machineset_role {{ "}}" }}
                             effect: NoSchedule
@@ -93,8 +95,10 @@ spec:
                               - ebs:
                                   encrypted: {{ "{{" }} $ebs.encrypted {{ "}}" }}
                                   iops: {{ "{{" }} $ebs.iops {{ "}}" }}
+                                  {{ "{{-" }} if $ebs.kmsKey.arn {{ "}}" }}
                                   kmsKey:
                                     arn: {{ "{{" }} $ebs.kmsKey.arn {{ "}}" }}
+                                  {{ "{{-" }} end {{ "}}" }}
                                   volumeSize: {{ "{{" }} $ebs.volumeSize {{ "}}" }}
                                   volumeType: {{ "{{" }} $ebs.volumeType {{ "}}" }}
                             securityGroups:
