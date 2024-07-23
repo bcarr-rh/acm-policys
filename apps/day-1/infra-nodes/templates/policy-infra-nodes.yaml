@@ -93,8 +93,10 @@ spec:
                               - ebs:
                                   encrypted: {{ "{{" }} $ebs.encrypted {{ "}}" }}
                                   iops: {{ "{{" }} $ebs.iops {{ "}}" }}
+                                  {{ "{{-" }} if $ebs.kmsKey.arn {{ "}}" }}
                                   kmsKey:
-                                    arn: '{{ "{{" }} ternary $ebs.kmsKey.arn "" $ebs.kmsKey.arn {{ "}}" }}'                                  volumeSize: {{ "{{" }} $ebs.volumeSize {{ "}}" }}
+                                    arn: {{ "{{" }} $ebs.kmsKey.arn {{ "}}" }}
+                                  {{ "{{-" }} end {{ "}}" }}
                                   volumeType: {{ "{{" }} $ebs.volumeType {{ "}}" }}
                             securityGroups:
                               - filters:
