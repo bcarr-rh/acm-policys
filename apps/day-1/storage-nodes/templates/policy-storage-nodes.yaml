@@ -89,7 +89,7 @@ spec:
                               region: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.placement.region {{ "}}" }}
                             credentialsSecret:
                               name: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.credentialsSecret.name {{ "}}" }}
-                            instanceType: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.instanceType {{ "}}" }}
+                            instanceType: {{ "{{" }} default $worker_ms.spec.template.spec.providerSpec.value.instanceType {{ .Values.storageNodes.instanceType }} {{ "}}" }}
                             {{ "{{-" }} $ebs := (index ($worker_ms.spec.template.spec.providerSpec.value.blockDevices) 0).ebs {{ "}}" }}
                             blockDevices:
                               - ebs:
