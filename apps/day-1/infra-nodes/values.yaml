@@ -14,3 +14,5 @@ infraNodes:
   monitoring: 
     migrate: true
     remediationAction: enforce
+  zones:
+    - us-east-2c

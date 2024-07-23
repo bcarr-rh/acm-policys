@@ -18,13 +18,13 @@ spec:
           name: create-infra-nodes
         spec:
           object-templates-raw: >
-            {{ "{{-" }} /* Specify the parameters needed to create the MachineSet  */ {{ "-}}" }}
-            {{ "{{-" }} $machineset_role := "infra" {{ "}}" }}
-            {{ "{{-" }} $zones := list{{ range (toStrings .Values.infraNodes.zones) }} "{{ . }}"{{ end }} {{ "}}" }}
-            {{ "{{-" }} $infrastructure_id := (lookup "config.openshift.io/v1" "Infrastructure" "" "cluster").status.infrastructureName {{ "}}" }}
-            {{ "{{-" }} $worker_ms := (index (lookup "machine.openshift.io/v1beta1" "MachineSet" "openshift-machine-api" "").items 0) {{ "}}" }}
-            {{ "{{-" }} /* Generate the MachineSet for each zone as specified  */ {{ "-}}" }}
-            {{ "{{-" }} range $zone := $zones {{ "}}" }}
+              {{ "{{-" }} /* Specify the parameters needed to create the MachineSet  */ {{ "-}}" }}
+              {{ "{{-" }} $machineset_role := "infra" {{ "}}" }}
+              {{ "{{-" }} $zones := list{{ range (toStrings .Values.infraNodes.zones) }} "{{ . }}"{{ end }} {{ "}}" }}
+              {{ "{{-" }} $infrastructure_id := (lookup "config.openshift.io/v1" "Infrastructure" "" "cluster").status.infrastructureName {{ "}}" }}
+              {{ "{{-" }} $worker_ms := (index (lookup "machine.openshift.io/v1beta1" "MachineSet" "openshift-machine-api" "").items 0) {{ "}}" }}
+              {{ "{{-" }} /* Generate the MachineSet for each zone as specified  */ {{ "-}}" }}
+              {{ "{{-" }} range $zone := $zones {{ "}}" }}
               - complianceType: musthave
                 objectDefinition:
                   apiVersion: machine.openshift.io/v1beta1
@@ -78,8 +78,49 @@ spec:
                               server: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.workspace.server {{ "}}" }}
                             template: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.template {{ "}}" }}
                             apiVersion: machine.openshift.io/v1beta1
-                          {{ "{{-" }} end {{ "}}" }}
-            {{ "{{-" }} end {{ "}}" }}
+                        {{ "{{-" }} else if eq $worker_ms.spec.template.spec.providerSpec.value.kind "AWSMachineProviderConfig" {{ "}}" }}
+                          value:
+                            userDataSecret:
+                              name: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.userDataSecret.name {{ "}}" }}
+                            placement:
+                              availabilityZone: {{ "{{" }} $zone {{ "}}" }}
+                              region: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.placement.region {{ "}}" }}
+                            credentialsSecret:
+                              name: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.credentialsSecret.name {{ "}}" }}
+                            instanceType: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.instanceType {{ "}}" }}
+                            {{ "{{-" }} $ebs := (index ($worker_ms.spec.template.spec.providerSpec.value.blockDevices) 0).ebs {{ "}}" }}
+                            blockDevices:
+                              - ebs:
+                                  encrypted: {{ "{{" }} $ebs.encrypted {{ "}}" }}
+                                  iops: {{ "{{" }} $ebs.iops {{ "}}" }}
+                                  kmsKey:
+                                    arn: {{ "{{" }} $ebs.kmsKey.arn {{ "}}" }}
+                                  volumeSize: {{ "{{" }} $ebs.kmsKey.volumeSize {{ "}}" }}
+                                  volumeType: {{ "{{" }} $ebs.kmsKey.volumeType {{ "}}" }}
+                            securityGroups:
+                              - filters:
+                                  - name: 'tag:Name'
+                                    values:
+                                      - {{ "{{" }} (index (index (index ($worker_ms.spec.template.spec.providerSpec.value.network.securityGroups) 0).filters 0).values 0) {{ "}}" }}
+                            kind: AWSMachineProviderConfig
+                            tags:
+                              {{ "{{-" }} range $tag := $worker_ms.spec.template.spec.providerSpec.value.tags {{ "}}" }}
+                              - name: {{ "{{" }} $tag.name {{ "}}" }}
+                                value: {{ "{{" }} $tag.value {{ "}}" }}
+                              {{ "{{-" }} end {{ "}}" }}
+                            deviceIndex: 0
+                            ami:
+                              id: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.ami.id {{ "}}" }}
+                            subnet:
+                              filters:
+                                - name: 'tag:Name'
+                                  values:
+                                    - {{ "{{" }} $infrastructure_id {{ "}}" }}-private-{{ "{{" }} $zone {{ "}}" }}
+                            apiVersion: machine.openshift.io/v1beta1
+                            iamInstanceProfile:
+                              id: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.iamInstanceProfile.id {{ "}}" }}
+                        {{ "{{-" }} end {{ "}}" }}
+              {{ "{{-" }} end {{ "}}" }}
           pruneObjectBehavior: None
           remediationAction: inform
           severity: high
