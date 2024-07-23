@@ -23,7 +23,7 @@ spec:
         metadata:
           name: create-infra-ingress
         spec:
-          object-templates: >
+          object-templates: |
             apiVersion: operator.openshift.io/v1
             kind: IngressController
             metadata:
