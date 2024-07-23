@@ -7,3 +7,5 @@ storageNodes:
     - managed
   zones:
     - us-east-2c
+# Defaults to worker node instance type for first machine set if finds
+  instanceType: i3en.2xlarge
