@@ -39,10 +39,8 @@ spec:
                       tolerations:
                       - effect: NoSchedule
                         key: node-role.kubernetes.io/infra
-                        value: reserved
                       - effect: NoExecute
                         key: node-role.kubernetes.io/infra
-                        value: reserved
           pruneObjectBehavior: None
           remediationAction: inform
           severity: high
