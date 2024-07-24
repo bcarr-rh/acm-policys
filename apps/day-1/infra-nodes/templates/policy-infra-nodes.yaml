@@ -9,7 +9,6 @@ metadata:
     policy.open-cluster-management.io/standards: NIST SP 800-53
 spec:
   disabled: false
-  remediationAction: enforce
   policy-templates:
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
@@ -123,8 +122,35 @@ spec:
                         {{ "{{-" }} end {{ "}}" }}
               {{ "{{-" }} end {{ "}}" }}
           pruneObjectBehavior: None
+          remediationAction: enforce
+          severity: high
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: check-cluster-init-bundle
+        spec:
           remediationAction: inform
           severity: high
+          object-templates-raw: |
+              {{ "{{-" }} /* Specify the parameters needed to create the MachineSet  */ {{ "-}}" }}
+              {{ "{{-" }} $machineset_role := "infra" {{ "}}" }}
+              {{ "{{-" }} $zones := list{{ range (toStrings .Values.infraNodes.zones) }} "{{ . }}"{{ end }} {{ "}}" }}
+              {{ "{{-" }} $infrastructure_id := (lookup "config.openshift.io/v1" "Infrastructure" "" "cluster").status.infrastructureName {{ "}}" }}
+              {{ "{{-" }} /* Generate the MachineSet for each zone as specified  */ {{ "-}}" }}
+              {{ "{{-" }} range $zone := $zones {{ "}}" }}
+              - complianceType: musthave
+                objectDefinition:
+                  apiVersion: machine.openshift.io/v1beta1
+                  kind: MachineSet
+                  metadata:
+                    labels:
+                      machine.openshift.io/cluster-api-cluster: {{ "{{" }} $infrastructure_id {{ "}}" }}
+                    name: {{ "{{" }} $infrastructure_id {{ "}}" }}-{{ "{{" }} $machineset_role {{ "}}" }}-{{ "{{" }} $zone {{ "}}" }}
+                    namespace: openshift-machine-api
+                  status:
+                    readyReplicas: {{ "{{" }} fromClusterClaim "infra-nodes" {{ "}}" }}
+              {{ "{{-" }} end {{ "}}" }}
 ---
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
