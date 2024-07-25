@@ -128,7 +128,7 @@ spec:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: check-cluster-init-bundle
+          name: check-cluster-infra-nodes
         spec:
           remediationAction: inform
           severity: high
