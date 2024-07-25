@@ -64,7 +64,7 @@ metadata:
   namespace: open-cluster-policies
 spec:
   clusterSets:
-  {{- range .Values.storageNodes.clusterSets }}
+  {{- range .Values.localStorage.clusterSets }}
     - {{ . }}
   {{- end }}
   predicates:
