@@ -257,7 +257,7 @@ spec:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: check-init-bundle-status
+          name: check-cluster-init-bundle
         spec:
           remediationAction: inform
           severity: high
