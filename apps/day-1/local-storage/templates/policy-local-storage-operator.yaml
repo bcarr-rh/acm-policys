@@ -1,0 +1,124 @@
+# This policy verifies the installation of the official & supported version of
+# the Compliance Operator on the managed clusters.
+#
+# If set to "enforce" it'll install the operator.
+#
+# Note that OpenShift 4.6 is required.
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: policy-local-storage-operator
+  namespace: open-cluster-policies
+  annotations:
+    policy.open-cluster-management.io/standards: NIST SP 800-53
+    policy.open-cluster-management.io/categories: CA Security Assessment and Authorization
+    policy.open-cluster-management.io/controls: CA-2 Security Assessments, CA-7 Continuous Monitoring
+spec:
+  remediationAction: enforce
+  disabled: false
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: local-storage-operator-ns
+        spec:
+          remediationAction: inform # will be overridden by remediationAction in parent policy
+          severity: high
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: v1
+                kind: Namespace
+                metadata:
+                  name: openshift-local-storage
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: local-storage-operator-operator-group
+        spec:
+          remediationAction: inform # will be overridden by remediationAction in parent policy
+          severity: high
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: operators.coreos.com/v1
+                kind: OperatorGroup
+                metadata:
+                  name: local-storage-operator
+                  namespace: openshift-local-storage
+                spec:
+                  targetNamespaces:
+                    - openshift-local-storage
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: local-storage-operator-subscription
+        spec:
+          remediationAction: inform # will be overridden by remediationAction in parent policy
+          severity: high
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: operators.coreos.com/v1alpha1
+                kind: Subscription
+                metadata:
+                  name: {{ .Values.localStorage.nameSub | default "local-storage-operator"}}
+                  namespace: openshift-local-storage
+                spec:
+                  installPlanApproval: {{ .Values.localStorage.installPlanApproval | default "Automatic"}}
+                  channel: {{ .Values.localStorage.channel | default "stable"}}
+                  name: {{ .Values.localStorage.name | default "local-storage-operator"}}
+                  source: {{ .Values.localStorage.source | default "redhat-operators"}}
+                  sourceNamespace: {{ .Values.localStorage.sourceNamespace | default "openshift-marketplace"}}
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: local-storage-operator-status
+        spec:
+          remediationAction: inform # will be overridden by remediationAction in parent policy
+          severity: high
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: operators.coreos.com/v1alpha1
+                kind: ClusterServiceVersion
+                metadata:
+                  namespace: openshift-local-storage
+                spec:
+                  displayName: Local Storage
+                status:
+                  phase: Succeeded # check the csv status to determine if operator is running or not
+---
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: placement-policy-local-storage-operator
+  namespace: open-cluster-policies
+spec:
+  clusterSets:
+  {{- range .Values.localStorage.clusterSets }}
+    - {{ . }}
+  {{- end }}
+  tolerations:
+    - key: cluster.open-cluster-management.io/unreachable
+      operator: Exists
+    - key: cluster.open-cluster-management.io/unavailable
+      operator: Exists
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: placement-policy-local-storage-operator
+  namespace: open-cluster-policies
+placementRef:
+  name: placement-policy-local-storage-operator
+  apiGroup: cluster.open-cluster-management.io
+  kind: Placement
+subjects:
+  - name: policy-local-storage-operator
+    apiGroup: policy.open-cluster-management.io
+    kind: Policy

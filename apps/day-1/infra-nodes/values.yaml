@@ -14,5 +14,9 @@ infraNodes:
   monitoring: 
     migrate: true
     remediationAction: enforce
+  gitops: 
+    migrate: true
+    remediationAction: enforce
+    namespace: openshift-gitops
   zones:
     - us-east-2c
