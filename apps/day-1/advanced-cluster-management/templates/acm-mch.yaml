@@ -12,28 +12,28 @@ spec:
   disableHubSelfManagement: {{ .Values.acm.disable_hub_self_management }}
 {{ end}}
   overrides:
-    components:
+      components:
       - enabled: true
-        name: console
-      - enabled: true
-        name: insights
-      - enabled: true
-        name: grc
+        name: app-lifecycle
       - enabled: true
         name: cluster-lifecycle
       - enabled: true
-        name: volsync
+        name: cluster-permission
+      - enabled: true
+        name: console
+      - enabled: true
+        name: grc
+      - enabled: true
+        name: insights
       - enabled: true
         name: multicluster-engine
       - enabled: true
+        name: multicluster-observability
+      - enabled: true
         name: search
       - enabled: true
-        name: app-lifecycle
-      - enabled: {{ .Values.acm.enable_backup }}
-        name: cluster-backup
-      - enabled: true	
-        name: cluster-permission	
-      - enabled: true	
-        name: multicluster-observability	
-      - enabled: true	
         name: submariner-addon
+      - enabled: true
+        name: volsync
+      - enabled: false
+        name: cluster-backup

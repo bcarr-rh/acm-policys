@@ -15,8 +15,11 @@ infraNodes:
     migrate: true
     remediationAction: enforce
   gitops: 
-    migrate: true
+    migrate: false
     remediationAction: enforce
     namespace: openshift-gitops
   zones:
-    - us-east-2c
+    - 0
+  externalIngress:
+    clusterSets:
+      - managed  

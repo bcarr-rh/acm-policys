@@ -1,62 +1,52 @@
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
-  name: policy-infra-gitops
+  name: policy-prod-cluster
   namespace: open-cluster-policies
   annotations:
     policy.open-cluster-management.io/categories: CM Configuration Management
     policy.open-cluster-management.io/controls: CM-2 Baseline Configuration
     policy.open-cluster-management.io/standards: NIST SP 800-53
 spec:
-  disabled: {{ not .Values.infraNodes.gitops.migrate }}
-  remediationAction: {{ .Values.infraNodes.gitops.remediationAction }}
-  dependencies:
-  - apiVersion: policy.open-cluster-management.io/v1
-    compliance: Compliant
-    kind: Policy
-    name: policy-infra-nodes
-    namespace: open-cluster-policies
+  disabled: false
+  remediationAction: enforce
   policy-templates:
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: create-infra-gitops
+          name: prod-cluster-claims
         spec:
-          object-templates:
+          object-templates-raw: |
+            {{- range .Values.clusterlabels.prod.clusterclaims}}
             - complianceType: musthave
               objectDefinition:
-                apiVersion: pipelines.openshift.io/v1alpha1
-                kind: GitopsService
+                apiVersion: cluster.open-cluster-management.io/v1alpha1
+                kind: ClusterClaim
                 metadata:
-                  name: cluster
-                  namespace: {{ .Values.infraNodes.gitops.namespace }}
+                  name: {{ .name }}
                 spec:
-                  runOnInfra: true
-                  tolerations:
-                    - effect: NoSchedule
-                      key: node-role.kubernetes.io/infra
-                    - effect: NoExecute
-                      key: node-role.kubernetes.io/infra
-          remediationAction: inform
-          severity: high
+                  value: {{ quote .value }}
+              pruneObjectBehavior: None
+              remediationAction: inform
+              severity: high
+            {{- end }}
 ---
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
 metadata:
-  name: placement-policy-infra-gitops
+  name: placement-policy-prod-cluster
   namespace: open-cluster-policies
 spec:
   clusterSets:
-  {{- range .Values.infraNodes.clusterSets }}
+  {{- range .Values.clusterlabels.clusterSets }}
     - {{ . }}
   {{- end }}
   predicates:
     - requiredClusterSelector:
-        claimSelector:
-          matchExpressions:
-            - key: infra-nodes
-              operator: Exists
+        labelSelector:
+          matchLabels:
+            name: ocp-prod
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists
@@ -66,13 +56,13 @@ spec:
 apiVersion: policy.open-cluster-management.io/v1
 kind: PlacementBinding
 metadata:
-  name: placement-policy-infra-gitops
+  name: placement-policy-prod-cluster
   namespace: open-cluster-policies
 placementRef:
-  name: placement-policy-infra-gitops
+  name: placement-policy-prod-cluster
   apiGroup: cluster.open-cluster-management.io
   kind: Placement
 subjects:
-  - name: policy-infra-gitops
+  - name: policy-prod-cluster
     apiGroup: policy.open-cluster-management.io
     kind: Policy

@@ -1,62 +1,53 @@
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
-  name: policy-infra-gitops
+  name: policy-infra-ingress-hub
   namespace: open-cluster-policies
   annotations:
     policy.open-cluster-management.io/categories: CM Configuration Management
     policy.open-cluster-management.io/controls: CM-2 Baseline Configuration
     policy.open-cluster-management.io/standards: NIST SP 800-53
 spec:
-  disabled: {{ not .Values.infraNodes.gitops.migrate }}
-  remediationAction: {{ .Values.infraNodes.gitops.remediationAction }}
-  dependencies:
-  - apiVersion: policy.open-cluster-management.io/v1
-    compliance: Compliant
-    kind: Policy
-    name: policy-infra-nodes
-    namespace: open-cluster-policies
+  disabled: {{ not .Values.infraNodes.ingress.migrate }}
+  remediationAction: {{ .Values.infraNodes.ingress.remediationAction }}
   policy-templates:
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: create-infra-gitops
+          name: create-infra-ingress
         spec:
           object-templates:
             - complianceType: musthave
               objectDefinition:
-                apiVersion: pipelines.openshift.io/v1alpha1
-                kind: GitopsService
+                apiVersion: operator.openshift.io/v1
+                kind: IngressController
                 metadata:
-                  name: cluster
-                  namespace: {{ .Values.infraNodes.gitops.namespace }}
+                  name: default
+                  namespace: openshift-ingress-operator
                 spec:
-                  runOnInfra: true
-                  tolerations:
-                    - effect: NoSchedule
-                      key: node-role.kubernetes.io/infra
-                    - effect: NoExecute
-                      key: node-role.kubernetes.io/infra
+                  replicas: 3
+                  nodePlacement:
+                    nodeSelector:
+                      matchLabels:
+                        node-role.kubernetes.io/infra: ''
+                    tolerations:
+                      - effect: NoSchedule
+                        key: node-role.kubernetes.io/infra
+                      - effect: NoExecute
+                        key: node-role.kubernetes.io/infra
+          pruneObjectBehavior: None
           remediationAction: inform
           severity: high
 ---
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
 metadata:
-  name: placement-policy-infra-gitops
+  name: placement-policy-infra-ingress-hub
   namespace: open-cluster-policies
 spec:
   clusterSets:
-  {{- range .Values.infraNodes.clusterSets }}
-    - {{ . }}
-  {{- end }}
-  predicates:
-    - requiredClusterSelector:
-        claimSelector:
-          matchExpressions:
-            - key: infra-nodes
-              operator: Exists
+    - hub
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists
@@ -66,13 +57,13 @@ spec:
 apiVersion: policy.open-cluster-management.io/v1
 kind: PlacementBinding
 metadata:
-  name: placement-policy-infra-gitops
+  name: placement-policy-infra-ingress-hub
   namespace: open-cluster-policies
 placementRef:
-  name: placement-policy-infra-gitops
+  name: placement-policy-infra-ingress-hub
   apiGroup: cluster.open-cluster-management.io
   kind: Placement
 subjects:
-  - name: policy-infra-gitops
+  - name: policy-infra-ingress-hub
     apiGroup: policy.open-cluster-management.io
     kind: Policy
