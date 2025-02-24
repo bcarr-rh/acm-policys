@@ -1,15 +1,15 @@
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
-  name: policy-infra-gitops
+  name: policy-infra-external-ingress
   namespace: open-cluster-policies
   annotations:
     policy.open-cluster-management.io/categories: CM Configuration Management
     policy.open-cluster-management.io/controls: CM-2 Baseline Configuration
     policy.open-cluster-management.io/standards: NIST SP 800-53
 spec:
-  disabled: {{ not .Values.infraNodes.gitops.migrate }}
-  remediationAction: {{ .Values.infraNodes.gitops.remediationAction }}
+  disabled: {{ not .Values.infraNodes.ingress.migrate }}
+  remediationAction: {{ .Values.infraNodes.ingress.remediationAction }}
   dependencies:
   - apiVersion: policy.open-cluster-management.io/v1
     compliance: Compliant
@@ -21,34 +21,43 @@ spec:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: create-infra-gitops
+          name: create-infra-external-ingress
         spec:
-          object-templates:
+          object-templates-raw: |
             - complianceType: musthave
               objectDefinition:
-                apiVersion: pipelines.openshift.io/v1alpha1
-                kind: GitopsService
+                apiVersion: operator.openshift.io/v1
+                kind: IngressController
                 metadata:
-                  name: cluster
-                  namespace: {{ .Values.infraNodes.gitops.namespace }}
-                spec:
-                  runOnInfra: true
-                  tolerations:
-                    - effect: NoSchedule
-                      key: node-role.kubernetes.io/infra
-                    - effect: NoExecute
-                      key: node-role.kubernetes.io/infra
+                  name: external
+                  namespace: openshift-ingress-operator
+                spec: 
+                  domain: external-{{ "{{" }} (lookup "config.openshift.io/v1" "Ingress" "" "cluster").spec.domain{{ "}}" }}
+                  routeSelector:
+                    matchLabels:
+                      external-apps.router: external
+                  replicas: 3
+                  nodePlacement:
+                    nodeSelector:
+                      matchLabels:
+                        node-role.kubernetes.io/infra: ''
+                    tolerations:
+                      - effect: NoSchedule
+                        key: node-role.kubernetes.io/infra
+                      - effect: NoExecute
+                        key: node-role.kubernetes.io/infra
+          pruneObjectBehavior: None
           remediationAction: inform
           severity: high
 ---
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
 metadata:
-  name: placement-policy-infra-gitops
+  name: placement-policy-infra-external-ingress
   namespace: open-cluster-policies
 spec:
   clusterSets:
-  {{- range .Values.infraNodes.clusterSets }}
+  {{- range .Values.infraNodes.externalIngress.clusterSets }}
     - {{ . }}
   {{- end }}
   predicates:
@@ -66,13 +75,13 @@ spec:
 apiVersion: policy.open-cluster-management.io/v1
 kind: PlacementBinding
 metadata:
-  name: placement-policy-infra-gitops
+  name: placement-policy-infra-external-ingress
   namespace: open-cluster-policies
 placementRef:
-  name: placement-policy-infra-gitops
+  name: placement-policy-infra-external-ingress
   apiGroup: cluster.open-cluster-management.io
   kind: Placement
 subjects:
-  - name: policy-infra-gitops
+  - name: policy-infra-external-ingress
     apiGroup: policy.open-cluster-management.io
     kind: Policy

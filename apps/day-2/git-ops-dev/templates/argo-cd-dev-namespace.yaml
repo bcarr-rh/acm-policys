@@ -1,0 +1,9 @@
+kind: Namespace
+apiVersion: v1
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+  name: openshift-dev-gitops
+spec:
+  finalizers:
+    - kubernetes
