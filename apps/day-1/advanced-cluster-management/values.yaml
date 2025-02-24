@@ -4,7 +4,7 @@
 acm: 
   subName: advanced-cluster-management
   namespace: open-cluster-management
-  channel: release-2.10
+  channel: release-2.12
   sourceNamespace: openshift-marketplace
   source: redhat-operators
   installPlanApproval: Automatic
