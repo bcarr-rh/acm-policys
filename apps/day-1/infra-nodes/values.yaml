@@ -23,4 +23,4 @@ infraNodes:
     remediationAction: enforce
     namespace: quay
   zones:
-    - us-east-2c
+    - us-east-2b
