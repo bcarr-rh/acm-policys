@@ -15,7 +15,7 @@ metadata:
     policy.open-cluster-management.io/controls: CA-2 Security Assessments, CA-7 Continuous Monitoring
 spec:
   remediationAction: enforce
-  disabled: false
+  disabled: true
   policy-templates:
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
