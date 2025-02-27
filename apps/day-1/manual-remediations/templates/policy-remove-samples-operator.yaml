@@ -42,12 +42,6 @@ spec:
   {{- range .Values.remediations.clusterSets }}
     - {{ . }}
   {{- end }}
-  predicates:
-    - requiredClusterSelector:
-        claimSelector:
-          matchExpressions:
-            - key: infra-nodes
-              operator: Exists
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists

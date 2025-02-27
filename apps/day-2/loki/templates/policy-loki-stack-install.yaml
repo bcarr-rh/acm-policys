@@ -31,7 +31,7 @@ spec:
         spec:
           remediationAction: inform # will be overridden by remediationAction in parent policy
           severity: high
-          object-templates:
+          object-templates-raw: |
             - complianceType: musthave
               objectDefinition:
                 apiVersion: loki.grafana.com/v1
@@ -40,30 +40,24 @@ spec:
                   name: logging-lokistack
                   namespace: openshift-logging
                 spec:
+                {{ "{{-" }} if fromClusterClaim "infra-nodes" {{ "}}" }}
                   template:
                     compactor:
                       nodeSelector:
                         node-role.kubernetes.io/infra: ""
                       tolerations:
                       - effect: NoSchedule
-                        key: node-role.kubernetes.io/infra                      
+                        key: node-role.kubernetes.io/infra
                       - effect: NoExecute
-                        key: node-role.kubernetes.io/infra                     
+                        key: node-role.kubernetes.io/infra
                     distributor:
                       nodeSelector:
                         node-role.kubernetes.io/infra: ""
                       tolerations:
                       - effect: NoSchedule
-                        key: node-role.kubernetes.io/infra                       
+                        key: node-role.kubernetes.io/infra
                       - effect: NoExecute
-                        key: node-role.kubernetes.io/infra                       
-                      nodeSelector:
-                        node-role.kubernetes.io/infra: ""
-                      tolerations:
-                      - effect: NoSchedule
-                        key: node-role.kubernetes.io/infra                       
-                      - effect: NoExecute
-                        key: node-role.kubernetes.io/infra                       
+                        key: node-role.kubernetes.io/infra
                     indexGateway:
                       nodeSelector:
                         node-role.kubernetes.io/infra: ""
@@ -109,9 +103,10 @@ spec:
                         node-role.kubernetes.io/infra: ""
                       tolerations:
                       - effect: NoSchedule
-                        key: node-role.kubernetes.io/infra                        
+                        key: node-role.kubernetes.io/infra
                       - effect: NoExecute
-                        key: node-role.kubernetes.io/infra                                       
+                        key: node-role.kubernetes.io/infra
+                  {{ "{{-" }} end {{ "}}" }}
                   hashRing:
                     type: memberlist
                   limits:
@@ -126,9 +121,7 @@ spec:
                   storage:
                     schemas:
                       - effectiveDate: '2024-09-22'
-                        version: v13  
-                      - effectiveDate: '2020-10-11'
-                        version: v11
+                        version: v13
                     tls:
                       caName: openshift-service-ca.crt
                       caKey:  service-ca.crt
