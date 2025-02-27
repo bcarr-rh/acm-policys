@@ -18,5 +18,9 @@ infraNodes:
     migrate: true
     remediationAction: enforce
     namespace: openshift-gitops
+  quay: 
+    migrate: true 
+    remediationAction: enforce
+    namespace: quay
   zones:
     - us-east-2c
