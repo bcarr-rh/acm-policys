@@ -103,6 +103,12 @@ spec:
   {{- range .Values.localStorage.clusterSets }}
     - {{ . }}
   {{- end }}
+  predicates:
+    - requiredClusterSelector:
+        labelSelector:
+          matchExpressions:
+            - key: storage-nodes
+              operator: Exists
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists
