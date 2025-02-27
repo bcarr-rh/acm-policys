@@ -116,7 +116,7 @@ spec:
                               filters:
                                 - name: 'tag:Name'
                                   values:
-                                  {{ "{{-" }} if contains ($worker_subnet, "subnet-private") {{ "}}" }}
+                                  {{ "{{-" }} if contains "subnet-private" $worker_subnet {{ "}}" }}
                                     - {{ "{{" }} $infrastructure_id {{ "}}" }}-subnet-private-{{ "{{" }} $zone {{ "}}" }}
                                   {{ "{{-" }} else {{ "}}" }}
                                     - {{ "{{" }} $infrastructure_id {{ "}}" }}-private-{{ "{{" }} $zone {{ "}}" }}
