@@ -31,7 +31,7 @@ spec:
         spec:
           remediationAction: inform # will be overridden by remediationAction in parent policy
           severity: high
-          object-templates-raw: |
+          object-templates:
             - complianceType: musthave
               objectDefinition:
                 apiVersion: loki.grafana.com/v1
@@ -40,73 +40,6 @@ spec:
                   name: logging-lokistack
                   namespace: openshift-logging
                 spec:
-                {{ "{{-" }} if fromClusterClaim "infra-nodes" {{ "}}" }}
-                  template:
-                    compactor:
-                      nodeSelector:
-                        node-role.kubernetes.io/infra: ""
-                      tolerations:
-                      - effect: NoSchedule
-                        key: node-role.kubernetes.io/infra
-                      - effect: NoExecute
-                        key: node-role.kubernetes.io/infra
-                    distributor:
-                      nodeSelector:
-                        node-role.kubernetes.io/infra: ""
-                      tolerations:
-                      - effect: NoSchedule
-                        key: node-role.kubernetes.io/infra
-                      - effect: NoExecute
-                        key: node-role.kubernetes.io/infra
-                    indexGateway:
-                      nodeSelector:
-                        node-role.kubernetes.io/infra: ""
-                      tolerations:
-                      - effect: NoSchedule
-                        key: node-role.kubernetes.io/infra                       
-                      - effect: NoExecute
-                        key: node-role.kubernetes.io/infra                       
-                    ingester:
-                      nodeSelector:
-                        node-role.kubernetes.io/infra: ""
-                      tolerations:
-                      - effect: NoSchedule
-                        key: node-role.kubernetes.io/infra                      
-                      - effect: NoExecute
-                        key: node-role.kubernetes.io/infra                       
-                    querier:
-                      nodeSelector:
-                        node-role.kubernetes.io/infra: ""
-                      tolerations:
-                      - effect: NoSchedule
-                        key: node-role.kubernetes.io/infra                       
-                      - effect: NoExecute
-                        key: node-role.kubernetes.io/infra                       
-                    queryFrontend:
-                      nodeSelector:
-                        node-role.kubernetes.io/infra: ""
-                      tolerations:
-                      - effect: NoSchedule
-                        key: node-role.kubernetes.io/infra                       
-                      - effect: NoExecute
-                        key: node-role.kubernetes.io/infra                      
-                    ruler:
-                      nodeSelector:
-                        node-role.kubernetes.io/infra: ""
-                      tolerations:
-                      - effect: NoSchedule
-                        key: node-role.kubernetes.io/infra                       
-                      - effect: NoExecute
-                        key: node-role.kubernetes.io/infra                       
-                    gateway:
-                      nodeSelector:
-                        node-role.kubernetes.io/infra: ""
-                      tolerations:
-                      - effect: NoSchedule
-                        key: node-role.kubernetes.io/infra
-                      - effect: NoExecute
-                        key: node-role.kubernetes.io/infra
-                  {{ "{{-" }} end {{ "}}" }}
                   hashRing:
                     type: memberlist
                   limits:
