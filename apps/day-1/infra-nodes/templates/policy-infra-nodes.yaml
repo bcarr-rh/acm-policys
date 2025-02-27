@@ -103,7 +103,6 @@ spec:
                                   - name: 'tag:Name'
                                     values:
                                       - {{ "{{" }} (index (index (index ($worker_ms.spec.template.spec.providerSpec.value.securityGroups) 0).filters 0).values 0) {{ "}}" }}
-                                      - {{ "{{" }} $worker_subnet {{ "}}" }}
                             kind: AWSMachineProviderConfig
                             tags:
                               {{ "{{-" }} range $tag := $worker_ms.spec.template.spec.providerSpec.value.tags {{ "}}" }}
