@@ -50,6 +50,7 @@ spec:
                       queries:
                         queryTimeout: 3m
                   managementState: Managed
+                  storageClassName: gp3-csi #TODO: make parameter
                   size: 1x.extra-small
                   storage:
                     schemas:
