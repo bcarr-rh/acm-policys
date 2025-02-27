@@ -153,8 +153,8 @@ spec:
                       machine.openshift.io/cluster-api-cluster: {{ "{{" }} $infrastructure_id {{ "}}" }}
                     name: {{ "{{" }} $infrastructure_id {{ "}}" }}-{{ "{{" }} $machineset_role {{ "}}" }}-{{ "{{" }} $zone {{ "}}" }}
                     namespace: openshift-machine-api
-                  status:
-                    readyReplicas: {{ "{{" }} fromClusterClaim "infra-nodes" {{ "}}" }}
+                  spec:
+                    replicas: {{ "{{" }} fromClusterClaim "infra-nodes" {{ "}}" }}
               {{ "{{-" }} end {{ "}}" }}
 ---
 apiVersion: cluster.open-cluster-management.io/v1beta1
