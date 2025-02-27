@@ -78,6 +78,7 @@ spec:
                             template: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.template {{ "}}" }}
                             apiVersion: machine.openshift.io/v1beta1
                         {{ "{{-" }} else if eq $worker_ms.spec.template.spec.providerSpec.value.kind "AWSMachineProviderConfig" {{ "}}" }}
+                        {{ "{{-" }} $worker_subnet := $worker_ms.spec.template.spec.providerSpec.value.subnet) 0).filters 0).values) {{ "}}" }}
                           value:
                             userDataSecret:
                               name: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.userDataSecret.name {{ "}}" }}
@@ -115,7 +116,11 @@ spec:
                               filters:
                                 - name: 'tag:Name'
                                   values:
+                                  {{ "{{-" }} if contains($worker_subnet, "subnet-private") {{ "}}" }}
+                                    - {{ "{{" }} $infrastructure_id {{ "}}" }}-private-subnet-{{ "{{" }} $zone {{ "}}" }}
+                                  {{ "{{-" }} else {{ "}}" }}
                                     - {{ "{{" }} $infrastructure_id {{ "}}" }}-private-{{ "{{" }} $zone {{ "}}" }}
+                                  {{ "{{-" }} end {{ "}}" }}
                             apiVersion: machine.openshift.io/v1beta1
                             iamInstanceProfile:
                               id: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.iamInstanceProfile.id {{ "}}" }}
