@@ -15,7 +15,7 @@ spec:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: create-infra-gitops
+          name: remove-infra-gitops
         spec:
           object-templates:
             - complianceType: musthave
@@ -34,7 +34,7 @@ spec:
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
 metadata:
-  name: placement-policy-infra-gitops
+  name: placement-policy-infra-remove-gitops
   namespace: open-cluster-policies
 spec:
   clusterSets:

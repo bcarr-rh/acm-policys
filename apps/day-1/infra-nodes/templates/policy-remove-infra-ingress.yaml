@@ -15,7 +15,7 @@ spec:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: create-infra-ingress
+          name: remove-infra-ingress
         spec:
           object-templates:
             - complianceType: musthave
@@ -39,7 +39,7 @@ spec:
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
 metadata:
-  name: placement-policy-infra-ingress
+  name: placement-policy-infra-remote-ingress
   namespace: open-cluster-policies
 spec:
   clusterSets:
