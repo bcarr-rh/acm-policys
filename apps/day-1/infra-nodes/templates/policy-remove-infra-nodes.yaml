@@ -14,7 +14,7 @@ spec:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: create-infra-nodes
+          name: remove-infra-nodes
         spec:
           object-templates-raw: |
               {{ "{{-" }} /* Specify the parameters needed to create the MachineSet  */ {{ "-}}" }}
@@ -153,7 +153,7 @@ spec:
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
 metadata:
-  name: placement-policy-infra-nodes
+  name: placement-policy-infra-remote-nodes
   namespace: open-cluster-policies
 spec:
   clusterSets:
