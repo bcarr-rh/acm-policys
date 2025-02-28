@@ -10,12 +10,6 @@ metadata:
 spec:
   disabled: {{ not .Values.infraNodes.ingress.migrate }}
   remediationAction: {{ .Values.infraNodes.ingress.remediationAction | default "enforce" }}
-  dependencies:
-  - apiVersion: policy.open-cluster-management.io/v1
-    compliance: Compliant
-    kind: Policy
-    name: policy-infra-nodes
-    namespace: open-cluster-policies
   policy-templates:
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
@@ -24,7 +18,7 @@ spec:
           name: create-infra-ingress
         spec:
           object-templates:
-            - complianceType: mustnothave
+            - complianceType: musthave
               objectDefinition:
                 apiVersion: operator.openshift.io/v1
                 kind: IngressController
@@ -37,11 +31,7 @@ spec:
                     nodeSelector:
                       matchLabels:
                         node-role.kubernetes.io/infra: ''
-                    tolerations:
-                      - effect: NoSchedule
-                        key: node-role.kubernetes.io/infra
-                      - effect: NoExecute
-                        key: node-role.kubernetes.io/infra
+                    tolerations: {}
           pruneObjectBehavior: {{ .Values.infraNodes.pruneObjectBehavior | default "None" }}
           remediationAction: inform
           severity: high
@@ -61,7 +51,7 @@ spec:
         claimSelector:
           matchExpressions:
             - key: infra-nodes
-              operator: Exists
+              operator: DoesNotExist
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists
