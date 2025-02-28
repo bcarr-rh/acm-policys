@@ -165,7 +165,7 @@ spec:
         claimSelector:
           matchExpressions:
             - key: infra-nodes
-              operator: Exists
+              operator: DoesNotExist
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists
