@@ -24,7 +24,7 @@ spec:
               {{ "{{-" }} $worker_ms := (index (lookup "machine.openshift.io/v1beta1" "MachineSet" "openshift-machine-api" "").items 0) {{ "}}" }}
               {{ "{{-" }} /* Generate the MachineSet for each zone as specified  */ {{ "-}}" }}
               {{ "{{-" }} range $zone := $zones {{ "}}" }}
-              - complianceType: mustnothave
+              - complianceType: musthave
                 objectDefinition:
                   apiVersion: machine.openshift.io/v1beta1
                   kind: MachineSet

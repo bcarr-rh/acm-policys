@@ -53,16 +53,16 @@ spec:
     - key: cluster.open-cluster-management.io/unavailable
       operator: Exists
 ---
-apiVersion: policy.open-cluster-management.io/v1
-kind: PlacementBinding
-metadata:
-  name: placement-policy-infra-gitops
-  namespace: open-cluster-policies
-placementRef:
-  name: placement-policy-infra-gitops
-  apiGroup: cluster.open-cluster-management.io
-  kind: Placement
-subjects:
-  - name: policy-infra-gitops
-    apiGroup: policy.open-cluster-management.io
-    kind: Policy
+#apiVersion: policy.open-cluster-management.io/v1
+#kind: PlacementBinding
+#metadata:
+  #name: placement-policy-infra-gitops
+  #namespace: open-cluster-policies
+#placementRef:
+  #name: placement-policy-infra-gitops
+  #apiGroup: cluster.open-cluster-management.io
+  #kind: Placement
+#subjects:
+  #- name: policy-infra-gitops
+    #apiGroup: policy.open-cluster-management.io
+    #kind: Policy
