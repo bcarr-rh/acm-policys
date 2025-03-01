@@ -140,7 +140,7 @@ spec:
               {{ "{{-" }} $infrastructure_id := (lookup "config.openshift.io/v1" "Infrastructure" "" "cluster").status.infrastructureName {{ "}}" }}
               {{ "{{-" }} /* Generate the MachineSet for each zone as specified  */ {{ "-}}" }}
               {{ "{{-" }} range $zone := $zones {{ "}}" }}
-              - complianceType: mustnothave
+              - complianceType: musthave
                 objectDefinition:
                   apiVersion: machine.openshift.io/v1beta1
                   kind: MachineSet

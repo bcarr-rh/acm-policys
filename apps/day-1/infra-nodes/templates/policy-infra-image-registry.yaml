@@ -24,7 +24,7 @@ spec:
           name: create-infra-image-registry
         spec:
           object-templates:
-            - complianceType: mustnothave
+            - complianceType: musthave
               objectDefinition:
                 apiVersion: imageregistry.operator.openshift.io/v1
                 kind: Config
