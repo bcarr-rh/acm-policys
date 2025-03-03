@@ -1,3 +1,6 @@
+{{ $policyName := "policy-infra-monitoring" }}
+{{ $configMapName := "cluster-monitoring-config" }}
+{{ $placementName := printf "placement-%s" $policyName }}
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
@@ -14,14 +17,14 @@ spec:
   - apiVersion: policy.open-cluster-management.io/v1
     compliance: Compliant
     kind: Policy
-    name: policy-infra-nodes
+    name: {{ .Values.infraNodes.dependencies.install }}
     namespace: open-cluster-policies
   policy-templates:
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: create-infra-monitoring
+          name: {{ $configPolicyName }}
         spec:
           object-templates:
             - complianceType: musthave
@@ -29,7 +32,7 @@ spec:
                 apiVersion: v1
                 kind: ConfigMap
                 metadata:
-                  name: cluster-monitoring-config
+                  name: {{ $configMapName }}
                   namespace: openshift-monitoring
                 data:
                   config.yaml: |+
@@ -112,7 +115,7 @@ spec:
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
 metadata:
-  name: placement-policy-infra-monitoring
+  name: {{ $placementName }}
   namespace: open-cluster-policies
 spec:
   clusterSets:
@@ -134,13 +137,13 @@ spec:
 apiVersion: policy.open-cluster-management.io/v1
 kind: PlacementBinding
 metadata:
-  name: placement-policy-infra-monitoring
+  name: {{ $placementName }}
   namespace: open-cluster-policies
 placementRef:
-  name: placement-policy-infra-monitoring
+  name: {{ $placementName }}
   apiGroup: cluster.open-cluster-management.io
   kind: Placement
 subjects:
-  - name: policy-infra-monitoring
+  - name: {{ $policyName }}
     apiGroup: policy.open-cluster-management.io
     kind: Policy

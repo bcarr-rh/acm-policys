@@ -1,7 +1,10 @@
+{{ $policyName := "policy-infra-gitops" }}
+{{ $configPolicyName := "create-infra-gitops" }}
+{{ $placementName := printf "placement-%s" $policyName }}
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
-  name: policy-infra-gitops
+  name: {{ $policyName }}
   namespace: open-cluster-policies
   annotations:
     policy.open-cluster-management.io/categories: CM Configuration Management
@@ -14,14 +17,14 @@ spec:
   - apiVersion: policy.open-cluster-management.io/v1
     compliance: Compliant
     kind: Policy
-    name: policy-infra-nodes
+    name: {{ .Values.infraNodes.dependencies.install }}
     namespace: open-cluster-policies
   policy-templates:
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: create-infra-gitops
+          name: {{ $configPolicyName }}
         spec:
           object-templates:
             - complianceType: musthave
@@ -44,7 +47,7 @@ spec:
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
 metadata:
-  name: placement-policy-infra-gitops
+  name: {{ $placementName }}
   namespace: open-cluster-policies
 spec:
   clusterSets:
@@ -66,13 +69,13 @@ spec:
 apiVersion: policy.open-cluster-management.io/v1
 kind: PlacementBinding
 metadata:
-  name: placement-policy-infra-gitops
+  name: {{ $placementName }}
   namespace: open-cluster-policies
 placementRef:
-  name: placement-policy-infra-gitops
+  name: {{ $placementName }}
   apiGroup: cluster.open-cluster-management.io
   kind: Placement
 subjects:
-  - name: policy-infra-gitops
+  - name: {{ $configPolicyName }}
     apiGroup: policy.open-cluster-management.io
     kind: Policy

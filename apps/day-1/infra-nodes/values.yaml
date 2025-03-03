@@ -23,3 +23,5 @@ infraNodes:
   externalIngress:
     clusterSets:
       - managed  
+  dependencies: 
+    install: "create-infra-nodes"
