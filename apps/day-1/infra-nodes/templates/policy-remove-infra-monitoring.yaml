@@ -1,3 +1,5 @@
+{{ $policyName := "policy-remove-infra-monitoring }} 
+{{ $placementName := printf "placement-%s" $poloicy_name }}
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
@@ -15,7 +17,7 @@ spec:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: remove-infra-monitoring
+          name: {{ $policyName }}
         spec:
           object-templates:
             - complianceType: musthave
@@ -70,7 +72,7 @@ spec:
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
 metadata:
-  name: placement-policy-infra-remove-monitoring
+  name: {{ $placementName }}
   namespace: open-cluster-policies
 spec:
   clusterSets:
@@ -92,13 +94,13 @@ spec:
 apiVersion: policy.open-cluster-management.io/v1
 kind: PlacementBinding
 metadata:
-  name: placement-policy-infra-monitoring
+  name: {{ $placementName }}
   namespace: open-cluster-policies
 placementRef:
-  name: placement-policy-infra-monitoring
+  name: {{ $placementName }}
   apiGroup: cluster.open-cluster-management.io
   kind: Placement
 subjects:
-  - name: policy-infra-monitoring
+  - name: {{ $placementName }}
     apiGroup: policy.open-cluster-management.io
     kind: Policy
