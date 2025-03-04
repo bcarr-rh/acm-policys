@@ -28,7 +28,7 @@ spec:
                 spec:
                   value: {{ quote .value }}
               pruneObjectBehavior: None
-              remediationAction: inform
+              remediationAction: enforce
               severity: high
             {{- end }}
 ---
