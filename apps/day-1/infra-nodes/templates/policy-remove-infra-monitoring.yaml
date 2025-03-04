@@ -103,6 +103,6 @@ placementRef:
   apiGroup: cluster.open-cluster-management.io
   kind: Placement
 subjects:
-  - name: {{ $placementName }}
+  - name: {{ $policyName}}
     apiGroup: policy.open-cluster-management.io
     kind: Policy
