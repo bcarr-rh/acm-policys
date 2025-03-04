@@ -1,4 +1,4 @@
-{{ $policyName := "policy-remove-infra-monitoring }} 
+{{ $policyName := "policy-remove-infra-monitoring" }} 
 {{ $configMapName := "cluster-remove-monitoring-config" }}
 {{ $configMapName := "cluster-infra-remove-monitoring" }}
 {{ $placementName := printf "placement-%s" $poloicy_name }}
