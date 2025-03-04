@@ -1,9 +1,10 @@
 {{ $policyName := "policy-remove-infra-nodes" }} 
+{{ $configPolicyName := "remove-infra-nodes" }}
 {{ $placementName := printf "placement-%s" $policyName }}
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
-  name: policy-infra-nodes
+  name: {{ $policyName }}
   namespace: open-cluster-policies
   annotations:
     policy.open-cluster-management.io/categories: CM Configuration Management
@@ -16,7 +17,7 @@ spec:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: {{ $policyName }}
+          name: {{ $configPolicyName }}
         spec:
           object-templates-raw: |
               {{ "{{-" }} /* Specify the parameters needed to create the MachineSet  */ {{ "-}}" }}

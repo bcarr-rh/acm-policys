@@ -1,10 +1,11 @@
 {{ $policyName := "policy-infra-monitoring" }}
 {{ $configMapName := "cluster-monitoring-config" }}
+{{ $configMapName := "cluster-infra-monitoring" }}
 {{ $placementName := printf "placement-%s" $policyName }}
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
-  name: policy-infra-monitoring
+  name: {{ $policyName }}
   namespace: open-cluster-policies
   annotations:
     policy.open-cluster-management.io/categories: CM Configuration Management
