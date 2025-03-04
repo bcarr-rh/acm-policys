@@ -19,7 +19,7 @@ infraNodes:
     remediationAction: enforce
     namespace: openshift-gitops
   zones:
-    - us-east-2c
+    - us-east-2b
   externalIngress:
     clusterSets:
       - managed  
