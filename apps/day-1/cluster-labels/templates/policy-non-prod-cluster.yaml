@@ -27,7 +27,7 @@ spec:
                   name: {{ .name }}
                 spec:
                   value: {{ quote .value }}
-              pruneObjectBehavior: None
+              pruneObjectBehavior: DeleteAll
               remediationAction: enforce
               severity: high
             {{- end }}
