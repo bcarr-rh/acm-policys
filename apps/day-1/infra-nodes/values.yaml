@@ -24,4 +24,4 @@ infraNodes:
     clusterSets:
       - managed  
   dependencies: 
-    install: "create-infra-nodes"
+    install: "policy-infra-nodes"
