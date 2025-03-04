@@ -1,6 +1,6 @@
 {{ $policyName := "policy-remove-infra-monitoring" }} 
 {{ $configMapName := "cluster-remove-monitoring-config" }}
-{{ $configMapName := "cluster-infra-remove-monitoring" }}
+{{ $configPolicyName := "cluster-infra-remove-monitoring" }}
 {{ $placementName := printf "placement-%s" $policyName }}
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
