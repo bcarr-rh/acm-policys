@@ -1,9 +1,10 @@
 {{ $policyName := policy-remove-infra-image-registry }}
+{{ $configPolicyName := "remove-infra-image-registry" }}
 {{ $placementName := printf "placement-%s" $policyName }}
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
-  name: policy-infra-image-registry
+  name: {{ $policyName }}
   namespace: open-cluster-policies
   annotations:
     policy.open-cluster-management.io/categories: CM Configuration Management
@@ -17,7 +18,7 @@ spec:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: {{ $policyName }}
+          name: {{ $configPolicyName }}
         spec:
           object-templates:
             - complianceType: musthave

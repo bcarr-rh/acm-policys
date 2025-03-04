@@ -1,9 +1,11 @@
 {{ $policyName := "policy-remove-infra-monitoring }} 
+{{ $configMapName := "cluster-remove-monitoring-config" }}
+{{ $configMapName := "cluster-infra-remove-monitoring" }}
 {{ $placementName := printf "placement-%s" $poloicy_name }}
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
-  name: policy-infra-monitoring
+  name: {{ $policyName }}
   namespace: open-cluster-policies
   annotations:
     policy.open-cluster-management.io/categories: CM Configuration Management
@@ -17,7 +19,7 @@ spec:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: {{ $policyName }}
+          name: {{ $configPolicyName }}
         spec:
           object-templates:
             - complianceType: musthave
@@ -25,7 +27,7 @@ spec:
                 apiVersion: v1
                 kind: ConfigMap
                 metadata:
-                  name: cluster-monitoring-config
+                  name: {{ $configMapName" }}
                   namespace: openshift-monitoring
                 data:
                   config.yaml: |+
