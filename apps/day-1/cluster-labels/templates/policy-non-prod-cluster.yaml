@@ -46,7 +46,7 @@ spec:
     - requiredClusterSelector:
         labelSelector:
           matchLabels:
-            ocp-nonprod: true
+            ocp-nonprod: "true"
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists
