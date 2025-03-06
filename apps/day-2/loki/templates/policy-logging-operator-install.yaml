@@ -30,48 +30,28 @@ spec:
                 apiVersion: v1
                 kind: Namespace
                 metadata:
-                  name: openshift-logging
+                  name: {{ .Values.logging.namespace }}
     - objectDefinition:
-        apiVersion: policy.open-cluster-management.io/v1
-        kind: ConfigurationPolicy
+        apiVersion: policy.open-cluster-management.io/v1beta1
+        kind: OperatorPolicy
         metadata:
-          name: logging-operator-operator-group
+          name: install-operator-logging
         spec:
-          remediationAction: enforce # will be overridden by remediationAction in parent policy
+          remediationAction: inform
           severity: high
-          object-templates:
-            - complianceType: musthave
-              objectDefinition:
-                apiVersion: operators.coreos.com/v1
-                kind: OperatorGroup
-                metadata:
-                  name: cluster-logging
-                  namespace: openshift-logging
-                spec:
-                  targetNamespaces:
-                  - openshift-logging
-    - objectDefinition:
-        apiVersion: policy.open-cluster-management.io/v1
-        kind: ConfigurationPolicy
-        metadata:
-          name: openshift-logging-subscription
-        spec:
-          remediationAction: enforce # will be overridden by remediationAction in parent policy
-          severity: high
-          object-templates:
-            - complianceType: musthave
-              objectDefinition:
-                apiVersion: operators.coreos.com/v1alpha1
-                kind: Subscription
-                metadata:
-                  name: {{ .Values.logging.name }}
-                  namespace: {{ .Values.logging.namespace }}
-                spec:
-                  installPlanApproval: {{ .Values.logging.installPlanApproval }}
-                  channel: {{ .Values.logging.channel }}
-                  name: {{ .Values.logging.name }}
-                  source: {{ .Values.logging.source }}
-                  sourceNamespace: {{ .Values.logging.sourceNamespace }}
+          complianceType: musthave
+          operatorGroup:
+            name: cluster-logging
+            namespace: {{ .Values.logging.namespace }}
+            targetNamespaces:
+              - {{ .Values.logging.namespace }}
+          subscription:
+            name: {{ .Values.logging.name }}
+            namespace: {{ .Values.logging.namespace }}
+            source: {{ .Values.logging.source }}
+            sourceNamespace: {{ .Values.logging.sourceNamespace }}
+            channel: {{ .Values.logging.channel }}
+          upgradeApproval: {{ .Values.logging.installPlanApproval }}
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
