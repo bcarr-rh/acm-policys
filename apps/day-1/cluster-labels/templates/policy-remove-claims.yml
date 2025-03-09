@@ -1,0 +1,74 @@
+{{ $policyName := "policy-remove-non-prod-claims" }}
+{{ $configPolicyName := "non-procd-remove-cluster-claims" }}
+{{ $placementName := printf "placement-%s", $policyName}}
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: policy-non-prod-cluster
+  namespace: open-cluster-policies
+  annotations:
+    policy.open-cluster-management.io/categories: CM Configuration Management
+    policy.open-cluster-management.io/controls: CM-2 Baseline Configuration
+    policy.open-cluster-management.io/standards: NIST SP 800-53
+spec:
+  disabled: false
+  remediationAction: enforce
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: non-prod-cluster-claims
+        spec:
+          object-templates-raw: |
+            {{- range .Values.clusterlabels.nonprod.clusterclaims}}
+            - complianceType: mustnothave
+              objectDefinition:
+                apiVersion: cluster.open-cluster-management.io/v1alpha1
+                kind: ClusterClaim
+                metadata:
+                  name: {{ .name }}
+                spec:
+                  value: {{ quote .value }}
+              pruneObjectBehavior: DeleteAll
+              remediationAction: enforce
+              severity: high
+            {{- end }}
+---
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: {{ $placementName }}
+  namespace: open-cluster-policies
+spec:
+  clusterSets:
+  {{- range .Values.clusterlabels.clusterSets }}
+    - {{ . }}
+  {{- end }}
+  predicates:
+    - requiredClusterSelector:
+        labelSelector:
+          matchExpressions:
+            - key: "ocp-nonprod"
+              operator: DoesNotExist 
+            - key: "ocp-prod" 
+              operator: DoesNotExist 
+  tolerations:
+    - key: cluster.open-cluster-management.io/unreachable
+      operator: Exists
+    - key: cluster.open-cluster-management.io/unavailable
+      operator: Exists
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: {{ $placementName }}
+  namespace: open-cluster-policies
+placementRef:
+  name: {{ $placementName}}
+  apiGroup: cluster.open-cluster-management.io
+  kind: Placement
+subjects:
+  - name: {{ $policyName }}
+    apiGroup: policy.open-cluster-management.io
+    kind: Policy
