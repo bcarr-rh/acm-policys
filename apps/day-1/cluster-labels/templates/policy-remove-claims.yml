@@ -1,10 +1,12 @@
-{{ $policyName := "policy-remove-non-prod-claims" }}
-{{ $configPolicyName := "non-procd-remove-cluster-claims" }}
-{{ $placementName := printf "placement-%s", $policyName}}
+{{ $nonProdPolicyName := "policy-remove-non-prod-claims" }}
+{{ $prodPolicyName := "policy-remove-prod-claims" }}
+{{ $nonProdConfigPolicyName := "non-prod-remove-cluster-claims" }}
+{{ $prodConfigPolicyName := "prod-remove-cluster-claims" }}
+{{ $placementName := "placement-remove-claims" }}
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
-  name: policy-non-prod-cluster
+  name: {{ $nonProdPolicyName }}
   namespace: open-cluster-policies
   annotations:
     policy.open-cluster-management.io/categories: CM Configuration Management
@@ -18,7 +20,7 @@ spec:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: non-prod-cluster-claims
+          name: {{ $nonProdConfigPolicyName }}
         spec:
           object-templates-raw: |
             {{- range .Values.clusterlabels.nonprod.clusterclaims}}
@@ -34,6 +36,41 @@ spec:
               remediationAction: enforce
               severity: high
             {{- end }}
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: {{ $prodPolicyName }}
+  namespace: open-cluster-policies
+  annotations:
+    policy.open-cluster-management.io/categories: CM Configuration Management
+    policy.open-cluster-management.io/controls: CM-2 Baseline Configuration
+    policy.open-cluster-management.io/standards: NIST SP 800-53
+spec:
+  disabled: false
+  remediationAction: enforce
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: {{ $prodConfigPolicyName }}
+        spec:
+          object-templates-raw: |
+            {{- range .Values.clusterlabels.nonprod.clusterclaims}}
+            - complianceType: mustnothave
+              objectDefinition:
+                apiVersion: cluster.open-cluster-management.io/v1alpha1
+                kind: ClusterClaim
+                metadata:
+                  name: {{ .name }}
+                spec:
+                  value: {{ quote .value }}
+              pruneObjectBehavior: DeleteAll
+              remediationAction: enforce
+              severity: high
+            {{- end }}
+
 ---
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
@@ -69,6 +106,9 @@ placementRef:
   apiGroup: cluster.open-cluster-management.io
   kind: Placement
 subjects:
+  - name: {{ $policyName }}
+    apiGroup: policy.open-cluster-management.io
+    kind: Policy
   - name: {{ $policyName }}
     apiGroup: policy.open-cluster-management.io
     kind: Policy
