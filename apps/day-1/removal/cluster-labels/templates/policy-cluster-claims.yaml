@@ -23,7 +23,7 @@ spec:
         spec:
           object-templates-raw: |
           {{- range $index, $item := $clusterValue.clusterclaims }}
-            {{- if  or (eq (default false $clusterValue.rollback) true) (eq $item.value nil) }}
+            {{- if  or (eq ($clusterValue.rollback | default false) true) (eq $item.value nil) }}
             - complianceType: mustnothave
             {{- else }}
             - complianceType: musthave
@@ -33,7 +33,7 @@ spec:
                 kind: ClusterClaim
                 metadata:
                   name: {{ $item.name }}
-              {{- if not (or (eq (default false $clusterValue.rollback) true) (eq $item.value nil)) }}
+              {{- if not (or (eq  ($clusterValue.rollback | default false) true) (eq $item.value nil)) }}
                 spec: 
                   value: {{ $item.value }}
               {{- end }}
