@@ -48,10 +48,8 @@ spec:
     - requiredClusterSelector:
         labelSelector:
           matchExpression:
-          {{- range $key, $value := $.Values.clusterlabels.clusters }}
-            - key: {{ $key }}
+            - key: {{ $clusterKey }}
               operator: Exists
-          {{- end }}
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists
