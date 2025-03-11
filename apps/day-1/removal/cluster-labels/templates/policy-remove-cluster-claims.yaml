@@ -1,7 +1,7 @@
-#{{- range $clusterKey, $clusterValue := .Values.clusterlabels.clusters }}
-  {{ $policyName := printf "policy-%s-cluster-remove-claims" $clusterKey }}
-  {{ $configPolicyName := printf "cluster-remove-claims-%s" $clusterKey }}
-  {{ $placementName := printf "placement-%s" $policyName }}
+{{- range $clusterKey, $clusterValue := .Values.clusterlabels.clusters }}
+{{ $policyName := printf "policy-%s-cluster-claims" $clusterKey }}
+{{ $configPolicyName := printf "cluster-claims-%s" $clusterKey }}
+{{ $placementName := printf "placement-%s" $policyName }}
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
@@ -22,17 +22,26 @@ spec:
           name: {{ $configPolicyName }}
         spec:
           object-templates-raw: |
-            {{- range $index, $item := $clusterValue.clusterclaims }}
+          {{- range $index, $item := $clusterValue.clusterclaims }}
+          # Add logic for chekcing if the value is defined and base complianctype off that
+            {{- if  or (eq (default false $clusterValue.rollback) true) (eq $item.value nil) }}
             - complianceType: mustnothave
+            {{- else }}
+            - complianceType: musthave
+            {{- end }}
               objectDefinition:
                 apiVersion: cluster.open-cluster-management.io/v1alpha1
                 kind: ClusterClaim
                 metadata:
                   name: {{ $item.name }}
+              {{- if not (or (eq (default false $clusterValue.rollback) true) (eq $item.value nil)) }}
+                spec: 
+                  value: {{ $item.value }}
+              {{- end }}
               pruneObjectBehavior: None
               remediationAction: enforce
               severity: high
-            {{- end }}
+          {{- end }}
 ---
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
@@ -41,17 +50,15 @@ metadata:
   namespace: open-cluster-policies
 spec:
   clusterSets:
-  {{- range .Values.clusterlabels.clusterSets }}
+  {{- range $.Values.clusterlabels.clusterSets }}
     - {{ . }}
   {{- end }}
   predicates:
     - requiredClusterSelector:
         labelSelector:
           matchExpressions:
-          {{-$range $key, $value := .Values.clusterlabels.clusters }}
-            - key:  {{ $key }}
-              operator: DoesNotExist
-          {{- end }}
+            - key:  {{ $clusterKey }}
+              operator: Exists
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists
