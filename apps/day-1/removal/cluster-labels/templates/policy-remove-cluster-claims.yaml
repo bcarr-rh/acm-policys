@@ -1,4 +1,4 @@
-{{- range $clusterKey, $clusterValue := .Values.clusterlabels.clusters }}
+#{{- range $clusterKey, $clusterValue := .Values.clusterlabels.clusters }}
   {{ $policyName := printf "policy-%s-cluster-remove-claims" $clusterKey }}
   {{ $configPolicyName := printf "cluster-remove-claims-%s" $clusterKey }}
   {{ $placementName := printf "placement-%s" $policyName }}
@@ -41,14 +41,14 @@ metadata:
   namespace: open-cluster-policies
 spec:
   clusterSets:
-  {{- range $.Values.clusterlabels.clusterSets }}
+  {{- range .Values.clusterlabels.clusterSets }}
     - {{ . }}
   {{- end }}
   predicates:
     - requiredClusterSelector:
         labelSelector:
           matchExpressions:
-          {{- range $key, $value := $.Values.clusterlabels.clusters }}
+          {{-$range $key, $value := .Values.clusterlabels.clusters }}
             - key:  {{ $key }}
               operator: DoesNotExist
           {{- end }}
@@ -72,4 +72,4 @@ subjects:
     apiGroup: policy.open-cluster-management.io
     kind: Policy
 ---
-{{ end }}
+#{{ end }}
