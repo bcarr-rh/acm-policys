@@ -11,7 +11,7 @@ spec:
   generators:
   - git:
       repoURL: https://github.com/bcarr-rh/acm-policys.git
-      revision: feature/mergeCode
+      revision: remove-infra-policies
       directories:
       - path: 'apps/day-1/removal/*'
   template:
