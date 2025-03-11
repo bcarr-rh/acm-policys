@@ -47,7 +47,7 @@ spec:
   predicates:
     - requiredClusterSelector:
         labelSelector:
-          matchExpression:
+          matchExpressions:
             - key: {{ $clusterKey }}
               operator: Exists
   tolerations:
