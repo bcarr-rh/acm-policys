@@ -47,7 +47,7 @@ spec:
   predicates:
     - requiredClusterSelector:
         labelSelector:
-          matchExpression:
+          matchExpressions:
           {{- range $key, $value := $.Values.clusterlabels.clusters }}
             - key:  {{ $key }}
               operator: DoesNotExist
