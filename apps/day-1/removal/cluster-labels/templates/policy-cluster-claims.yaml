@@ -1,6 +1,6 @@
 {{- range $clusterKey, $clusterValue := .Values.clusterlabels.clusters }}
-  {{ $policyName := printf "policy-%s-cluster-remove-claims-" $clusterKey }}
-  {{ $configPolicyName := printf "cluster-remove-claims-" $clusterKey }}
+  {{ $policyName := printf "policy-%s-cluster-claims-" $clusterKey }}
+  {{ $configPolicyName := printf "cluster-claims-" $clusterKey }}
   {{ $placementName := printf "placement-%s" $policyName }}
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
@@ -23,7 +23,7 @@ spec:
         spec:
           object-templates-raw: |
             {{- range $index, $item := $clusterValue.clusterclaims }}
-            - complianceType: mustnothave
+            - complianceType: musthave
               objectDefinition:
                 apiVersion: cluster.open-cluster-management.io/v1alpha1
                 kind: ClusterClaim
@@ -50,7 +50,7 @@ spec:
           matchExpression:
           {{- range $key, $value := $.Values.clusterlabels.clusters }}
             - key: $key
-              operator: DoesNotExist
+              operator: Exists
           {{- end }}
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
