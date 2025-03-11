@@ -13,7 +13,7 @@ spec:
       repoURL: https://github.com/bcarr-rh/acm-policys.git
       revision: remove-infra-policies
       directories:
-      - path: 'apps/day-1/*'
+      - path: 'apps/day-1/removal/*'
   template:
     metadata:
       name: '{{ .path.basename }}'
