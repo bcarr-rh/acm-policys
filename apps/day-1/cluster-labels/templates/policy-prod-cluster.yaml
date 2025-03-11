@@ -18,7 +18,7 @@ spec:
           name: prod-cluster-claims
         spec:
           object-templates-raw: |
-            {{- range .Values.clusterlabels.prod.clusterclaims}}
+            {{- range .Values.clusterlabels.prod.clusterclaims }}
             - complianceType: musthave
               objectDefinition:
                 apiVersion: cluster.open-cluster-management.io/v1alpha1
@@ -28,7 +28,7 @@ spec:
                 spec:
                   value: {{ quote .value }}
               pruneObjectBehavior: None
-              remediationAction: inform
+              remediationAction: enforce
               severity: high
             {{- end }}
 ---
