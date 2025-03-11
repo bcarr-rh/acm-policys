@@ -1,6 +1,6 @@
 {{- range $clusterKey, $clusterValue := .Values.clusterlabels.clusters }}
-  {{ $policyName := printf "policy-%s-cluster-remove-claims-" $clusterKey }}
-  {{ $configPolicyName := printf "cluster-remove-claims-" $clusterKey }}
+  {{ $policyName := printf "policy-%s-cluster-remove-claims" $clusterKey }}
+  {{ $configPolicyName := printf "cluster-remove-claims-%s" $clusterKey }}
   {{ $placementName := printf "placement-%s" $policyName }}
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
