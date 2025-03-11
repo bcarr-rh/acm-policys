@@ -1,0 +1,532 @@
+---
+# Source: cluster-labels/templates/policy-cluster-claims.yaml
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: placement-policy-nonprod-cluster-claims
+  namespace: open-cluster-policies
+spec:
+  clusterSets:
+    - hub
+    - managed
+  predicates:
+    - requiredClusterSelector:
+        labelSelector:
+          matchExpression:
+            - key: $key
+              operator: Exists
+            - key: $key
+              operator: Exists
+  tolerations:
+    - key: cluster.open-cluster-management.io/unreachable
+      operator: Exists
+    - key: cluster.open-cluster-management.io/unavailable
+      operator: Exists
+---
+# Source: cluster-labels/templates/policy-cluster-claims.yaml
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: placement-policy-prod-cluster-claims
+  namespace: open-cluster-policies
+spec:
+  clusterSets:
+    - hub
+    - managed
+  predicates:
+    - requiredClusterSelector:
+        labelSelector:
+          matchExpression:
+            - key: $key
+              operator: Exists
+            - key: $key
+              operator: Exists
+  tolerations:
+    - key: cluster.open-cluster-management.io/unreachable
+      operator: Exists
+    - key: cluster.open-cluster-management.io/unavailable
+      operator: Exists
+---
+# Source: cluster-labels/templates/policy-remove-cluster-claims.yaml
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: placement-policy-nonprod-cluster-remove-claims
+  namespace: open-cluster-policies
+spec:
+  clusterSets:
+    - hub
+    - managed
+  predicates:
+    - requiredClusterSelector:
+        labelSelector:
+          matchExpression:
+            - key: $key
+              operator: DoesNotExist
+            - key: $key
+              operator: DoesNotExist
+  tolerations:
+    - key: cluster.open-cluster-management.io/unreachable
+      operator: Exists
+    - key: cluster.open-cluster-management.io/unavailable
+      operator: Exists
+---
+# Source: cluster-labels/templates/policy-remove-cluster-claims.yaml
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: placement-policy-prod-cluster-remove-claims
+  namespace: open-cluster-policies
+spec:
+  clusterSets:
+    - hub
+    - managed
+  predicates:
+    - requiredClusterSelector:
+        labelSelector:
+          matchExpression:
+            - key: $key
+              operator: DoesNotExist
+            - key: $key
+              operator: DoesNotExist
+  tolerations:
+    - key: cluster.open-cluster-management.io/unreachable
+      operator: Exists
+    - key: cluster.open-cluster-management.io/unavailable
+      operator: Exists
+---
+# Source: cluster-labels/templates/policy-cluster-claims.yaml
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: placement-policy-nonprod-cluster-claims
+  namespace: open-cluster-policies
+placementRef:
+  name: placement-policy-nonprod-cluster-claims
+  apiGroup: cluster.open-cluster-management.io
+  kind: Placement
+subjects:
+  - name: policy-nonprod-cluster-claims
+    apiGroup: policy.open-cluster-management.io
+    kind: Policy
+---
+# Source: cluster-labels/templates/policy-cluster-claims.yaml
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: placement-policy-prod-cluster-claims
+  namespace: open-cluster-policies
+placementRef:
+  name: placement-policy-prod-cluster-claims
+  apiGroup: cluster.open-cluster-management.io
+  kind: Placement
+subjects:
+  - name: policy-prod-cluster-claims
+    apiGroup: policy.open-cluster-management.io
+    kind: Policy
+---
+# Source: cluster-labels/templates/policy-remove-cluster-claims.yaml
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: placement-policy-nonprod-cluster-remove-claims
+  namespace: open-cluster-policies
+placementRef:
+  name: placement-policy-nonprod-cluster-remove-claims
+  apiGroup: cluster.open-cluster-management.io
+  kind: Placement
+subjects:
+  - name: policy-nonprod-cluster-remove-claims
+    apiGroup: policy.open-cluster-management.io
+    kind: Policy
+---
+# Source: cluster-labels/templates/policy-remove-cluster-claims.yaml
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: placement-policy-prod-cluster-remove-claims
+  namespace: open-cluster-policies
+placementRef:
+  name: placement-policy-prod-cluster-remove-claims
+  apiGroup: cluster.open-cluster-management.io
+  kind: Placement
+subjects:
+  - name: policy-prod-cluster-remove-claims
+    apiGroup: policy.open-cluster-management.io
+    kind: Policy
+---
+# Source: cluster-labels/templates/policy-cluster-claims.yaml
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: policy-nonprod-cluster-claims
+  namespace: open-cluster-policies
+  annotations:
+    policy.open-cluster-management.io/categories: CM Configuration Management
+    policy.open-cluster-management.io/controls: CM-2 Baseline Configuration
+    policy.open-cluster-management.io/standards: NIST SP 800-53
+spec:
+  disabled: false
+  remediationAction: enforce
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: cluster-claims-nonprod
+        spec:
+          object-templates-raw: |
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: cluster.open-cluster-management.io/v1alpha1
+                kind: ClusterClaim
+                metadata:
+                  name: infra-nodes-numcpu
+              pruneObjectBehavior: None
+              remediationAction: enforce
+              severity: high
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: cluster.open-cluster-management.io/v1alpha1
+                kind: ClusterClaim
+                metadata:
+                  name: infra-nodes-memory-mib
+              pruneObjectBehavior: None
+              remediationAction: enforce
+              severity: high
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: cluster.open-cluster-management.io/v1alpha1
+                kind: ClusterClaim
+                metadata:
+                  name: infra-nodes-numcores-per-socket
+              pruneObjectBehavior: None
+              remediationAction: enforce
+              severity: high
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: cluster.open-cluster-management.io/v1alpha1
+                kind: ClusterClaim
+                metadata:
+                  name: infra-nodes
+              pruneObjectBehavior: None
+              remediationAction: enforce
+              severity: high
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: cluster.open-cluster-management.io/v1alpha1
+                kind: ClusterClaim
+                metadata:
+                  name: worker-nodes-numcpu
+              pruneObjectBehavior: None
+              remediationAction: enforce
+              severity: high
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: cluster.open-cluster-management.io/v1alpha1
+                kind: ClusterClaim
+                metadata:
+                  name: worker-nodes-memory-mib
+              pruneObjectBehavior: None
+              remediationAction: enforce
+              severity: high
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: cluster.open-cluster-management.io/v1alpha1
+                kind: ClusterClaim
+                metadata:
+                  name: worker-nodes-numcores-per-socket
+              pruneObjectBehavior: None
+              remediationAction: enforce
+              severity: high
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: cluster.open-cluster-management.io/v1alpha1
+                kind: ClusterClaim
+                metadata:
+                  name: worker-nodes
+              pruneObjectBehavior: None
+              remediationAction: enforce
+              severity: high
+---
+# Source: cluster-labels/templates/policy-cluster-claims.yaml
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: policy-prod-cluster-claims
+  namespace: open-cluster-policies
+  annotations:
+    policy.open-cluster-management.io/categories: CM Configuration Management
+    policy.open-cluster-management.io/controls: CM-2 Baseline Configuration
+    policy.open-cluster-management.io/standards: NIST SP 800-53
+spec:
+  disabled: false
+  remediationAction: enforce
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: cluster-claims-prod
+        spec:
+          object-templates-raw: |
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: cluster.open-cluster-management.io/v1alpha1
+                kind: ClusterClaim
+                metadata:
+                  name: infra-nodes-numcpu
+              pruneObjectBehavior: None
+              remediationAction: enforce
+              severity: high
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: cluster.open-cluster-management.io/v1alpha1
+                kind: ClusterClaim
+                metadata:
+                  name: infra-nodes-memory-mib
+              pruneObjectBehavior: None
+              remediationAction: enforce
+              severity: high
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: cluster.open-cluster-management.io/v1alpha1
+                kind: ClusterClaim
+                metadata:
+                  name: infra-nodes-numcores-per-socket
+              pruneObjectBehavior: None
+              remediationAction: enforce
+              severity: high
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: cluster.open-cluster-management.io/v1alpha1
+                kind: ClusterClaim
+                metadata:
+                  name: infra-nodes
+              pruneObjectBehavior: None
+              remediationAction: enforce
+              severity: high
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: cluster.open-cluster-management.io/v1alpha1
+                kind: ClusterClaim
+                metadata:
+                  name: worker-nodes-numcpu
+              pruneObjectBehavior: None
+              remediationAction: enforce
+              severity: high
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: cluster.open-cluster-management.io/v1alpha1
+                kind: ClusterClaim
+                metadata:
+                  name: worker-nodes-memory-mib
+              pruneObjectBehavior: None
+              remediationAction: enforce
+              severity: high
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: cluster.open-cluster-management.io/v1alpha1
+                kind: ClusterClaim
+                metadata:
+                  name: worker-nodes-numcores-per-socket
+              pruneObjectBehavior: None
+              remediationAction: enforce
+              severity: high
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: cluster.open-cluster-management.io/v1alpha1
+                kind: ClusterClaim
+                metadata:
+                  name: worker-nodes
+              pruneObjectBehavior: None
+              remediationAction: enforce
+              severity: high
+---
+# Source: cluster-labels/templates/policy-remove-cluster-claims.yaml
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: policy-nonprod-cluster-remove-claims
+  namespace: open-cluster-policies
+  annotations:
+    policy.open-cluster-management.io/categories: CM Configuration Management
+    policy.open-cluster-management.io/controls: CM-2 Baseline Configuration
+    policy.open-cluster-management.io/standards: NIST SP 800-53
+spec:
+  disabled: false
+  remediationAction: enforce
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: cluster-remove-claims-nonprod
+        spec:
+          object-templates-raw: |
+            - complianceType: mustnothave
+              objectDefinition:
+                apiVersion: cluster.open-cluster-management.io/v1alpha1
+                kind: ClusterClaim
+                metadata:
+                  name: infra-nodes-numcpu
+              pruneObjectBehavior: None
+              remediationAction: enforce
+              severity: high
+            - complianceType: mustnothave
+              objectDefinition:
+                apiVersion: cluster.open-cluster-management.io/v1alpha1
+                kind: ClusterClaim
+                metadata:
+                  name: infra-nodes-memory-mib
+              pruneObjectBehavior: None
+              remediationAction: enforce
+              severity: high
+            - complianceType: mustnothave
+              objectDefinition:
+                apiVersion: cluster.open-cluster-management.io/v1alpha1
+                kind: ClusterClaim
+                metadata:
+                  name: infra-nodes-numcores-per-socket
+              pruneObjectBehavior: None
+              remediationAction: enforce
+              severity: high
+            - complianceType: mustnothave
+              objectDefinition:
+                apiVersion: cluster.open-cluster-management.io/v1alpha1
+                kind: ClusterClaim
+                metadata:
+                  name: infra-nodes
+              pruneObjectBehavior: None
+              remediationAction: enforce
+              severity: high
+            - complianceType: mustnothave
+              objectDefinition:
+                apiVersion: cluster.open-cluster-management.io/v1alpha1
+                kind: ClusterClaim
+                metadata:
+                  name: worker-nodes-numcpu
+              pruneObjectBehavior: None
+              remediationAction: enforce
+              severity: high
+            - complianceType: mustnothave
+              objectDefinition:
+                apiVersion: cluster.open-cluster-management.io/v1alpha1
+                kind: ClusterClaim
+                metadata:
+                  name: worker-nodes-memory-mib
+              pruneObjectBehavior: None
+              remediationAction: enforce
+              severity: high
+            - complianceType: mustnothave
+              objectDefinition:
+                apiVersion: cluster.open-cluster-management.io/v1alpha1
+                kind: ClusterClaim
+                metadata:
+                  name: worker-nodes-numcores-per-socket
+              pruneObjectBehavior: None
+              remediationAction: enforce
+              severity: high
+            - complianceType: mustnothave
+              objectDefinition:
+                apiVersion: cluster.open-cluster-management.io/v1alpha1
+                kind: ClusterClaim
+                metadata:
+                  name: worker-nodes
+              pruneObjectBehavior: None
+              remediationAction: enforce
+              severity: high
+---
+# Source: cluster-labels/templates/policy-remove-cluster-claims.yaml
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: policy-prod-cluster-remove-claims
+  namespace: open-cluster-policies
+  annotations:
+    policy.open-cluster-management.io/categories: CM Configuration Management
+    policy.open-cluster-management.io/controls: CM-2 Baseline Configuration
+    policy.open-cluster-management.io/standards: NIST SP 800-53
+spec:
+  disabled: false
+  remediationAction: enforce
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: cluster-remove-claims-prod
+        spec:
+          object-templates-raw: |
+            - complianceType: mustnothave
+              objectDefinition:
+                apiVersion: cluster.open-cluster-management.io/v1alpha1
+                kind: ClusterClaim
+                metadata:
+                  name: infra-nodes-numcpu
+              pruneObjectBehavior: None
+              remediationAction: enforce
+              severity: high
+            - complianceType: mustnothave
+              objectDefinition:
+                apiVersion: cluster.open-cluster-management.io/v1alpha1
+                kind: ClusterClaim
+                metadata:
+                  name: infra-nodes-memory-mib
+              pruneObjectBehavior: None
+              remediationAction: enforce
+              severity: high
+            - complianceType: mustnothave
+              objectDefinition:
+                apiVersion: cluster.open-cluster-management.io/v1alpha1
+                kind: ClusterClaim
+                metadata:
+                  name: infra-nodes-numcores-per-socket
+              pruneObjectBehavior: None
+              remediationAction: enforce
+              severity: high
+            - complianceType: mustnothave
+              objectDefinition:
+                apiVersion: cluster.open-cluster-management.io/v1alpha1
+                kind: ClusterClaim
+                metadata:
+                  name: infra-nodes
+              pruneObjectBehavior: None
+              remediationAction: enforce
+              severity: high
+            - complianceType: mustnothave
+              objectDefinition:
+                apiVersion: cluster.open-cluster-management.io/v1alpha1
+                kind: ClusterClaim
+                metadata:
+                  name: worker-nodes-numcpu
+              pruneObjectBehavior: None
+              remediationAction: enforce
+              severity: high
+            - complianceType: mustnothave
+              objectDefinition:
+                apiVersion: cluster.open-cluster-management.io/v1alpha1
+                kind: ClusterClaim
+                metadata:
+                  name: worker-nodes-memory-mib
+              pruneObjectBehavior: None
+              remediationAction: enforce
+              severity: high
+            - complianceType: mustnothave
+              objectDefinition:
+                apiVersion: cluster.open-cluster-management.io/v1alpha1
+                kind: ClusterClaim
+                metadata:
+                  name: worker-nodes-numcores-per-socket
+              pruneObjectBehavior: None
+              remediationAction: enforce
+              severity: high
+            - complianceType: mustnothave
+              objectDefinition:
+                apiVersion: cluster.open-cluster-management.io/v1alpha1
+                kind: ClusterClaim
+                metadata:
+                  name: worker-nodes
+              pruneObjectBehavior: None
+              remediationAction: enforce
+              severity: high
