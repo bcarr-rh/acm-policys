@@ -23,7 +23,6 @@ spec:
         spec:
           object-templates-raw: |
           {{- range $index, $item := $clusterValue.clusterclaims }}
-          # Add logic for chekcing if the value is defined and base complianctype off that
             {{- if  or (eq (default false $clusterValue.rollback) true) (eq $item.value nil) }}
             - complianceType: mustnothave
             {{- else }}
