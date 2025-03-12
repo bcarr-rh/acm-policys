@@ -69,7 +69,7 @@ spec:
                   logging:
                     lokiStack:
                       name: {{ .Values.loki.lokistackName }}
-          type: Logging
+                  type: Logging
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
