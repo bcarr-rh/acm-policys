@@ -37,8 +37,8 @@ spec:
                 apiVersion: loki.grafana.com/v1
                 kind: LokiStack
                 metadata:
-                  name: logging-lokistack
-                  namespace: openshift-logging
+                  name: {{ .Values.loki.lokistackName }}
+                  namespace: {{ .Values.loki.namespace }}
                 spec:
                   hashRing:
                     type: memberlist
@@ -50,8 +50,8 @@ spec:
                       queries:
                         queryTimeout: 3m
                   managementState: Managed
-                  storageClassName: gp3-csi #TODO: make parameter
-                  size: 1x.extra-small
+                  storageClassName: {{ .Values.loki.storageClass }} #TODO: make parameter
+                  size: {{ .Values.loki.size }}
                   storage:
                     schemas:
                       - effectiveDate: '2024-09-22'

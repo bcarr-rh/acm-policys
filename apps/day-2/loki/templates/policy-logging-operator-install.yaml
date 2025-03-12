@@ -37,11 +37,11 @@ spec:
         metadata:
           name: install-operator-logging
         spec:
-          remediationAction: inform
+          remediationAction: enforce
           severity: high
           complianceType: musthave
           operatorGroup:
-            name: cluster-logging
+            name: {{ .Values.logging.namespace }}
             namespace: {{ .Values.logging.namespace }}
             targetNamespaces:
               - {{ .Values.logging.namespace }}
