@@ -11,10 +11,22 @@ loki:
     clusterSets:
       - hub
       - managed
+    size: 1x.extra-small
+    storageClass: gp3-csi
 logging:
     name: cluster-logging
     namespace: openshift-logging
     channel: stable-6.1
+    installPlanApproval: Automatic
+    source: redhat-operators
+    sourceNamespace: openshift-marketplace
+    clusterSets:
+      - hub
+      - managed
+coo:
+    name: cluster-observability-operator
+    namespace: openshift-cluster-observability-operator
+    channel: stable
     installPlanApproval: Automatic
     source: redhat-operators
     sourceNamespace: openshift-marketplace
