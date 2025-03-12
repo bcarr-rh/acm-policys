@@ -35,7 +35,7 @@ spec:
                   name: numeric-claim-{{ . }}
               {{- if not (eq  ($clusterValue.rollback | default false) true) }}
                 spec: 
-                  value: {{ . }}
+                  value: {{ . | quote }}
               {{- end }}
               pruneObjectBehavior: None
               remediationAction: enforce
