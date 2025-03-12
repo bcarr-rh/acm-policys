@@ -35,7 +35,7 @@ spec:
                   name: {{ $item.name }}
               {{- if not (or (eq  ($clusterValue.rollback | default false) true) (eq $item.value nil)) }}
                 spec: 
-                  value: {{ $item.value }}
+                  value: {{ $item.value | quote}}
               {{- end }}
               pruneObjectBehavior: None
               remediationAction: enforce
