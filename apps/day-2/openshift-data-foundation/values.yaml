@@ -1,0 +1,13 @@
+# Default values for loki.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+odf:
+    name: odf-operator
+    namespace: openshift-storage
+    channel: stable-4.17
+    installPlanApproval: Automatic
+    source: redhat-operators
+    sourceNamespace: openshift-marketplace
+    clusterSets:
+      - hub
+      - managed

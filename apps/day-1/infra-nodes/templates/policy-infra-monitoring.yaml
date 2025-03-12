@@ -121,7 +121,7 @@ spec:
   {{- end }}
   predicates:
     - requiredClusterSelector:
-        labelSelector:
+        claimSelector:
           matchExpressions:
             - key: infra-nodes
               operator: Exists

@@ -1,0 +1,14 @@
+# Default values for pipelines.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+pipelines:
+    name: openshift-pipelines-operator-rh
+    namespace: openshift-operators
+    channel: pipelines-1.17
+    installPlanApproval: Automatic
+    source: redhat-operators
+    sourceNamespace: openshift-marketplace
+    clusterSets:
+      - hub
+      - managed
+
