@@ -51,14 +51,24 @@ spec:
             channel: {{ .Values.coo.channel }}
           upgradeApproval: {{ .Values.coo.installPlanApproval }}
     - objectDefinition:
-        apiVersion: observability.openshift.io/v1alpha1
-        kind: UIPlugin
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
         metadata:
-          name: logging
+          name: openshift-coo-uiplugin-logging
         spec:
-          logging:
-            lokiStack:
-              name: {{ .Values.loki.lokistackName }}
+          remediationAction: inform # will be overridden by remediationAction in parent policy
+          severity: high
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: observability.openshift.io/v1alpha1
+                kind: UIPlugin
+                metadata:
+                  name: logging
+                spec:
+                  logging:
+                    lokiStack:
+                      name: {{ .Values.loki.lokistackName }}
           type: Logging
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
