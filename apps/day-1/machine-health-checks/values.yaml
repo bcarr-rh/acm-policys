@@ -1,0 +1,9 @@
+# Default values for worker-nodes.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+machinehealthchecks:
+  clusterSets:
+    - hub
+    - managed
+  zones:
+    - us-east-2c

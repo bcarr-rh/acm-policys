@@ -69,7 +69,7 @@ spec:
   {{- end }}
   predicates:
     - requiredClusterSelector:
-        labelSelector:
+        claimSelector:
           matchExpressions:
             - key: storage-nodes
               operator: Exists

@@ -1,0 +1,103 @@
+# This policy verifies the installation of the official & supported version of
+# the Compliance Operator on the managed clusters.
+#
+# If set to "enforce" it'll install the operator.
+#
+# Note that OpenShift 4.6 is required.
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: policy-logging-operator-install
+  namespace: open-cluster-policies
+  annotations:
+    policy.open-cluster-management.io/standards: NIST SP 800-53
+    policy.open-cluster-management.io/categories: CA Security Assessment and Authorization
+    policy.open-cluster-management.io/controls: CA-2 Security Assessments, CA-7 Continuous Monitoring
+spec:
+  disabled: false
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: logging-operator-ns
+        spec:
+          remediationAction: enforce # will be overridden by remediationAction in parent policy
+          severity: high
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: v1
+                kind: Namespace
+                metadata:
+                  name: {{ .Values.logging.namespace }}
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1beta1
+        kind: OperatorPolicy
+        metadata:
+          name: install-operator-logging
+        spec:
+          remediationAction: inform
+          severity: high
+          complianceType: musthave
+          operatorGroup:
+            name: cluster-logging
+            namespace: {{ .Values.logging.namespace }}
+            targetNamespaces:
+              - {{ .Values.logging.namespace }}
+          subscription:
+            name: {{ .Values.logging.name }}
+            namespace: {{ .Values.logging.namespace }}
+            source: {{ .Values.logging.source }}
+            sourceNamespace: {{ .Values.logging.sourceNamespace }}
+            channel: {{ .Values.logging.channel }}
+          upgradeApproval: {{ .Values.logging.installPlanApproval }}
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: openshift-logging-status
+        spec:
+          remediationAction: inform # will be overridden by remediationAction in parent policy
+          severity: high
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: operators.coreos.com/v1alpha1
+                kind: ClusterServiceVersion
+                metadata:
+                  namespace: openshift-logging
+                spec:
+                  displayName: Red Hat OpenShift Logging
+                status:
+                  phase: Succeeded # check the csv status to determine if operator is running or not
+---
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: placement-policy-logging-operator-install
+  namespace: open-cluster-policies
+spec:
+  clusterSets:
+  {{- range .Values.logging.clusterSets }}
+    - {{ . }}
+  {{- end }}
+  tolerations:
+    - key: cluster.open-cluster-management.io/unreachable
+      operator: Exists
+    - key: cluster.open-cluster-management.io/unavailable
+      operator: Exists
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: placement-policy-logging-operator-install
+  namespace: open-cluster-policies
+placementRef:
+  name: placement-policy-logging-operator-install
+  apiGroup: cluster.open-cluster-management.io
+  kind: Placement
+subjects:
+  - name: policy-logging-operator-install
+    apiGroup: policy.open-cluster-management.io
+    kind: Policy
