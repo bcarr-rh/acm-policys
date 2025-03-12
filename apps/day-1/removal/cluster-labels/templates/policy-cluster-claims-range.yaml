@@ -1,0 +1,81 @@
+{{- range $clusterKey, $clusterValue := .Values.clusterlabels.clusters }}
+{{ $policyName := printf "policy-%s-cluster-claims-range" $clusterKey }}
+{{ $configPolicyName := printf "cluster-claims-%s-range" $clusterKey }}
+{{ $placementName := printf "placement-%s" $policyName }}
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: {{ $policyName }}
+  namespace: open-cluster-policies
+  annotations:
+    policy.open-cluster-management.io/categories: CM Configuration Management
+    policy.open-cluster-management.io/controls: CM-2 Baseline Configuration
+    policy.open-cluster-management.io/standards: NIST SP 800-53
+spec:
+  disabled: false
+  remediationAction: enforce
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: {{ $configPolicyName }}
+        spec:
+          object-templates-raw: |
+          {{- range  intSequence 1 30 }}
+            {{- if (eq ($clusterValue.rollback | default false) true) }}
+            - complianceType: mustnothave
+            {{- else }}
+            - complianceType: musthave
+            {{- end }}
+              objectDefinition:
+                apiVersion: cluster.open-cluster-management.io/v1alpha1
+                kind: ClusterClaim
+                metadata:
+                  name: numericClaim-{{ . }}
+              {{- if not (eq  ($clusterValue.rollback | default false) true) }}
+                spec: 
+                  value: {{ . }}
+              {{- end }}
+              pruneObjectBehavior: None
+              remediationAction: enforce
+              severity: high
+          {{- end }}
+---
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: {{ $placementName }}
+  namespace: open-cluster-policies
+spec:
+  clusterSets:
+  {{- range $.Values.clusterlabels.clusterSets }}
+    - {{ . }}
+  {{- end }}
+  predicates:
+    - requiredClusterSelector:
+        labelSelector:
+          matchExpressions:
+            - key:  {{ $clusterKey }}
+              operator: Exists
+  tolerations:
+    - key: cluster.open-cluster-management.io/unreachable
+      operator: Exists
+    - key: cluster.open-cluster-management.io/unavailable
+      operator: Exists
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: {{ $placementName}}
+  namespace: open-cluster-policies
+placementRef:
+  name: {{ $placementName}}
+  apiGroup: cluster.open-cluster-management.io
+  kind: Placement
+subjects:
+  - name: {{ $policyName }}
+    apiGroup: policy.open-cluster-management.io
+    kind: Policy
+---
+#{{ end }}

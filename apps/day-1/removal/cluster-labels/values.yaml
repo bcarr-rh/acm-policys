@@ -7,7 +7,7 @@ clusterlabels:
     - managed
   clusters:
     nonprod:
-      rollback: true
+      rollback: false
       clusterclaims:
       - name: infra-nodes-numcpu
         value: '8'
