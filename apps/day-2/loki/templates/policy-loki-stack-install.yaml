@@ -50,7 +50,7 @@ spec:
                       queries:
                         queryTimeout: 3m
                   managementState: Managed
-                  storageClassName: {{ .Values.loki.storageClass }}#TODO: make parameter
+                  storageClassName: {{ .Values.loki.storageClass }} #TODO: make parameter
                   size: {{ .Values.loki.size }}
                   storage:
                     schemas:
