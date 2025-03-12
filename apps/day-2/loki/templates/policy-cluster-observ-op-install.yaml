@@ -51,6 +51,16 @@ spec:
             channel: {{ .Values.coo.channel }}
           upgradeApproval: {{ .Values.coo.installPlanApproval }}
     - objectDefinition:
+        apiVersion: observability.openshift.io/v1alpha1
+        kind: UIPlugin
+        metadata:
+          name: logging
+        spec:
+          logging:
+            lokiStack:
+              name: {{ .Values.loki.lokistackName }}
+          type: Logging
+    - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:

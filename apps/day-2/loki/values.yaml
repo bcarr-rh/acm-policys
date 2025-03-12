@@ -13,6 +13,7 @@ loki:
       - managed
     size: 1x.extra-small
     storageClass: gp3-csi
+    lokistackName: logging-lokistack
 logging:
     name: cluster-logging
     namespace: openshift-logging

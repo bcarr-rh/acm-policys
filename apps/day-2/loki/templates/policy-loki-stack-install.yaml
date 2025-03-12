@@ -37,7 +37,7 @@ spec:
                 apiVersion: loki.grafana.com/v1
                 kind: LokiStack
                 metadata:
-                  name: logging-lokistack
+                  name: {{ .Values.loki.lokistackName }}
                   namespace: {{ .Values.loki.namespace }}
                 spec:
                   hashRing:
