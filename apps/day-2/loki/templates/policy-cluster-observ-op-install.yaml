@@ -43,8 +43,6 @@ spec:
           operatorGroup:
             name: {{ .Values.coo.namespace }}
             namespace: {{ .Values.coo.namespace }}
-            targetNamespaces:
-              - {{ .Values.coo.namespace }}
           subscription:
             name: {{ .Values.coo.name }}
             namespace: {{ .Values.coo.namespace }}
