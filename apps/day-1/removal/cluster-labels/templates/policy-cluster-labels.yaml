@@ -1,6 +1,6 @@
 {{- range $clusterKey, $clusterValue := .Values.clusterlabels.clusters }}
-{{ $policyName := printf "policy-%s-cluster-claims" $clusterKey }}
-{{ $configPolicyName := printf "cluster-claims-%s" $clusterKey }}
+{{ $policyName := printf "policy-%s-cluster-labels" $clusterKey }}
+{{ $configPolicyName := printf "cluster-labels-%s" $clusterKey }}
 {{ $placementName := printf "placement-%s" $policyName }}
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
@@ -22,25 +22,19 @@ spec:
           name: {{ $configPolicyName }}
         spec:
           object-templates-raw: |
-          {{- range $index, $item := $clusterValue.clusterclaims }}
-            {{- if  or (eq ($clusterValue.rollback | default false) true) (eq $item.value nil) }}
-            - complianceType: mustnothave
-            {{- else }}
             - complianceType: musthave
-            {{- end }}
               objectDefinition:
                 apiVersion: cluster.open-cluster-management.io/v1alpha1
-                kind: ClusterClaim
+                kind: ManagedCluster
                 metadata:
-                  name: {{ $item.name }}
-              {{- if not (or (eq  ($clusterValue.rollback | default false) true) (eq $item.value nil)) }}
-                spec: 
-                  value: {{ $item.value | quote}}
-              {{- end }}
+                  name: {{ $clusterValue.clusterName | default "local-cluster" }}
+                  labels:
+                    {{- range $index, $item := $clusterValue.clusterlabels }}
+                    {{ $item.name }}: {{ $item.value | default "" }}
+                    {{- end }}
               pruneObjectBehavior: None
               remediationAction: enforce
               severity: high
-          {{- end }}
 ---
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement

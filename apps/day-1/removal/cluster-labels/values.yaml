@@ -8,7 +8,8 @@ clusterlabels:
   clusters:
     nonprod:
       rollback: false
-      clusterclaims:
+      clusterName: "local-cluster"
+      clusterlabels:
       - name: infra-nodes-numcpu
         value: '8'
       - name: infra-nodes-memory-mib
@@ -26,9 +27,9 @@ clusterlabels:
       - name: worker-nodes
         value: '3'
     prod:
-      clusterclaims:
+      clusterlabels:
       - name: infra-nodes-numcpu
-        value: '8'
+        #value: '8'
       - name: infra-nodes-memory-mib
         value: '24576'
       - name: infra-nodes-numcores-per-socket
