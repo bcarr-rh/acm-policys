@@ -43,8 +43,6 @@ spec:
           operatorGroup:
             name: {{ .Values.loki.namespace }}
             namespace: {{ .Values.loki.namespace }}
-            targetNamespaces:
-              - {{ .Values.loki.namespace }}
           subscription:
             name: {{ .Values.loki.name }}
             namespace: {{ .Values.loki.namespace }}
