@@ -1,8 +1,8 @@
 apiVersion: cluster.open-cluster-management.io/v1
 kind: ManagedCluster
 metadata:
-  name: {{ .Values.hubCluster | default "local-cluster" }}
+  name: {{ .Values.hubCluster.name | default "local-cluster" }}
   labels:
-    {{- range $index, $item := $clusterValue.clusterlabels }}
+    {{- range $index, $item := .Values.hubCluster.clusterlabels }}
     {{ $item.name }}: {{ $item.value | default "" }}
     {{- end }}

@@ -1,6 +1,26 @@
 # Default values for cluster-labels.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
+hubCluster: 
+  name: "local-cluster"
+    clusterlabels:
+      - name: infra-nodes-numcpu
+        #value: '8'
+      - name: infra-nodes-memory-mib
+        value: '24576'
+      - name: infra-nodes-numcores-per-socket
+        value: '4'
+      - name: infra-nodes
+        value: '6'    
+      - name: worker-nodes-numcpu
+        value: '8'
+      - name: worker-nodes-memory-mib
+        value: '32768'
+      - name: worker-nodes-numcores-per-socket
+        value: '4'
+      - name: worker-nodes
+        value: '3'
+
 clusterlabels:
   clusterSets:
     - hub
