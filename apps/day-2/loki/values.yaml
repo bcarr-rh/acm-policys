@@ -1,0 +1,36 @@
+# Default values for loki.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+loki:
+    name: loki-operator
+    namespace: openshift-operators-redhat
+    channel: stable-6.1
+    installPlanApproval: Automatic
+    source: redhat-operators
+    sourceNamespace: openshift-marketplace
+    clusterSets:
+      - hub
+      - managed
+    size: 1x.extra-small
+    storageClass: gp3-csi
+    lokistackName: logging-lokistack
+logging:
+    name: cluster-logging
+    namespace: openshift-logging
+    channel: stable-6.1
+    installPlanApproval: Automatic
+    source: redhat-operators
+    sourceNamespace: openshift-marketplace
+    clusterSets:
+      - hub
+      - managed
+coo:
+    name: cluster-observability-operator
+    namespace: openshift-cluster-observability-operator
+    channel: stable
+    installPlanApproval: Automatic
+    source: redhat-operators
+    sourceNamespace: openshift-marketplace
+    clusterSets:
+      - hub
+      - managed

@@ -32,6 +32,7 @@ spec:
                   name: default
                   namespace: openshift-ingress-operator
                 spec:
+                  replicas: 3
                   nodePlacement:
                     nodeSelector:
                       matchLabels:
@@ -57,7 +58,7 @@ spec:
   {{- end }}
   predicates:
     - requiredClusterSelector:
-        labelSelector:
+        claimSelector:
           matchExpressions:
             - key: infra-nodes
               operator: Exists

@@ -34,6 +34,7 @@ spec:
                     name: {{ "{{" }} $infrastructure_id {{ "}}" }}-{{ "{{" }} $machineset_role {{ "}}" }}-{{ "{{" }} $zone {{ "}}" }}
                     namespace: openshift-machine-api
                   spec:
+                    deletePolicy: Oldest
                     replicas: {{ "{{" }} fromClusterClaim "infra-nodes" {{ "}}" }}
                     selector:
                       matchLabels:
@@ -56,18 +57,18 @@ spec:
                         providerSpec:
                         {{ "{{-" }} if eq $worker_ms.spec.template.spec.providerSpec.value.kind "VSphereMachineProviderSpec" {{ "}}" }}
                           value:
-                            numCoresPerSocket: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.numCoresPerSocket {{ "}}" }}
+                            numCoresPerSocket: {{ "{{" }} fromClusterClaim "infra-nodes-numcores-per-socket" | default $worker_ms.spec.template.spec.providerSpec.value.numCoresPerSocket {{ "}}" }}
                             diskGiB: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.diskGiB {{ "}}" }}
                             snapshot: ''
                             userDataSecret:
                               name: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.userDataSecret.name {{ "}}" }}
-                            memoryMiB: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.memoryMiB {{ "}}" }}
+                            memoryMiB: {{ "{{" }} fromClusterClaim "infra-nodes-memory-mib" | default $worker_ms.spec.template.spec.providerSpec.value.memoryMiB {{ "}}" }}
                             credentialsSecret:
                               name: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.credentialsSecret.name {{ "}}" }}
                             network:
                               devices:
                                 - networkName: {{ "{{" }} (index ($worker_ms.spec.template.spec.providerSpec.value.network.devices) 0).networkName {{ "}}" }}
-                            numCPUs: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.numCPUs {{ "}}" }}
+                            numCPUs: {{ "{{" }} fromClusterClaim "infra-nodes-numcpu" | default $worker_ms.spec.template.spec.providerSpec.value.numCPUs {{ "}}" }}
                             kind: VSphereMachineProviderSpec
                             workspace:
                               datacenter: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.workspace.datacenter {{ "}}" }}
@@ -169,7 +170,7 @@ spec:
   {{- end }}
   predicates:
     - requiredClusterSelector:
-        labelSelector:
+        claimSelector:
           matchExpressions:
             - key: infra-nodes
               operator: Exists
