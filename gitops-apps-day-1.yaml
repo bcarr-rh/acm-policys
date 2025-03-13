@@ -38,7 +38,7 @@ spec:
       syncPolicy:
         preserveResourcesOnDeletion: true
         automated:
-          prune: true
+          prune: false
           selfHeal: true
         syncOptions:
         - RespectIgnoreDifferences=true
