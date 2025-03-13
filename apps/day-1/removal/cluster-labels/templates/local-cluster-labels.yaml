@@ -4,5 +4,5 @@ metadata:
   name: {{ .Values.hubCluster.name | default "local-cluster" }}
   labels:
     {{- range $index, $item := .Values.hubCluster.clusterlabels }}
-    {{ $item.name }}: {{ $item.value | default "" }}
+    {{ $item.name }}: {{ ($item.value | quote) | default "" }}
     {{- end }}
