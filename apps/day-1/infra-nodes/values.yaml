@@ -18,8 +18,12 @@ infraNodes:
     migrate: false
     remediationAction: enforce
     namespace: openshift-gitops
+  quay: 
+    migrate: true 
+    remediationAction: enforce
+    namespace: quay
   zones:
-    - 0
+    - us-east-2b
   externalIngress:
     clusterSets:
-      - managed  
+      - managed
