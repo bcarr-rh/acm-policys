@@ -62,7 +62,7 @@ spec:
   {{- end }}
   predicates:
     - requiredClusterSelector:
-        claimSelector:
+        labelSelector:
           matchExpressions:
             - key: infra-nodes
               operator: Exists

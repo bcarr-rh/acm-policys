@@ -24,4 +24,11 @@ infraNodes:
     clusterSets:
       - managed  
   dependencies: 
-    install: "policy-infra-nodes"
+    install: 
+      - "policy-infra-nodes"
+    remove: 
+      - policy-remove-infra-gitiops 
+      - policy-remove-infra-image-registry
+      - policy-remove-infra-ingress
+      - policy-remove-infra-monitoring 
+

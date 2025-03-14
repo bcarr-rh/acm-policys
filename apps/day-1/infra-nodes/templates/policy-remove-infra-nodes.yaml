@@ -12,6 +12,15 @@ metadata:
     policy.open-cluster-management.io/standards: NIST SP 800-53
 spec:
   disabled: false
+  remediationAction: true 
+  dependencies: 
+  {{- range .Values.infraNodes.dependencies.remove }}
+  - apiVersion: policy.open-cluster-management.io/v1
+    compliance: Compliant
+    kind: Policy
+    name: {{ . }}
+    namespace: open-cluster-policies
+  {{- end }}
   policy-templates:
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
