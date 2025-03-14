@@ -1,8 +1,14 @@
+{{- if not (.Values.self-managed | default false) }}
+---
 apiVersion: cluster.open-cluster-management.io/v1
 kind: ManagedCluster
 metadata:
-  name: {{ .Values.hubCluster.name | default "local-cluster" }}
-  labels:
-    {{- range $index, $item := .Values.hubCluster.clusterlabels }}
-    {{ $item.name }}: {{ ($item.value | quote) | default "" }}
-    {{- end }}
+  name: "local-cluster"
+  annotations:
+    argocd.argoproj.io/sync-options: "ServerSideApply=true"
+#  labels:
+#    {{- range $index, $item := .Values.hubCluster.clusterlabels }}
+#    {{ $item.name }}: {{ ($item.value | quote) | default "" }}
+#    {{- end }}
+---
+{{- end }}

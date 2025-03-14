@@ -1,6 +1,6 @@
-{{- range $clusterKey, $clusterValue := .Values.clusterlabels.clusters }}
-{{ $policyName := printf "policy-%s-cluster-labels" $clusterKey }}
-{{ $configPolicyName := printf "cluster-labels-%s" $clusterKey }}
+{{- range $clusterSetKey, $clusterSetValue := .Values.cluster-sets }}
+{{ $policyName := printf "policy-%s-cluster-labels" $clusterSetKey }}
+{{ $configPolicyName := printf "cluster-labels-%s" $clusterSetKey }}
 {{ $placementName := printf "placement-%s" $policyName }}
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
@@ -27,9 +27,9 @@ spec:
                 apiVersion: cluster.open-cluster-management.io/v1
                 kind: ManagedCluster
                 metadata:
-                  name: {{ $clusterValue.clusterName | default "local-cluster" }}
+                  name: {{ "{{" }} .ManagedCluster {{ "}}" }}
                   labels:
-                    {{- range $index, $item := $clusterValue.clusterlabels }}
+                    {{- range $index, $item := $clusterSetValue.labels }}
                     {{ $item.name }}: {{ $item.value | default "" }}
                     {{- end }}
               pruneObjectBehavior: None
@@ -43,17 +43,9 @@ metadata:
   namespace: open-cluster-policies
 spec:
   clusterSets:
-  {{- range $.Values.clusterlabels.clusterSets }}
-    - {{ . }}
+  {{- range $key, $value := $.Values.cluster-sets }}
+    - {{ $key }}
   {{- end }}
-  predicates:
-    - requiredClusterSelector:
-        labelSelector:
-          matchExpressions:
-            - key:  {{ $clusterKey }}
-              operator: Exists
-            - key: "local-cluster"
-              operator: DoesNotExist
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists
