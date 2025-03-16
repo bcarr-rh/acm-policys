@@ -32,10 +32,12 @@ spec:
                     {{- range $label, $value := $clusterSetValue.labels }}
                     {{ $label }}: {{ $value | default "" }}
                     {{- end }}
-                    {{ "{{-" }} if ne ((fromConfigMap "open-cluster-policies" .ManagedCluster).labels | default "") "" {{ "}}" }}
-                    {{ "{{-" }} range $label, $value := (fromConfigMap "open-cluster-policies" .ManagedCluster).labels {{ "}}" }}
+                    {{ "{{-" }} if ne ((lookup "v1" "open-cluster-policies" "ConfigMap" (printf "ManagedCluster-%s" $.ManagedCluster)).data.labels | default "") "" {{ "}}" }}
+                    {{ "{{-" }} if ne ((fromConfigMap "open-cluster-policies" (printf "ManagedCluster-%s" $.ManagedCluster) "labels") | default "") "" {{ "}}" }}
+                      {{ "{{-" }} range $label, $value := (lookup "v1" "open-cluster-policies" "ConfigMap" (printf "ManagedCluster-%s" $.ManagedCluster)).data.labels {{ "}}" }}
+                      {{ "{{-" }} range $label, $value := (fromConfigMap "open-cluster-policies" (printf "ManagedCluster-%s" $.ManagedCluster) "labels") {{ "}}" }}
                     {{ "{{" }} $label {{ "}}" }}: {{ "{{" }} $value {{ "}}" }} 
-                    {{ "{{-" }} end {{ "}}" }}
+                      {{ "{{-" }} end {{ "}}" }}
                     {{ "{{-" }} end {{ "}}" }}
               pruneObjectBehavior: None
               remediationAction: enforce
