@@ -1,4 +1,5 @@
 {{- range $cluster, $data := .Values.clusters }}
+---
 apiVersion: v1
 kind: ConfigMap
 metadata: 
@@ -6,8 +7,16 @@ metadata:
   namespace: "open-cluster-management" 
 data: |+ 
   {{ $data | toYaml }}
+---
 {{- end }}
-
-
-# Might need to use lookup instead, not sure if you can just hit the top level of the config map or if it requires a specific sub-field
-
+{{- range $clusterSet, $data := .Values.cluster-sets }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata: 
+  name: {{ printf "ClusterSet-%s" $clusterSet }}
+  namespace: "open-cluster-management" 
+data: |+ 
+  {{ $data | toYaml }}
+---
+{{- end }}
