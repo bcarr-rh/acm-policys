@@ -43,7 +43,6 @@ spec:
         syncOptions:
         - RespectIgnoreDifferences=true
         - Validate=false 
-        - ServerSideApply=true
       destination:
         server: https://kubernetes.default.svc
         namespace: openshift-gitops
