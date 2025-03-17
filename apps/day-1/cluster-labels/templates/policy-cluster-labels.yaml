@@ -29,13 +29,10 @@ spec:
                 metadata:
                   name: {{ "{{" }} .ManagedCluster {{ "}}" }}
                   labels:
-                    {{ "{{-" }} if ne ((fromConfigMap "open-cluster-policies" (printf "ManagedCluster-%s" $.ManagedCluster) "labels") | default "") "" {{ "}}" }}
-                    {{ "{{ -" }} $clusterSetLabels := (fromConfigMap "open-cluster-policies" (printf "ClusterSet"-%s {{ $clusterSetKey }}) "labels") {{ "}}" }}
-                    {{ "{{ -" }} $clusterLabels := (fromConfigMap "open-cluster-policies" (printf ManagedCluster-%s ($.ManagedCluster)) "labels") {{ "}}" }}
+                    {{ "{{ -" }} $clusterSetLabels := (fromConfigMap "open-cluster-policies" (printf "ClusterSet-%s" {{ $clusterSetKey }}) "labels") | default dict) {{ "}}" }}
+                    {{ "{{ -" }} $clusterLabels := (fromConfigMap "open-cluster-policies" (printf "ManagedCluster-%s" ($.ManagedCluster)) "labels") | default dict) {{ "}}" }}
                     {{ "{{-" }} $labels := merge $clusterLabels $clusterSetLabels {{ "}}" }} 
                     {{ "{{-" }} $labels | toYaml {{ "}}" }}
-                    {{ $label }}: {{ $value | default "" }}
-                    {{- end }}
               pruneObjectBehavior: None
               remediationAction: enforce
               severity: high
@@ -49,9 +46,7 @@ metadata:
   namespace: open-cluster-policies
 spec:
   clusterSets:
-  {{- range $key, $value := $.Values.cluster-sets }}
-    - {{ $key }}
-  {{- end }}
+    - {{ $clusterSetKey }}
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists
