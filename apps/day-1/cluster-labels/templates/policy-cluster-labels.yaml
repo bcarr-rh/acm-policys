@@ -40,10 +40,6 @@ spec:
               remediationAction: enforce
               severity: high
           {{ "{{" }} end {{ "}}" }}
-#{{ "{{-" }} $clusterSetLabels := (fromConfigMap "open-cluster-policies" (printf "ClusterSet-%s" "{{ $clusterSetKey }}") "labels") | default dict) {{ "}}" }}
-#{{ "{{-" }} $clusterLabels := (fromConfigMap "open-cluster-policies" (printf "ManagedCluster-%s" .ManagedCluster) "labels") | default dict) {{ "}}" }}
-#{{ "{{-" }} if ne ((lookup "v1" "open-cluster-policies" "ConfigMap" (printf "ManagedCluster-%s" $.ManagedCluster)).data.labels | default "") "" {{ "}}" }}
-#{{ "{{-" }} range $label, $value := (lookup "v1" "open-cluster-policies" "ConfigMap" (printf "ManagedCluster-%s" $.ManagedCluster)).data.labels {{ "}}" }}
 ---
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
