@@ -1,29 +1,20 @@
-{{- range $cluster, $data := .Values.clusters }}
+{{ range $cluster, $data := .Values.clusters }}
 ---
-{{ $clusterSetKey := $data.cluster-set}}
 apiVersion: v1
 kind: ConfigMap
 metadata: 
   name: {{ printf "ManagedCluster-%s" $cluster }}
   namespace: "open-cluster-management" 
-
-# This is incase an older version of ACM is used and we can't rely on the existence of the merge funciton in the ACM policy templating environment
-# Then we must merge both the cluster labels, and the cluster set labels of the configmap for the cluster
-#data: |+ 
-#{{ (merge ($data | default dict) (index (.Values.cluster-sets) $clusterSetKey)) | toYaml }}
-
 data: |+ 
   {{ $data | toYaml }}
----
-{{- end }}
-{{- range $clusterSet, $data := .Values.cluster-sets }}
+{{ end }}
+{{ range $clusterSet, $data := .Values.clusterSets }}
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata: 
   name: {{ printf "ClusterSet-%s" $clusterSet }}
   namespace: "open-cluster-management" 
-data: |+ 
+data: |+
   {{ $data | toYaml }}
----
-{{- end }}
+{{ end }}

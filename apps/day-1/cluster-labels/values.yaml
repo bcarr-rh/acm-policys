@@ -2,12 +2,14 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 ---
-self-managed: false
+selfManaged: false
+acmversion: "2.12"
+hubClusterSet: "hub"
 
 hubClusters:
-  local-cluster:
+  localCluster:
     name: "local-cluster"
-    cluster-labels:
+    clusterLabels:
       - name: infra-nodes-numcpu
         value: '8'
       - name: infra-nodes-memory-mib
@@ -25,27 +27,29 @@ hubClusters:
       - name: worker-nodes
         value: '3'
 
-cluster-sets:
-  hub:
-    labels: 
-      infra-nodes-numcpu: '8'
-      infra-nodes-memory-mib:  '24576'
-      infra-nodes-numcores-per-socket:  '4'
-      infra-nodes:  '6'
-      worker-nodes-numcpu:  '8'
-      worker-nodes-memory-mib:  '32768'
-      worker-nodes-numcores-per-socket:  '4'
-      worker-nodes:  '3'
-  managed:
-    labels: 
-      infra-nodes-numcpu: '8'
-      infra-nodes-memory-mib:  '24576'
-      infra-nodes-numcores-per-socket:  '4'
-      infra-nodes:  '6'
-      worker-nodes-numcpu:  '8'
-      worker-nodes-memory-mib:  '32768'
-      worker-nodes-numcores-per-socket:  '4'
-      worker-nodes:  '3'
+clusterSets:
+  acmHubClusterSets:
+    hub:
+      labels: 
+        infra-nodes-numcpu: '8'
+        infra-nodes-memory-mib:  '24576'
+        infra-nodes-numcores-per-socket:  '4'
+        infra-nodes:  '6'
+        worker-nodes-numcpu:  '8'
+        worker-nodes-memory-mib:  '32768'
+        worker-nodes-numcores-per-socket:  '4'
+        worker-nodes:  '3'
+  acmManagedClusterSets:
+    managed:
+      labels: 
+        infra-nodes-numcpu: '8'
+        infra-nodes-memory-mib:  '24576'
+        infra-nodes-numcores-per-socket:  '4'
+        infra-nodes:  '6'
+        worker-nodes-numcpu:  '8'
+        worker-nodes-memory-mib:  '32768'
+        worker-nodes-numcores-per-socket:  '4'
+        worker-nodes:  '3'
 
 clusters:
   nonprod:
