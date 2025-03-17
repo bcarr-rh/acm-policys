@@ -30,7 +30,7 @@ spec:
                   name: {{ "{{" }} .ManagedCluster {{ "}}" }}
                   labels:
                     {{ "{{ -" }} $clusterSetLabels := (fromConfigMap "open-cluster-policies" (printf "ClusterSet-%s" {{ $clusterSetKey }}) "labels") | default dict) {{ "}}" }}
-                    {{ "{{ -" }} $clusterLabels := (fromConfigMap "open-cluster-policies" (printf "ManagedCluster-%s" ($.ManagedCluster)) "labels") | default dict) {{ "}}" }}
+                    {{ "{{ -" }} $clusterLabels := (fromConfigMap "open-cluster-policies" (printf "ManagedCluster-%s" .ManagedCluster) "labels") | default dict) {{ "}}" }}
                     {{ "{{-" }} $labels := merge $clusterLabels $clusterSetLabels {{ "}}" }} 
                     {{ "{{-" }} $labels | toYaml {{ "}}" }}
               pruneObjectBehavior: None
