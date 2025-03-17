@@ -14,5 +14,6 @@ kind: ConfigMap
 metadata: 
   name: {{ printf "ClusterSet-%s" $clusterSet }}
   namespace: "open-cluster-management" 
-data: {{ $data | toYaml | nindent 2 }}
+data: |
+  {{ $data | toYaml | nindent 2 }}
 {{ end }}
