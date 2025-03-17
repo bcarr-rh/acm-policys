@@ -9,23 +9,15 @@ hubClusterSet: "hub"
 hubClusters:
   localCluster:
     name: "local-cluster"
-    clusterLabels:
-      - name: infra-nodes-numcpu
-        value: '8'
-      - name: infra-nodes-memory-mib
-        value: '24576'
-      - name: infra-nodes-numcores-per-socket
-        value: '4'
-      - name: infra-nodes
-        value: '6'    
-      - name: worker-nodes-numcpu
-        value: '8'
-      - name: worker-nodes-memory-mib
-        value: '32768'
-      - name: worker-nodes-numcores-per-socket
-        value: '4'
-      - name: worker-nodes
-        value: '3'
+    labels:
+      infra-nodes-numcpu: '8'
+      infra-nodes-memory-mib:  '24576'
+      infra-nodes-numcores-per-socket:  '4'
+      infra-nodes:  '6'
+      worker-nodes-numcpu:  '8'
+      worker-nodes-memory-mib:  '32768'
+      worker-nodes-numcores-per-socket:  '4'
+      worker-nodes:  '3'
 
 clusterSets:
   hub:

@@ -1,5 +1,5 @@
 {{ range $clusterSetKey, $clusterSetValue := .Values.clusterSets }}
-{{ $hubClusterSet := .Values.hubClusterSet | default "hub" }}
+{{ $hubClusterSet := $.Values.hubClusterSet | default "hub" }}
 {{ $policyName := printf "policy-%s-cluster-labels" $clusterSetKey }}
 {{ $configPolicyName := printf "cluster-labels-%s" $clusterSetKey }}
 {{ $placementName := printf "placement-%s" $policyName }}
@@ -23,8 +23,8 @@ spec:
           name: {{ $configPolicyName }}
         spec:
           object-templates-raw: |
-          {{ "{{" }} range $cluster, $value := (lookup "cluster.open-cluster-management.io/v1" "ManagedCluster" "" "").items {{ "}}" }}
-          {{ "{{" }} $clusterSet := ((index $value.metadata.labels "cluster.open-cluster-management.io/clusterset") | default "") {{ "}}" }}
+            {{ "{{-" }} range $cluster, $value := (lookup "cluster.open-cluster-management.io/v1" "ManagedCluster" "" "").items {{ "}}" }}
+            {{ "{{-" }} $clusterSet := ((index $value.metadata.labels "cluster.open-cluster-management.io/clusterset") | default "") {{ "}}" }}
             - complianceType: musthave
               objectDefinition:
                 apiVersion: cluster.open-cluster-management.io/v1
@@ -32,14 +32,14 @@ spec:
                 metadata:
                   name: {{ "{{" }} $cluster {{ "}}" }}
                   labels:
-                    {{ "{{-" }} $clusterSetLabels := (lookup "v1" "ConfigMap" "open-cluster-policies" (printf "ClusterSet-%s" "{{ $clusterSet }}") "labels") | default dict) {{ "}}" }}
-                    {{ "{{-" }} $clusterLabels := (lookup "policy.open-cluster-management.io/v1" "ConfigMap" "open-cluster-policies" (printf "ManagedCluster-%s" $cluster) "labels") | default dict) {{ "}}" }}
-                    {{ "{{-" }} $labels := merge $clusterLabels $clusterSetLabels {{ "}}" }} 
-                    {{ "{{-" }} $labels | toYaml {{ "}}" }}
+                    {{ "{{" }} $clusterSetLabels := (lookup "v1" "ConfigMap" "open-cluster-policies" (printf "ClusterSet-%s"  $clusterSet) "labels") | default dict) {{ "}}" }}
+                    {{ "{{" }} $clusterLabels := (lookup "policy.open-cluster-management.io/v1" "ConfigMap" "open-cluster-policies" (printf "ManagedCluster-%s" $cluster) "labels") | default dict) {{ "}}" }}
+                    {{ "{{" }} $labels := merge $clusterLabels $clusterSetLabels {{ "}}" }} 
+                    {{ "{{" }} $labels | toYaml {{ "}}" }}
               pruneObjectBehavior: None
               remediationAction: enforce
               severity: high
-          {{ "{{" }} end {{ "}}" }}
+            {{ "{{" }} end {{ "}}" }}
 ---
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement

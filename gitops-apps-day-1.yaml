@@ -36,7 +36,7 @@ spec:
         - /metadata/annotations
         - /metadata/labels
       syncPolicy:
-        preserveResourcesOnDeletion: true
+        preserveResourcesOnDeletion: false
         automated:
           prune: false
           selfHeal: true
