@@ -23,14 +23,14 @@ spec:
           name: {{ $configPolicyName }}
         spec:
           object-templates-raw: |
-          {{ "{{" }} range $cluster, $value := (lookup "cluster.open-cluster-management.io/v1" "ManagedCluster" "" "") {{ "}}" }}
+          {{ "{{" }} range $cluster, $value := (lookup "cluster.open-cluster-management.io/v1" "ManagedCluster" "" "").items {{ "}}" }}
           {{ "{{" }} $clusterSet := ((index $value.metadata.labels "cluster.open-cluster-management.io/clusterset") | default "") {{ "}}" }}
             - complianceType: musthave
               objectDefinition:
                 apiVersion: cluster.open-cluster-management.io/v1
                 kind: ManagedCluster
                 metadata:
-                  name: {{ "{{" }} .ManagedCluster {{ "}}" }}
+                  name: {{ "{{" }} $cluster {{ "}}" }}
                   labels:
                     {{ "{{-" }} $clusterSetLabels := (lookup "v1" "ConfigMap" "open-cluster-policies" (printf "ClusterSet-%s" "{{ $clusterSet }}") "labels") | default dict) {{ "}}" }}
                     {{ "{{-" }} $clusterLabels := (lookup "policy.open-cluster-management.io/v1" "ConfigMap" "open-cluster-policies" (printf "ManagedCluster-%s" $cluster) "labels") | default dict) {{ "}}" }}
