@@ -1,0 +1,20 @@
+{{ range $cluster, $data := .Values.clusters }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata: 
+  name: {{ printf "ManagedCluster-%s" $cluster }}
+  namespace: "open-cluster-management" 
+data: |+ 
+  {{ $data | toYaml }}
+{{ end }}
+{{ range $clusterSet, $data := .Values.clusterSets }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata: 
+  name: {{ printf "ClusterSet-%s" $clusterSet }}
+  namespace: "open-cluster-management" 
+data: |+
+  {{ $data | toYaml }}
+{{ end }}

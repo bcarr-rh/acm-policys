@@ -11,9 +11,9 @@ spec:
   generators:
   - git:
       repoURL: https://github.com/bcarr-rh/acm-policys.git
-      revision: remove-infra-policies
+      revision: config-rework
       directories:
-      - path: 'apps/day-1/removal/*'
+      - path: 'apps/day-1/testing/*'
   template:
     metadata:
       name: '{{ .path.basename }}'
@@ -25,7 +25,7 @@ spec:
       source:
         path: '{{ .path.path }}'
         repoURL: https://github.com/bcarr-rh/acm-policys.git
-        targetRevision: remove-infra-policies
+        targetRevision: config-rework
         helm:
           valueFiles:
           - values.yaml

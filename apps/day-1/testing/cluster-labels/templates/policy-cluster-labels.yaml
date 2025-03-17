@@ -1,0 +1,72 @@
+{{ range $clusterSetKey, $clusterSetValue := .Values.clusterSets }}
+{{ $hubClusterSet := .Values.hubClusterSet | default "hub" }}
+{{ $policyName := printf "policy-%s-cluster-labels" $clusterSetKey }}
+{{ $configPolicyName := printf "cluster-labels-%s" $clusterSetKey }}
+{{ $placementName := printf "placement-%s" $policyName }}
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: {{ $policyName }}
+  namespace: open-cluster-policies
+  annotations:
+    policy.open-cluster-management.io/categories: CM Configuration Management
+    policy.open-cluster-management.io/controls: CM-2 Baseline Configuration
+    policy.open-cluster-management.io/standards: NIST SP 800-53
+spec:
+  disabled: false
+  remediationAction: enforce
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: {{ $configPolicyName }}
+        spec:
+          object-templates-raw: |
+          {{ "{{" }} range $cluster, $value := (lookup "cluster.open-cluster-management.io/v1" "ManagedCluster" "" "").items {{ "}}" }}
+          {{ "{{" }} $clusterSet := ((index $value.metadata.labels "cluster.open-cluster-management.io/clusterset") | default "") {{ "}}" }}
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: cluster.open-cluster-management.io/v1
+                kind: ManagedCluster
+                metadata:
+                  name: {{ "{{" }} $cluster {{ "}}" }}
+                  labels:
+                    {{ "{{-" }} $clusterSetLabels := (lookup "v1" "ConfigMap" "open-cluster-policies" (printf "ClusterSet-%s" "{{ $clusterSet }}") "labels") | default dict) {{ "}}" }}
+                    {{ "{{-" }} $clusterLabels := (lookup "policy.open-cluster-management.io/v1" "ConfigMap" "open-cluster-policies" (printf "ManagedCluster-%s" $cluster) "labels") | default dict) {{ "}}" }}
+                    {{ "{{-" }} $labels := merge $clusterLabels $clusterSetLabels {{ "}}" }} 
+                    {{ "{{-" }} $labels | toYaml {{ "}}" }}
+              pruneObjectBehavior: None
+              remediationAction: enforce
+              severity: high
+          {{ "{{" }} end {{ "}}" }}
+---
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: {{ $placementName }}
+  namespace: open-cluster-policies
+spec:
+  clusterSets:
+    - {{ $hubClusterSet }}
+  tolerations:
+    - key: cluster.open-cluster-management.io/unreachable
+      operator: Exists
+    - key: cluster.open-cluster-management.io/unavailable
+      operator: Exists
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: {{ $placementName}}
+  namespace: open-cluster-policies
+placementRef:
+  name: {{ $placementName}}
+  apiGroup: cluster.open-cluster-management.io
+  kind: Placement
+subjects:
+  - name: {{ $policyName }}
+    apiGroup: policy.open-cluster-management.io
+    kind: Policy
+---
+{{ end }}
