@@ -28,28 +28,26 @@ hubClusters:
         value: '3'
 
 clusterSets:
-  acmHubClusterSets:
-    hub:
-      labels: 
-        infra-nodes-numcpu: '8'
-        infra-nodes-memory-mib:  '24576'
-        infra-nodes-numcores-per-socket:  '4'
-        infra-nodes:  '6'
-        worker-nodes-numcpu:  '8'
-        worker-nodes-memory-mib:  '32768'
-        worker-nodes-numcores-per-socket:  '4'
-        worker-nodes:  '3'
-  acmManagedClusterSets:
-    managed:
-      labels: 
-        infra-nodes-numcpu: '8'
-        infra-nodes-memory-mib:  '24576'
-        infra-nodes-numcores-per-socket:  '4'
-        infra-nodes:  '6'
-        worker-nodes-numcpu:  '8'
-        worker-nodes-memory-mib:  '32768'
-        worker-nodes-numcores-per-socket:  '4'
-        worker-nodes:  '3'
+  hub:
+    labels: 
+      infra-nodes-numcpu: '8'
+      infra-nodes-memory-mib:  '24576'
+      infra-nodes-numcores-per-socket:  '4'
+      infra-nodes:  '6'
+      worker-nodes-numcpu:  '8'
+      worker-nodes-memory-mib:  '32768'
+      worker-nodes-numcores-per-socket:  '4'
+      worker-nodes:  '3'
+  managed:
+    labels: 
+      infra-nodes-numcpu: '8'
+      infra-nodes-memory-mib:  '24576'
+      infra-nodes-numcores-per-socket:  '4'
+      infra-nodes:  '6'
+      worker-nodes-numcpu:  '8'
+      worker-nodes-memory-mib:  '32768'
+      worker-nodes-numcores-per-socket:  '4'
+      worker-nodes:  '3'
 
 clusters:
   nonprod:
