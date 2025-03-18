@@ -31,8 +31,9 @@ spec:
                   name: managed-cluster-lookup-debug
                   namespace: open-cluster-policies
                 data:
-                  debug-output: |
-                    lookup_results: {{ "{{" }}  (lookup "cluster.open-cluster-management.io/v1" "ManagedCluster" "" "") | toRawJson {{ "}}" }}
+                  lookupManagedClusters: |
+                    {{ "{{" }}  (lookup "cluster.open-cluster-management.io/v1" "ManagedCluster" "" "") | toRawJson {{ "}}" }}
+                  lookupClusterSets:
 ---
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement

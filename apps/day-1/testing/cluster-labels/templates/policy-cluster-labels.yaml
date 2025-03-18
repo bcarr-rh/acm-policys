@@ -24,17 +24,6 @@ spec:
         spec:
           object-templates-raw: |
             {{ "{{" }} range $cluster, $value := (lookup "cluster.open-cluster-management.io/v1" "ManagedCluster" "" "").items {{ "}}" }}
-            - complianceType: musthave 
-              objectDefinition: 
-                apiVersion: v1 
-                kind: ConfigMap
-                metadata:
-                  name: {{ "{{" }} $cluster {{ "}}" }}
-                  namespace: open-cluster-policies
-                data:
-                  debug-output: |
-                    Cluster: {{ "{{" }} $cluster {{ "}}" }}
-            {{ "{{" }} range $cluster, $value := (lookup "cluster.open-cluster-management.io/v1" "ManagedCluster" "" "").items {{ "}}" }}
             {{ "{{" }} $clusterSet := ((index $value.metadata.labels "cluster.open-cluster-management.io/clusterset") | default "") {{ "}}" }}
             - complianceType: musthave
               objectDefinition:
