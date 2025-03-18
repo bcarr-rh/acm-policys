@@ -33,7 +33,12 @@ spec:
                 data:
                   lookupManagedClusters: |
                     {{ "{{" }}  (lookup "cluster.open-cluster-management.io/v1" "ManagedCluster" "" "") | toRawJson {{ "}}" }}
-                  lookupClusterSets:
+                  lookupClusterSets: | 
+                    {{ "{{" }} range $cluster, $value := (lookup "cluster.open-cluster-management.io/v1" "ManagedCluster" "" "").items {{ "}}" }}
+                    {{ "{{" }} $clusterSet := ((index $value.metadata.labels "cluster.open-cluster-management.io/clusterset") | default "") {{ "}}" }}
+                    {{ "{{" }} $clusterSet {{ "}}" }}
+                    {{ "{{" }} end {{ "}}" }}
+
 ---
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
