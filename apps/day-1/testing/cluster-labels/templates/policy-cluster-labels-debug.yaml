@@ -45,7 +45,7 @@ spec:
                     {{ "{{/*" }} $clusterSet | trim {{ "}}" }}Labels: {{ "{{" }} $clusterSet | trim {{ "*/}}" }}
                   lookupClusterLabels: |
                     Cluster: {{ "{{" }}  $value.metadata.name {{ "}}" }}
-                    {{ "{{" }} clusterLabels := (index ((index (lookup "v1" "ConfigMap" "open-cluster-policies" (printf "managed-cluster.%s"  $value.metadata.name)) "data" "values") | default "" | fromJson) "labels") | default dict {{ "}}" }}
+                    {{ "{{" }} $clusterLabels := (index ((index (lookup "v1" "ConfigMap" "open-cluster-policies" (printf "managed-cluster.%s"  $value.metadata.name)) "data" "values") | default "" | fromJson) "labels") | default dict {{ "}}" }}
                     {{ "{{" }} $clusterLabels {{ "}}" }}
                   resultantSetOfLabels: | 
                    {{ "{{" }} merge $clusterLabels $clusterSetLabels {{ "}}" }}
