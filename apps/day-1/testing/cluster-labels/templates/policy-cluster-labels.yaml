@@ -32,10 +32,10 @@ spec:
                 metadata:
                   name: {{ "{{" }} $cluster {{ "}}" }}
                   labels:
-                    {{ "{{" }} $clusterSetLabels := (lookup "v1" "ConfigMap" "open-cluster-policies" (printf "ClusterSet-%s"  $clusterSet) "labels") | default dict) {{ "}}" }}
-                    {{ "{{" }} $clusterLabels := (lookup "policy.open-cluster-management.io/v1" "ConfigMap" "open-cluster-policies" (printf "ManagedCluster-%s" $cluster) "labels") | default dict) {{ "}}" }}
+                    {{ "{{" }} $clusterSetLabels := ((lookup "v1" "ConfigMap" "open-cluster-policies" (printf "cluster-set.%s"  $clusterSet) "values") | fromJson).labels | default dict) {{ "}}" }}
+                    {{ "{{" }} $clusterLabels := (lookup "policy.open-cluster-management.io/v1" "ConfigMap" "open-cluster-policies" (printf "managed-cluster.%s" $cluster) "values") | fromJson).labels | default dict) {{ "}}" }}
                     {{ "{{" }} $labels := merge $clusterLabels $clusterSetLabels {{ "}}" }} 
-                    {{ "{{" }} $labels | toYaml {{ "}}" }}
+                    {{ "{{" }} $labels | toYaml | nindent 6 {{ "}}" }}
               pruneObjectBehavior: None
               remediationAction: enforce
               severity: high
