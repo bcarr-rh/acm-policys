@@ -2,7 +2,55 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates
 teams:
-  - "dev"
+  dev:
+    gitops_rbac_policies:
+    - 'g, openshift-systems, role:admin'
+    - 'g, openshift-application-architects, role:admin'
+    - 'g, openshift-developers, role:readonly'
+    # OPTIONAL
+    controller:
+      limits:
+        cpu: 2000m
+        memory: 2048Mi
+      requests:
+        cpu: 250m
+        memory: 1024Mi
+    ha:
+      enabled: false
+      limits:
+        cpu: 500m
+        memory: 256Mi
+      requests:
+        cpu: 250m
+        memory: 128Mi
+    redis:
+      limits:
+        cpu: 500m
+        memory: 256Mi
+      requests:
+        cpu: 250m
+        memory: 128Mi
+    repo:
+      limits:
+        cpu: 1000m
+        memory: 1024Mi
+      requests:
+        cpu: 250m
+        memory: 256Mi    
+    server:
+      limits:
+        cpu: 500m
+        memory: 256Mi
+      requests:
+        cpu: 125m
+        memory: 128Mi
+    dex:
+      limits:
+        cpu: 500m
+        memory: 256Mi
+      requests:
+        cpu: 250m
+        memory: 128Mi
 hubClusterSets:
   hub:
     labels:

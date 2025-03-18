@@ -1,5 +1,5 @@
 {{- range $clusterSet, $value := .Values.clusterSets }}
-{{- range $team := .Values.teams | default list "dev" }}
+{{- range $team, $teamjson := .Values.gitops.teams }}
 ---
 apiVersion: apps.open-cluster-management.io/v1beta1
 kind: GitOpsCluster

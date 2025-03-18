@@ -1,77 +1,86 @@
-{{- range $team := .Values.teams | default list "dev" }}
+{{- range $team, $value := .Values.gitops.teams }}
 ---
 apiVersion: argoproj.io/v1beta1
 kind: ArgoCD
 metadata:
-  annotations:
-    argocd.argoproj.io/sync-wave: "2"
   name: argocd-dev
   namespace: openshift-gitops-{{ $team }}
+  annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+    argocd.argoproj.io/sync-wave: "2"
 spec:
   server:
-    autoscale:
-      enabled: false
-    grpc:
-      ingress:
-        enabled: false
-    ingress:
-      enabled: false
     resources:
       limits:
-        cpu: 500m
-        memory: 256Mi
+        cpu: {{ (($value.server).limits).cpu | default "500m" }}
+        memory: {{ (($value.server).limits).memory | default "256Mi" }}
       requests:
-        cpu: 125m
-        memory: 128Mi
+        cpu: {{ (($value.server).requests).cpu | default "125m" }}
+        memory: {{ (($value.server).requests).memory | default "128Mi" }}
     route:
       enabled: true
-    service:
-      type: ''
-  grafana:
-    enabled: false
-    ingress:
-      enabled: false
-    route:
-      enabled: false
-  disableAdmin: true
   monitoring:
     enabled: false
-  notifications:
-    enabled: false
-  prometheus:
-    enabled: false
-    ingress:
-      enabled: false
-    route:
-      enabled: false
-  initialSSHKnownHosts: {}
   sso:
     dex:
-      openShiftOAuth: true
       resources:
         limits:
-          cpu: 500m
-          memory: 256Mi
+          cpu: {{ (($value.dex).limits).cpu | default "500m" }}
+          memory: {{ (($value.dex).limits).memory | default "256Mi" }}
         requests:
-          cpu: 250m
-          memory: 128Mi
+          cpu: {{ (($value.dex).requests).cpu | default "125m" }}
+          memory: {{ (($value.dex).requests).memory | default "128Mi" }}
+      openShiftOAuth: true
     provider: dex
   rbac:
     defaultPolicy: ''
     policy: |
       g, system:cluster-admins, role:admin
-      g, openshift-systems, role:admin
-      g, openshift-application-architects, role:admin
-      g, openshift-developers, role:readonly
+    {{- range .gitops_rbac_policies }}
+      {{ . }}
+    {{- end }}
     scopes: '[groups]'
   repo:
     resources:
       limits:
-        cpu: '1'
-        memory: 1Gi
+        cpu: {{ (($value.repo).limits).cpu | default "1000m" }}
+        memory: {{ (($value.repo).limits).memory | default "1024Mi" }}
       requests:
-        cpu: 250m
-        memory: 256Mi
+        cpu: {{ (($value.repo).requests).cpu | default "250m" }}
+        memory: {{ (($value.repo).requests).memory | default "256Mi" }}
+  ha:
+    resources:
+      limits:
+        cpu: {{ (($value.ha).limits).cpu | default "500m" }}
+        memory: {{ (($value.ha).limits).memory | default "256Mi" }}
+      requests:
+        cpu: {{ (($value.ha).requests).cpu | default "125m" }}
+        memory: {{ (($value.ha).requests).memory | default "128Mi" }}
+    enabled: {{ ($value.ha).enabled | default "false" }}
+  redis:
+    resources:
+      limits:
+        cpu: {{ (($value.redis).limits).cpu | default "500m" }}
+        memory: {{ (($value.redis).limits).memory | default "256Mi" }}
+      requests:
+        cpu: {{ (($value.redis).requests).cpu | default "125m" }}
+        memory: {{ (($value.redis).requests).memory | default "128Mi" }}
+  controller:
+    resources:
+      limits:
+        cpu: {{ (($value.controller).limits).cpu | default "2000m" }}
+        memory: {{ (($value.controller).limits).memory | default "2048Mi" }}
+      requests:
+        cpu: {{ (($value.controller).requests).cpu | default "250m" }}
+        memory: {{ (($value.controller).requests).memory | default "1024Mi" }}
+  applicationSet:
+    resources:
+      limits:
+        cpu: {{ (($value.applicationSet).limits).cpu | default "2" }}
+        memory: {{ (($value.applicationSet).limits).memory | default "1Gi" }}
+      requests:
+        cpu: {{ (($value.applicationSet).requests).cpu | default "250m" }}
+        memory: {{ (($value.applicationSet).requests).memory | default "512Mi" }}
   resourceExclusions: |
     - apiGroups:
       - tekton.dev
@@ -80,33 +89,6 @@ spec:
       kinds:
       - TaskRun
       - PipelineRun        
-  ha:
-    enabled: false
-    resources:
-      limits:
-        cpu: 500m
-        memory: 256Mi
-      requests:
-        cpu: 250m
-        memory: 128Mi
-  tls:
-    ca: {}
-  redis:
-    resources:
-      limits:
-        cpu: 500m
-        memory: 256Mi
-      requests:
-        cpu: 250m
-        memory: 128Mi
-  controller:
-    processors: {}
-    resources:
-      limits:
-        cpu: '2'
-        memory: 2Gi
-      requests:
-        cpu: 250m
-        memory: 1Gi
-    sharding: {}
+  disableAdmin: {{ $value.disableAdmin | default "true" }}
+{{- end }}
 {{- end -}}
