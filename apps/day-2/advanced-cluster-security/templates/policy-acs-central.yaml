@@ -78,9 +78,12 @@ spec:
                   name: stackrox-central-services
                 status:
                   conditions:
-                    - reason: InstallSuccessful
-                      status: 'True'
+                    - status: 'True'
                       type: Deployed
+                    - status: 'True'
+                      type: Initialized
+                    - status: 'False'
+                      type: ReleaseFailed
 ---
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
