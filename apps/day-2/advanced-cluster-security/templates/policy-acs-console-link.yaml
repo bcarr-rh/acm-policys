@@ -2,7 +2,7 @@ apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
   name: policy-acs-console-link
-  namespace: open-cluster-policies
+  namespace: {{ .Values.acs.namespace }}
   annotations:
     argocd.argoproj.io/sync-options: Prune=false,SkipDryRunOnMissingResource=true
     argocd.argoproj.io/compare-options: IgnoreExtraneous
@@ -12,6 +12,12 @@ metadata:
 spec:
   remediationAction: enforce
   disabled: false
+  dependencies:
+    - name: policy-acs-sync-bundle
+      namespace: {{ .Values.acs.namespace }}
+      apiVersion: policy.open-cluster-management.io/v1
+      compliance: Compliant
+      kind: Policy
   policy-templates:
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
@@ -39,7 +45,7 @@ apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
 metadata:
   name: policy-acs-console-link-placement
-  namespace: open-cluster-policies
+  namespace: {{ .Values.acs.namespace }}
 spec:
   clusterSets:
   {{- range $clusterSet, $value := .Values.clusterSets }}
@@ -58,7 +64,7 @@ apiVersion: policy.open-cluster-management.io/v1
 kind: PlacementBinding
 metadata:
   name: policy-acs-console-link-placement
-  namespace: open-cluster-policies
+  namespace: {{ .Values.acs.namespace }}
 placementRef:
   name: policy-acs-console-link-placement
   apiGroup: cluster.open-cluster-management.io
