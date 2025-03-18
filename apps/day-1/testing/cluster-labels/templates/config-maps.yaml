@@ -13,7 +13,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata: 
-  name: {{ printf "ClusterSet-%s" $clusterSet }}
+  name: {{ printf "cluster-set.%s" $clusterSet }}
   namespace: "open-cluster-management" 
 data:
   values: '{{ $data | toJson }}'
