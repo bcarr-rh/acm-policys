@@ -42,7 +42,7 @@ spec:
                 apiVersion: v1
                 kind: Namespace
                 metadata:
-                  name: stackrox
+                  name: {{ .Values.acs.namespace }}
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
@@ -60,7 +60,7 @@ spec:
                   annotations:
                     argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
                   name: create-cluster-init
-                  namespace: stackrox
+                  namespace: {{ .Values.acs.namespace }}
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
@@ -79,7 +79,7 @@ spec:
                     argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
                     argocd.argoproj.io/sync-wave: "1"
                   name: create-cluster-init
-                  namespace: stackrox
+                  namespace: {{ .Values.acs.namespace }}
                 rules:
                 - apiGroups:
                   - ""
@@ -124,7 +124,7 @@ spec:
                   annotations:
                     argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
                   name: create-cluster-init
-                  namespace: stackrox
+                  namespace: {{ .Values.acs.namespace }}
                 roleRef:
                   apiGroup: rbac.authorization.k8s.io
                   kind: Role
@@ -132,7 +132,7 @@ spec:
                 subjects:
                 - kind: ServiceAccount
                   name: create-cluster-init
-                  namespace: stackrox
+                  namespace: {{ .Values.acs.namespace }}
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
@@ -151,7 +151,7 @@ spec:
                     argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
                     argocd.argoproj.io/sync-wave: "2"
                   name: create-cluster-init-bundle-v2
-                  namespace: stackrox
+                  namespace: {{ .Values.acs.namespace }}
                   labels:
                     init-bundle: central
                 spec:
@@ -268,7 +268,7 @@ spec:
                 kind: Job
                 metadata:
                   name: create-cluster-init-bundle-v2
-                  namespace: stackrox
+                  namespace: {{ .Values.acs.namespace }}
                 status:
                   succeeded: 1
 ---
@@ -279,7 +279,9 @@ metadata:
   namespace: open-cluster-policies
 spec:
   clusterSets:
-    - {{ .Values.acs.hubClusterSet }}
+  {{- range $clusterSet, $value := .Values.hubClusterSets }}
+    - {{ $clusterSet }}
+  {{- end }}
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists

@@ -7,8 +7,15 @@ acs:
   name: rhacs-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
+  operatorGroupName: rhacs-operator-group
+  operatorNamespace: rhacs-operator
   namespace: stackrox
-  hubClusterSet: hub
-  managedClusterSets:
-    - managed
   cliImage: image-registry.openshift-image-registry.svc:5000/openshift/cli:latest
+hubClusterSets:
+  hub:
+    labels:
+      test1: 'test'
+clusterSets:
+  managed:
+    labels:
+      test4: 'test'

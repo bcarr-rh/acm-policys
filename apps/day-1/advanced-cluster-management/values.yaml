@@ -15,6 +15,17 @@ acm:
   gitops_namespace: openshift-gitops
   gitops_namespace_dev: openshift-dev-gitops
   gitops_auto_clusterset: managed
-  clusterSets:
-    - hub
-    - managed
+hubClusterSets:
+  hub:
+    labels:
+      test1: 'test'
+  testHub:
+    labels:
+      test2: 'test'
+clusterSets:
+  sandbox:
+    labels:
+      test3: 'test'
+  managed:
+    labels:
+      test4: 'test'

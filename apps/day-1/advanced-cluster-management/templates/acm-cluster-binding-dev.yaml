@@ -1,13 +1,15 @@
 {{- range $clusterSet, $value := .Values.clusterSets }}
+{{- range $team := .Values.teams | default ["dev"] }}
 ---
 apiVersion: cluster.open-cluster-management.io/v1beta2
 kind: ManagedClusterSetBinding
 metadata:
   name: {{ $clusterSet }}
-  namespace: {{ $.Values.acs.namespace }}
+  namespace: openshift-gitops-{{ $team }}
   annotations:
     argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
-    argocd.argoproj.io/sync-wave: "6"
+    argocd.argoproj.io/sync-wave: "5"
 spec:
   clusterSet: {{ $clusterSet }}
-{{ end }}
+{{- end }}
+{{- end }}

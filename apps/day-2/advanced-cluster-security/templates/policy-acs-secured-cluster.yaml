@@ -24,7 +24,7 @@ spec:
   disabled: false
   dependencies:
     - name: policy-acs-sync-bundle
-      namespace: stackrox
+      namespace: {{ .Values.acs.namespace }}
       apiVersion: policy.open-cluster-management.io/v1
       compliance: Compliant
       kind: Policy
@@ -43,13 +43,13 @@ spec:
                 apiVersion: platform.stackrox.io/v1alpha1
                 kind: SecuredCluster
                 metadata:
-                  namespace: stackrox
+                  namespace: {{ .Values.acs.namespace }}
                   name: stackrox-secured-cluster-services
                 spec:
                   clusterName: '{{ "{{" }} fromSecret "open-cluster-management-agent" "hub-kubeconfig-secret" "cluster-name" | base64dec {{ "}}" }}'
                   auditLogs:
                     collection: Auto
-                  centralEndpoint: '{{ "{{" }} fromSecret "stackrox" "sensor-tls" "acs-host" | base64dec {{ "}}" }}'
+                  centralEndpoint: '{{ "{{" }} fromSecret "{{ .Values.acs.namespace }}" "sensor-tls" "acs-host" | base64dec {{ "}}" }}'
                   admissionControl:
                     listenOnCreates: false
                     listenOnEvents: true
@@ -67,8 +67,8 @@ metadata:
   namespace: open-cluster-policies
 spec:
   clusterSets:
-  {{- range .Values.acs.managedClusterSets }}
-    - {{ . }}
+  {{- range $clusterSet, $value := .Values.clusterSets }}
+    - {{ $clusterSet }}
   {{- end }}
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable

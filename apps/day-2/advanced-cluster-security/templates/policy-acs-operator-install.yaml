@@ -37,43 +37,32 @@ spec:
                 apiVersion: v1
                 kind: Namespace
                 metadata:
-                  name: stackrox
+                  name: {{ .Values.acs.namespace }}
             - complianceType: musthave
               objectDefinition:
                 apiVersion: v1
                 kind: Namespace
                 metadata:
-                  name: rhacs-operator
-            - complianceType: musthave
-              objectDefinition:
-                apiVersion: operators.coreos.com/v1
-                kind: OperatorGroup
-                metadata:
-                  name: rhacs-operator-group
-                  namespace: rhacs-operator
-                spec: {}
+                  name: {{ .Values.acs.operatorNamespace }}
     - objectDefinition:
-        apiVersion: policy.open-cluster-management.io/v1
-        kind: ConfigurationPolicy
+        apiVersion: policy.open-cluster-management.io/v1beta1
+        kind: OperatorPolicy
         metadata:
-          name: managed-cluster-security-operator-sub
+          name: install-operator-acs
         spec:
-          remediationAction: inform
+          remediationAction: enforce
           severity: high
-          object-templates:
-            - complianceType: musthave
-              objectDefinition:
-                apiVersion: operators.coreos.com/v1alpha1
-                kind: Subscription
-                metadata:
-                  name: rhacs-operator
-                  namespace: rhacs-operator
-                spec:
-                  channel: {{ .Values.acs.channel }}
-                  installPlanApproval: {{ .Values.acs.installPlanApproval }}
-                  name: {{ .Values.acs.name }}
-                  source: {{ .Values.acs.source }}
-                  sourceNamespace: {{ .Values.acs.sourceNamespace }}
+          complianceType: musthave
+          operatorGroup:
+            name: {{ .Values.acs.operatorGroupName }}
+            namespace: {{ .Values.acs.operatorNamespace }}
+          subscription:
+            name: {{ .Values.acs.name }}
+            namespace: {{ .Values.acs.operatorNamespace }}
+            source: {{ .Values.acs.source }}
+            sourceNamespace: {{ .Values.acs.sourceNamespace }}
+            channel: {{ .Values.acs.channel }}
+          upgradeApproval: {{ .Values.acs.installPlanApproval }}
 ---
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
@@ -82,10 +71,12 @@ metadata:
   namespace: open-cluster-policies
 spec:
   clusterSets:
-  {{- range .Values.acs.managedClusterSets }}
-    - {{ . }}
+  {{- range $clusterSet, $value := .Values.clusterSets }}
+    - {{ $clusterSet }}
   {{- end }}
-    - {{ .Values.acs.hubClusterSet }}
+  {{- range $clusterSet, $value := .Values.hubClusterSets }}
+    - {{ $clusterSet }}
+  {{- end }}
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists
