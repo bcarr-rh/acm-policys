@@ -31,6 +31,7 @@ clusterSets:
       worker-nodes-numcores-per-socket:  '4'
       worker-nodes:  '3'
       hub-Cluster: 'yes-i-am'
+      test-worked: 'false'
   managed:
     labels: 
       infra-nodes-numcpu: '8'
