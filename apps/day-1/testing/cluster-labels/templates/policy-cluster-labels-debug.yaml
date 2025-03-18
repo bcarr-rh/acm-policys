@@ -28,7 +28,7 @@ spec:
                 apiVersion: v1 
                 kind: ConfigMap
                 metadata:
-                  name: {{ "{{" }} $cluster {{ "}}" }}
+                  name: managed-cluster-lookup-debug
                   namespace: open-cluster-policies
                 data:
                   debug-output: |
