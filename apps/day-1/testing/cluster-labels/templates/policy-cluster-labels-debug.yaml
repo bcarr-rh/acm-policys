@@ -23,7 +23,7 @@ spec:
           name: {{ $configPolicyName }}
         spec:
           object-templates-raw: |
-            - complianceType: musthave 
+            - complianceType: mustonlyhave 
               objectDefinition: 
                 apiVersion: v1 
                 kind: ConfigMap
