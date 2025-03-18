@@ -12,14 +12,14 @@ metadata:
 spec:
   remediationAction: enforce
   disabled: false
-  policy-templates-raw: |
+  policy-templates:
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
           name: acs-console-link
         spec:
-          remediationAction: inform
+          remediationAction: enforce
           severity: high
           object-templates-raw: |
             - complianceType: musthave
