@@ -91,4 +91,3 @@ spec:
       - PipelineRun        
   disableAdmin: {{ $value.disableAdmin | default "true" }}
 {{- end }}
-{{- end -}}
