@@ -1,6 +1,7 @@
-{{ $policyName := "policy-infra-image-registry" }}
-{{ $configPolicyName := "create-infra-image-registry" }}
-{{ $placementName := printf "placement-%s" $policyName }}
+{{- range $clusterKey, $clusterValue := .Values.clusterlabels.clusters }}
+  {{ $policyName := printf "policy-%s-cluster-claims" $clusterKey }}
+  {{ $configPolicyName := printf "cluster-claims-%s" $clusterKey }}
+  {{ $placementName := printf "placement-%s" $policyName }}
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
@@ -11,14 +12,8 @@ metadata:
     policy.open-cluster-management.io/controls: CM-2 Baseline Configuration
     policy.open-cluster-management.io/standards: NIST SP 800-53
 spec:
-  disabled: {{ not .Values.infraNodes.imageRegistry.migrate }}
-  remediationAction: {{ .Values.infraNodes.imageRegistry.remediationAction | default "enforce" }}
-  dependencies:
-  - apiVersion: policy.open-cluster-management.io/v1
-    compliance: Compliant
-    kind: Policy
-    name: {{ .Values.infraNodes.dependencies.install }}
-    namespace: open-cluster-policies
+  disabled: false
+  remediationAction: enforce
   policy-templates:
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
@@ -26,24 +21,18 @@ spec:
         metadata:
           name: {{ $configPolicyName }}
         spec:
-          object-templates:
+          object-templates-raw: |
+            {{- range $index, $item := $clusterValue.clusterclaims }}
             - complianceType: musthave
               objectDefinition:
-                apiVersion: imageregistry.operator.openshift.io/v1
-                kind: Config
+                apiVersion: cluster.open-cluster-management.io/v1alpha1
+                kind: ClusterClaim
                 metadata:
-                  name: cluster
-                spec:
-                  nodeSelector: 
-                    node-role.kubernetes.io/infra: ""
-                  tolerations:
-                  - effect: NoSchedule
-                    key: node-role.kubernetes.io/infra
-                  - effect: NoExecute
-                    key: node-role.kubernetes.io/infra
-          pruneObjectBehavior: {{ .Values.infraNodes.imageRegistry.pruneObjectBehavior | default "None" }}
-          remediationAction: inform
-          severity: high
+                  name: {{ $item.name }}
+              pruneObjectBehavior: None
+              remediationAction: enforce
+              severity: high
+            {{- end }}
 ---
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
@@ -52,14 +41,14 @@ metadata:
   namespace: open-cluster-policies
 spec:
   clusterSets:
-  {{- range .Values.infraNodes.clusterSets }}
+  {{- range $.Values.clusterlabels.clusterSets }}
     - {{ . }}
   {{- end }}
   predicates:
     - requiredClusterSelector:
         labelSelector:
           matchExpressions:
-            - key: infra-nodes
+            - key: {{ $clusterKey }}
               operator: Exists
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
@@ -70,13 +59,15 @@ spec:
 apiVersion: policy.open-cluster-management.io/v1
 kind: PlacementBinding
 metadata:
-  name: {{ $placementName }}
+  name: {{ $placementName}}
   namespace: open-cluster-policies
 placementRef:
-  name: {{ $placementName }}
+  name: {{ $placementName}}
   apiGroup: cluster.open-cluster-management.io
   kind: Placement
 subjects:
   - name: {{ $policyName }}
     apiGroup: policy.open-cluster-management.io
     kind: Policy
+---
+{{ end }}
