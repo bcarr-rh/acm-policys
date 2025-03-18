@@ -32,8 +32,8 @@ spec:
                 metadata:
                   name: {{ "{{" }} $cluster {{ "}}" }}
                   labels:
-                    {{ "{{" }} $clusterSetLabels := ((lookup "v1" "ConfigMap" "open-cluster-policies" (printf "cluster-set.%s"  $clusterSet) "values") | fromJson).labels | default dict) {{ "}}" }}
-                    {{ "{{" }} $clusterLabels := ((lookup "policy.open-cluster-management.io/v1" "ConfigMap" "open-cluster-policies" (printf "managed-cluster.%s" $cluster) "values") | fromJson).labels | default dict) {{ "}}" }}
+                    {{ "{{" }} $clusterSetLabels := ((lookup "v1" "ConfigMap" "open-cluster-policies" (printf "cluster-set.%s"  $clusterSet) "values") | fromJson).labels | default dict {{ "}}" }}
+                    {{ "{{" }} $clusterLabels := ((lookup "policy.open-cluster-management.io/v1" "ConfigMap" "open-cluster-policies" (printf "managed-cluster.%s" $cluster) "values") | fromJson).labels | default dict {{ "}}" }}
                     {{ "{{" }} $labels := merge $clusterLabels $clusterSetLabels {{ "}}" }} 
                     {{ "{{" }} $labels | toYaml | nindent 6 {{ "}}" }}
               pruneObjectBehavior: None
