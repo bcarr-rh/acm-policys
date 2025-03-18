@@ -1,4 +1,4 @@
-{{- range $team, $value := .Values.gitops.teams }}
+{{- range $team, $value := .Values.teams }}
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: RolloutManager

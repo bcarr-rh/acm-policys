@@ -22,7 +22,7 @@ spec:
           remediationAction: inform
           severity: high
           object-templates-raw: |
-          {{- range $team, $value := .Values.gitops.teams }}
+          {{- range $team, $value := .Values.teams }}
             - complianceType: musthave
               objectDefinition:
                 apiVersion: console.openshift.io/v1
