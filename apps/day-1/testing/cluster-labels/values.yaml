@@ -44,7 +44,7 @@ clusterSets:
 clusters:
   nonprod:
     cluster-set: 'hub' 
-    rollback: false
+    rollback: 'false'
     labels:
       infra-nodes-numcpu: '8'
       infra-nodes-memory-mib:  '24576'
