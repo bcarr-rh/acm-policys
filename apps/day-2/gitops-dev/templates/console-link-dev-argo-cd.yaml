@@ -22,7 +22,7 @@ spec:
           remediationAction: inform
           severity: high
           object-templates-raw: |
-          {{- range $team := .Values.teams | default ["dev"] }}
+          {{- range $team := .Values.teams | default list "dev" }}
             - complianceType: musthave
               objectDefinition:
                 apiVersion: console.openshift.io/v1

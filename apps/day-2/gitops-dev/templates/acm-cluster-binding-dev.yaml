@@ -1,5 +1,5 @@
 {{- range $clusterSet, $value := .Values.clusterSets }}
-{{- range $team := .Values.teams | default ["dev"] }}
+{{- range $team := .Values.teams | default list "dev" }}
 ---
 apiVersion: cluster.open-cluster-management.io/v1beta2
 kind: ManagedClusterSetBinding

@@ -1,4 +1,4 @@
-{{- range $team := .Values.teams | default ["dev"] }}
+{{- range $team := .Values.teams | default list "dev" }}
 ---
 kind: Namespace
 apiVersion: v1

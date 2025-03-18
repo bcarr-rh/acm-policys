@@ -1,4 +1,4 @@
-{{- range $team := .Values.teams | default ["dev"] }}
+{{- range $team := .Values.teams | default list "dev" }}
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: RolloutManager
