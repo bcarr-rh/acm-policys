@@ -30,7 +30,7 @@ clusterSets:
       worker-nodes-memory-mib:  '32768'
       worker-nodes-numcores-per-socket:  '4'
       worker-nodes:  '3'
-      hub-Cluster: "yes i am"
+      hub-Cluster: 'yes i am'
   managed:
     labels: 
       infra-nodes-numcpu: '8'
