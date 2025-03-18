@@ -36,10 +36,10 @@ spec:
                   lookupClusterSets: | 
                     {{ "{{" }} range $index, $value := (lookup "cluster.open-cluster-management.io/v1" "ManagedCluster" "" "").items {{ "}}" }}
                     {{ "{{" }} $clusterSet := ((index $value.metadata.labels "cluster.open-cluster-management.io/clusterset") | default "") {{ "}}" }}
-                    {{ "{{" }} $clusterSet | toRawJson {{ "}}" }}
+                    {{ "{{" }} $clusterSet | trim {{ "}}" }}
                   lookupClusterSetLabels: |
                     {{ "{{/*" }} $clusterSetLabels := ((lookup "v1" "ConfigMap" "open-cluster-policies" (printf "cluster-set.%s"  $clusterSet).data.values) | default "" | fromJson).labels | default dict {{ "*/}}" }}
-                    {{ "{{" }} $clusterSet {{ "}}" }}Labels: {{ "{{" }} $clusterSet | toRawJson {{ "}}" }}
+                    {{ "{{" }} $clusterSet | trim {{ "}}" }}Labels: {{ "{{" }} $clusterSet | trim {{ "}}" }}
                     {{ "{{" }} end {{ "}}" }}
 ---
 apiVersion: cluster.open-cluster-management.io/v1beta1
