@@ -16,4 +16,3 @@ metadata:
   namespace: "open-cluster-management" 
 data: {{ $data | toYaml | nindent 2 }}
 {{ end }}
-/* data: {{ "'" }}{{ $data | toJson }}{{ "'" }} */
