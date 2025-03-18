@@ -1,5 +1,5 @@
 {{- range $clusterSet, $value := .Values.clusterSets }}
-{{- range $team, $teamjson := .Values.teams }}
+{{- range $team, $teamjson := $.Values.teams }}
 ---
 apiVersion: cluster.open-cluster-management.io/v1beta2
 kind: ManagedClusterSetBinding

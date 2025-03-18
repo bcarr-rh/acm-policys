@@ -51,6 +51,9 @@ teams:
       requests:
         cpu: 250m
         memory: 128Mi
+  test:
+    gitops_rbac_policies:
+    - 'g, openshift-systems, role:admin'
 hubClusterSets:
   hub:
     labels:
