@@ -1,8 +1,9 @@
+{{- range $team, $value := .Values.teams }}
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
-  name: policy-gitops-dev-console-link
-  namespace: open-cluster-policies
+  name: policy-gitops-{{ $team }}-console-link
+  namespace: openshift-gitops-{{ $team }}
   annotations:
     argocd.argoproj.io/sync-options: Prune=false,SkipDryRunOnMissingResource=true
     argocd.argoproj.io/compare-options: IgnoreExtraneous
@@ -17,12 +18,11 @@ spec:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: gitops-dev-console-link
+          name: gitops-{{ $team }}-console-link
         spec:
           remediationAction: inform
           severity: high
           object-templates-raw: |
-          {{- range $team, $value := .Values.teams }}
             - complianceType: musthave
               objectDefinition:
                 apiVersion: console.openshift.io/v1
@@ -36,13 +36,12 @@ spec:
                   href: {{ "{{" }}hub (lookup "route.openshift.io/v1" "Route" "openshift-gitops-{{ $team }}" "argocd-dev-server").spec.host hub{{ "}}" }}
                   location: ApplicationMenu
                   text: {{ $team }} Argo CD
-          {{- end }}
 ---
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
 metadata:
-  name: policy-gitops-dev-console-link-placement
-  namespace: open-cluster-policies
+  name: policy-gitops-{{ $team }}-console-link-placement
+  namespace: openshift-gitops-{{ $team }}
 spec:
   clusterSets:
   {{- range $clusterSet, $value := .Values.clusterSets }}
@@ -60,13 +59,14 @@ spec:
 apiVersion: policy.open-cluster-management.io/v1
 kind: PlacementBinding
 metadata:
-  name: policy-gitops-dev-console-link-placement
-  namespace: open-cluster-policies
+  name: policy-gitops-{{ $team }}-console-link-placement
+  namespace: openshift-gitops-{{ $team }}
 placementRef:
-  name: policy-gitops-dev-console-link-placement
+  name: policy-gitops-{{ $team }}-console-link-placement
   apiGroup: cluster.open-cluster-management.io
   kind: Placement
 subjects:
-  - name: policy-gitops-dev-console-link
+  - name: policy-gitops-{{ $team }}-console-link
     apiGroup: policy.open-cluster-management.io
     kind: Policy
+{{- end }}
