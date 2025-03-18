@@ -34,24 +34,6 @@ spec:
                 data:
                   debug-output: |
                     Cluster: {{ "{{" }} $cluster {{ "}}" }}
-            {{ "{{" }} range $cluster, $value := (lookup "cluster.open-cluster-management.io/v1" "ManagedCluster" "" "").items {{ "}}" }}
-            {{ "{{" }} $clusterSet := ((index $value.metadata.labels "cluster.open-cluster-management.io/clusterset") | default "") {{ "}}" }}
-            - complianceType: musthave
-              objectDefinition:
-                apiVersion: cluster.open-cluster-management.io/v1
-                kind: ManagedCluster
-                metadata:
-                  name: {{ "{{" }} $cluster {{ "}}" }}
-                  labels:
-                    {{ "{{" }} $clusterSetLabels := ((lookup "v1" "ConfigMap" "open-cluster-policies" (printf "cluster-set.%s"  $clusterSet).data.values) | default "" | fromJson).labels | default dict {{ "}}" }}
-                    {{ "{{" }} $clusterLabels := ((lookup "policy.open-cluster-management.io/v1" "ConfigMap" "open-cluster-policies" (printf "managed-cluster.%s" $cluster).data.values) | default "" | fromJson).labels | default dict {{ "}}" }}
-                    {{ "{{" }} $labels := merge $clusterLabels $clusterSetLabels {{ "}}" }} 
-                    {{ "{{" }} range $key, $value := $labels {{ "}}" }}
-                    {{ "{{" }} $key {{ "}}" }}: {{ "{{" }} $value {{ "}}" }}
-                    {{ "{{" }} end {{ "}}" }}
-              pruneObjectBehavior: None
-              remediationAction: enforce
-              severity: high
             {{ "{{" }} end {{ "}}" }}
 ---
 apiVersion: cluster.open-cluster-management.io/v1beta1
