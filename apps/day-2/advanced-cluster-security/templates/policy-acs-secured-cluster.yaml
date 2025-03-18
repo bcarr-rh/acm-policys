@@ -20,7 +20,6 @@ metadata:
     policy.open-cluster-management.io/categories: CM Configuration Management
     policy.open-cluster-management.io/controls: CM-2 Baseline Configuration
 spec:
-  remediationAction: enforce
   disabled: false
   dependencies:
     - name: policy-acs-sync-bundle
@@ -35,7 +34,7 @@ spec:
         metadata:
           name: managed-cluster-security-endpoints
         spec:
-          remediationAction: inform
+          remediationAction: enforce
           severity: high
           object-templates:
             - complianceType: musthave
@@ -59,6 +58,35 @@ spec:
                       collection: EBPF
                       imageFlavor: Regular
                     taintToleration: TolerateTaints
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: managed-cluster-security-endpoints-test
+        spec:
+          remediationAction: inform
+          severity: high
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: platform.stackrox.io/v1alpha1
+                kind: SecuredCluster
+                metadata:
+                  namespace: {{ .Values.acs.namespace }}
+                  name: stackrox-secured-cluster-services
+                status:
+                  conditions:
+                    - reason: UpgradeSuccessful
+                      status: 'True'
+                      type: Deployed
+                    - status: 'True'
+                      type: Initialized
+                    - status: 'False'
+                      type: Irreconcilable
+                    - status: 'False'
+                      type: ProxyConfigFailed
+                    - status: 'False'
+                      type: ReleaseFailed
 ---
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
