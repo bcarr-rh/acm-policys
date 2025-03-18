@@ -1,4 +1,5 @@
 {{- range $team, $value := .Values.teams }}
+---
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
@@ -44,10 +45,10 @@ metadata:
   namespace: openshift-gitops-{{ $team }}
 spec:
   clusterSets:
-  {{- range $clusterSet, $value := .Values.clusterSets }}
+  {{- range $clusterSet, $value := $.Values.clusterSets }}
     - {{ $clusterSet }}
   {{- end }}
-  {{- range $clusterSet, $value := .Values.hubClusterSets }}
+  {{- range $clusterSet, $value := $.Values.hubClusterSets }}
     - {{ $clusterSet }}
   {{- end }}
   tolerations:
