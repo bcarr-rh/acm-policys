@@ -4,7 +4,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata: 
   name: "{{ printf "managed-cluster.%s" $cluster }}"
-  namespace: "open-cluster-management" 
+  namespace: "open-cluster-policies" 
 data: 
   values: '{{ $data | toJson }}'
 {{ end }}
@@ -14,7 +14,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata: 
   name: {{ printf "cluster-set.%s" $clusterSet }}
-  namespace: "open-cluster-management" 
+  namespace: "open-cluster-policies" 
 data:
   values: '{{ $data | toJson }}'
 {{ end }}
