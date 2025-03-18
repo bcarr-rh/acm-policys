@@ -13,8 +13,6 @@ acm:
   enable_backup: false
   policy_namespace: open-cluster-policies
   gitops_namespace: openshift-gitops
-  gitops_namespace_dev: openshift-dev-gitops
-  gitops_auto_clusterset: managed
 hubClusterSets:
   hub:
     labels:

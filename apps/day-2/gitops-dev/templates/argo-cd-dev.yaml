@@ -1,10 +1,12 @@
+{{- range $team := .Values.teams | default ["dev"] }}
+---
 apiVersion: argoproj.io/v1beta1
 kind: ArgoCD
 metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "2"
   name: argocd-dev
-  namespace: openshift-dev-gitops
+  namespace: openshift-gitops-{{ $team }}
 spec:
   server:
     autoscale:
@@ -107,3 +109,4 @@ spec:
         cpu: 250m
         memory: 1Gi
     sharding: {}
+{{- end -}}
