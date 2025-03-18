@@ -48,8 +48,8 @@ spec:
                     {{ "{{" }} $clusterLabels := (index ((index (lookup "v1" "ConfigMap" "open-cluster-policies" (printf "managed-cluster.%s"  $value.metadata.name)) "data" "values") | default "" | fromJson) "labels") | default dict {{ "}}" }}
                     {{ "{{" }} $clusterLabels {{ "}}" }}
                   resultantSetOfLabels: | 
-                   {{ "{{" }} $resultantLabels := merge $clusterLabels $clusterSetLabels {{ "}}" }}
-                   {{ "{{" }} $resultantLabels {{ "}}" }}
+                    {{ "{{" }} $resultantLabels := merge $clusterLabels $clusterSetLabels {{ "}}" }}
+                    {{ "{{" }} $resultantLabels {{ "}}" }}
                   formattedLabels: |
                   {{ "{{" }} range $label, $value := $resultantLabels {{ "}}" }}
                     {{ "{{" }} $label {{ "}}" }}: {{ "{{" }} $value {{ "}}" }} 
