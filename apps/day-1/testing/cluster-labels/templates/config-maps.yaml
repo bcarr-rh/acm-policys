@@ -5,7 +5,8 @@ kind: ConfigMap
 metadata: 
   name: "{{ printf "ManagedCluster-%s" $cluster }}"
   namespace: "open-cluster-management" 
-data: {{ $data | toJson | quote }}
+data:
+  test: {{ $data | toJson | quote }}
 {{ end }}
 {{ range $clusterSet, $data := .Values.clusterSets }}
 ---
