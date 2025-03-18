@@ -31,7 +31,7 @@ spec:
                 spec:
                   applicationMenu:
                     section: Red Hat Applications
-                  href: '{{ "{{" }}hub fromSecret "{{ .Values.acs.namespace }}" "sensor-tls" "acs-host" | base64dec hub{{ "}}" }}'
+                  href: {{ "{{" }}hub fromSecret "{{ .Values.acs.namespace }}" "sensor-tls" "acs-host" | base64dec | toRawJson hub{{ "}}" }}
                   location: ApplicationMenu
                   text: Red Hat Advanced Cluster Security
 ---
