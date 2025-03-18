@@ -33,7 +33,7 @@ spec:
                   name: {{ "{{" }} $cluster {{ "}}" }}
                   labels:
                     {{ "{{" }} $clusterSetLabels := ((lookup "v1" "ConfigMap" "open-cluster-policies" (printf "cluster-set.%s"  $clusterSet).data.values) | default "" | fromJson).labels | default dict {{ "}}" }}
-                    {{ "{{" }} $clusterLabels := ((lookup "policy.open-cluster-management.io/v1" "ConfigMap" "open-cluster-policies" (printf "managed-cluster.%s" $cluster).data.values) | default "" | fromJson).labels | default dict {{ "}}" }}
+                    {{ "{{" }} $clusterLabels := (index (lookup "policy.open-cluster-management.io/v1" "ConfigMap" "open-cluster-policies" (printf "managed-cluster.%s" $cluster) | fromJson) | default "" | fromJson).labels | default dict {{ "}}" }}
                     {{ "{{" }} $labels := merge $clusterLabels $clusterSetLabels {{ "}}" }} 
                     {{ "{{" }} range $key, $value := $labels {{ "}}" }}
                     {{ "{{" }} $key {{ "}}" }}: {{ "{{" }} $value {{ "}}" }}
