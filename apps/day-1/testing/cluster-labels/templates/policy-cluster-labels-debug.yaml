@@ -40,7 +40,7 @@ spec:
                     {{ "{{" }} printf "cluster-set.%s" $clusterSet {{ "}}" }}
                   lookupClusterSetLabels: |
                     {{ "{{/*" }} $clusterSetLabels := ((lookup "v1" "ConfigMap" "open-cluster-policies" (printf "cluster-set.%s"  $clusterSet).data.values) | default "" | fromJson).labels | default dict {{ "*/}}" }}
-                    {{ "{{" }} (index (lookup "v1" "ConfigMap" "open-cluster-policies" (printf "cluster-set.%s"  $clusterSet)) "data" "values" "labels") | toRawJson | default dict {{ "}}" }}
+                    {{ "{{" }} (index (index (lookup "v1" "ConfigMap" "open-cluster-policies" (printf "cluster-set.%s"  $clusterSet)) "data" "values") | toRawJson) "labels" | default dict {{ "}}" }}
                     {{ "{{/*" }} $clusterSet | trim {{ "}}" }}Labels: {{ "{{" }} $clusterSet | trim {{ "*/}}" }}
                     {{ "{{" }} end {{ "}}" }}
 ---
