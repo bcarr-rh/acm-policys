@@ -6,7 +6,7 @@ metadata:
   name: "{{ printf "managed-cluster.%s" $cluster }}"
   namespace: "open-cluster-management" 
 data: 
-  test: {{ $data | toYaml | nindent 4 }}
+  test: {{ $data | toJson }}
 {{ end }}
 {{ range $clusterSet, $data := .Values.clusterSets }}
 ---
