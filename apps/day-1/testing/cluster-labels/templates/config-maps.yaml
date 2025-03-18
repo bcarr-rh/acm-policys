@@ -5,9 +5,8 @@ kind: ConfigMap
 metadata: 
   name: "{{ printf "ManagedCluster-%s" $cluster }}"
   namespace: "open-cluster-management" 
-data: {{ $data | toJson }}
-{{ end }}
-{{ range $clusterSet, $data := .Values.clusterSets }}
+data: {{ $data | toYaml | nident 2 }}
+{{ end }}{{ range $clusterSet, $data := .Values.clusterSets }}
 ---
 apiVersion: v1
 kind: ConfigMap
