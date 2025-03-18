@@ -35,7 +35,7 @@ spec:
                     {{ "{{" }}  (lookup "cluster.open-cluster-management.io/v1" "ManagedCluster" "" "") | toRawJson {{ "}}" }}
                   lookupClusterSets: | 
                     {{ "{{" }} range $index, $value := (lookup "cluster.open-cluster-management.io/v1" "ManagedCluster" "" "").items {{ "}}" }}
-                    iteration: {{ "{{" }} $index {{ "{{" }}
+                    iteration: {{ "{{" }} $index {{ "}}" }}
                     {{ "{{" }} $clusterSet := ((index $value.metadata.labels "cluster.open-cluster-management.io/clusterset") | default "") {{ "}}" }}
                     {{ "{{" }} $clusterSet | trim {{ "}}" }}
                   lookupClusterSetLabels: |
