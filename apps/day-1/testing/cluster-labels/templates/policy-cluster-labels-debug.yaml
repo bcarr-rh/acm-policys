@@ -33,7 +33,7 @@ spec:
                   namespace: open-cluster-policies
                 data:
                   debug-output: |
-                    Cluster: {{ "{{" }} $cluster {{ "}}" }}
+                    {{ "{{" }}lookup-results: (lookup "cluster.open-cluster-management.io/v1" "ManagedCluster" "" "") | toJson {{ "}}" }}
             {{ "{{" }} end {{ "}}" }}
 ---
 apiVersion: cluster.open-cluster-management.io/v1beta1
