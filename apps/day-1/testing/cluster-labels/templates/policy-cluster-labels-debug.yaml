@@ -1,6 +1,6 @@
 {{ range $clusterSetKey, $clusterSetValue := .Values.clusterSets }}
 {{ $hubClusterSet := $.Values.hubClusterSet | default "hub" }}
-{{ $policyName := printf "policy-%s-cluster-labels" $clusterSetKey }}
+{{ $policyName := printf "policy-%s-cluster-labels-debug" $clusterSetKey }}
 {{ $configPolicyName := printf "cluster-labels-%s" $clusterSetKey }}
 {{ $placementName := printf "placement-%s" $policyName }}
 apiVersion: policy.open-cluster-management.io/v1
