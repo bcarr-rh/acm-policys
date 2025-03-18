@@ -40,10 +40,11 @@ spec:
                     {{ "{{" }} printf "cluster-set.%s" $clusterSet {{ "}}" }}
                   lookupClusterSetLabels: |
                     {{ "{{/*" }} $clusterSetLabels := ((lookup "v1" "ConfigMap" "open-cluster-policies" (printf "cluster-set.%s"  $clusterSet).data.values) | default "" | fromJson).labels | default dict {{ "*/}}" }}
-                    {{ "{{" }} (index (index (lookup "v1" "ConfigMap" "open-cluster-policies" (printf "cluster-set.%s"  $clusterSet)) "data" "values") | toRawJson) "labels" | default dict {{ "}}" }}
+                    {{ "{{" }} (index ((index (lookup "v1" "ConfigMap" "open-cluster-policies" (printf "cluster-set.%s"  $clusterSet)) "data" "values") | fromJson) "labels") | default dict {{ "}}" }}
                     {{ "{{/*" }} $clusterSet | trim {{ "}}" }}Labels: {{ "{{" }} $clusterSet | trim {{ "*/}}" }}
                     {{ "{{" }} end {{ "}}" }}
 ---
+{{/* (index ((index (lookup "v1" "ConfigMap" "open-cluster-policies" (printf "cluster-set.%s"  $clusterSet)) "data" "values") | fromJson) "labels") | default dict */}}
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
 metadata:
