@@ -52,7 +52,7 @@ spec:
                     {{ "{{" }} $resultantLabels {{ "}}" }}
                   formattedLabels: |
                   {{ "{{" }} range $label, $value := $resultantLabels {{ "}}" }}
-                    {{ "{{" }} $label {{ "}}" }}: {{ "{{" }} $value {{ "}}" }} 
+                    {{ "{{" }} $label {{ "}}" }}: {{ "{{" }} $value {{ "-}}" }} 
                   {{ "{{" }} end {{ "}}" }}
                 {{ "{{" }} end {{ "}}" }}
 ---
