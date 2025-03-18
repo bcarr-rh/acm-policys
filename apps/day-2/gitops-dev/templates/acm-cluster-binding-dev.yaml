@@ -8,7 +8,7 @@ metadata:
   namespace: openshift-gitops-{{ $team }}
   annotations:
     argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
-    argocd.argoproj.io/sync-wave: "5"
+    argocd.argoproj.io/sync-wave: "2"
 spec:
   clusterSet: {{ $clusterSet }}
 {{- end }}
