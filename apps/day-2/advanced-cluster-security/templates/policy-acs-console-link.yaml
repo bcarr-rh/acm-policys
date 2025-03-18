@@ -12,12 +12,6 @@ metadata:
 spec:
   remediationAction: enforce
   disabled: false
-  dependencies:
-    - name: policy-acs-operator-install
-      namespace: open-cluster-policies
-      apiVersion: policy.open-cluster-management.io/v1
-      compliance: Compliant
-      kind: Policy
   policy-templates:
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
