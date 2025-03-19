@@ -24,13 +24,17 @@ spec:
         spec:
           remediationAction: enforce # will be overridden by remediationAction in parent policy
           severity: high
-          object-templates:
+          object-templates-raw: |
             - complianceType: musthave
               objectDefinition:
                 apiVersion: v1
                 kind: Namespace
                 metadata:
                   name: {{ .Values.coo.namespace }}
+                  labels:
+                    {{ "{{-" }} range $key, $value := (index .ManagedClusterLabel "autoshift.io/infra-nodes") {{ "}}" }}
+                    {{ "{{" }} $key {{ "}}" }}: {{ "{{" }} quote $value {{ "}}" }}
+                    {{ "{{-" }} end {{ "}}" }}
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1beta1
         kind: OperatorPolicy
