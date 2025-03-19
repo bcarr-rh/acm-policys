@@ -1,4 +1,4 @@
-{{ if eq (.Values.debug | default false) }}
+{{ if (.Values.debug | default false) }}
 {{ range $clusterSetKey, $clusterSetValue := $.Values.clusterSets }}
 {{ $hubClusterSet := $.Values.hubClusterSet | default "hub" }}
 {{ $policyName := printf "policy-%s-cluster-labels-debug" $clusterSetKey }}
