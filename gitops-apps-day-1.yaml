@@ -38,12 +38,11 @@ spec:
       syncPolicy:
         preserveResourcesOnDeletion: false
         automated:
-          prune: false
+          prune: true
           selfHeal: true
         syncOptions:
         - RespectIgnoreDifferences=true
         - Validate=false 
-        - ServerSideApply=true
       destination:
         server: https://kubernetes.default.svc
         namespace: openshift-gitops

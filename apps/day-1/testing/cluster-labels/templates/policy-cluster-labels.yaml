@@ -21,6 +21,7 @@ spec:
         kind: ConfigurationPolicy
         metadata:
           name: {{ $configPolicyName }}
+          annotations:
         spec:
           object-templates-raw: |
             {{ "{{" }} range $index, $value := (lookup "cluster.open-cluster-management.io/v1" "ManagedCluster" "" "").items {{ "}}" }}
@@ -36,7 +37,7 @@ spec:
                   labels:
                     {{ "{{" }} $labels := merge $clusterLabels $clusterSetLabels {{ "}}" }} 
                     {{ "{{" }} range $key, $value := $labels {{ "}}" }}
-                    {{ "{{" }} $key {{ "}}" }}: {{ "{{" }} $value | quote {{ "}}" }}
+                    autoshift.io/{{ "{{" }} $key {{ "}}" }}: {{ "{{" }} $value | quote {{ "}}" }}
                     {{ "{{" }} end {{ "}}" }}
               pruneObjectBehavior: None
               remediationAction: enforce
