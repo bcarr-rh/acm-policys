@@ -28,7 +28,7 @@ spec:
                 apiVersion: v1 
                 kind: ConfigMap
                 metadata:
-                  name: clust-set-{{ $clusterSetKey }}-lookup-debug
+                  name: cluster-set-{{ $clusterSetKey }}-lookup-debug
                   namespace: open-cluster-policies
                 data:
                   lookupManagedClusters: |
