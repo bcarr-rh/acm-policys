@@ -12,7 +12,7 @@ metadata:
 spec:
   remediationAction: enforce
   disabled: false
-  policy-templates-raw: |
+  policy-templates:
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
