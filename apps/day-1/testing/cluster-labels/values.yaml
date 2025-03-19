@@ -5,6 +5,11 @@
 selfManaged: false
 acmversion: "2.12"
 hubClusterSet: "hub"
+debug: false
+
+
+hubClusterSets: 
+  - "hub"
 
 hubClusters:
   localCluster:
