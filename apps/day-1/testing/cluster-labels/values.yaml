@@ -59,3 +59,4 @@ clusters:
   local-cluster: 
     labels: 
       test-worked: 'true'
+      second-label: "it-worked-again"
