@@ -16,4 +16,23 @@ spec:
       operator: Exists
     - key: cluster.open-cluster-management.io/unavailable
       operator: Exists
+{{- end }}
+{{- range $clusterSet, $value := .Values.hubClusterSets }}
 ---
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: {{ $clusterSet }}
+  namespace: {{ .Values.acm.gitops_namespace | default "openshift-gitops"}}
+  annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+    argocd.argoproj.io/sync-wave: "6"
+spec:
+  clusterSets:
+    - {{ $clusterSet }}
+  tolerations:
+    - key: cluster.open-cluster-management.io/unreachable
+      operator: Exists
+    - key: cluster.open-cluster-management.io/unavailable
+      operator: Exists
+{{- end }}
