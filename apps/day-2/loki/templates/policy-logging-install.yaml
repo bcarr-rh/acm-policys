@@ -116,7 +116,7 @@ spec:
                             from: serviceAccount
                         target:
                           name: {{ .Values.loki.lokistackName }}
-                          namespace: {{ .Values.loki.namespace }}
+                          namespace: {{ .Values.logging.namespace }}
                       name: {{ .Values.loki.lokistackName }}
                       tls:
                         ca:
