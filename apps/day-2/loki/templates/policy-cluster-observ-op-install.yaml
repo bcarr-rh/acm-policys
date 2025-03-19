@@ -32,7 +32,7 @@ spec:
                 metadata:
                   name: {{ .Values.coo.namespace }}
                   labels:
-                    infra-nodes: {{ "{{" }} index .ManagedClusterLabels "autoshift.io/infra-nodes"] {{ "}}" }}
+                    infra-nodes: {{ "{{" }} index .ManagedClusterLabels "autoshift.io/infra-nodes" {{ "}}" }}
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1beta1
         kind: OperatorPolicy
