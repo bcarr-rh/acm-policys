@@ -23,10 +23,10 @@ spec:
           name: {{ $configPolicyName }}
         spec:
           object-templates-raw: |
-            {{ "{{" }} range $cluster, $value := (lookup "cluster.open-cluster-management.io/v1" "ManagedCluster" "" "").items {{ "}}" }}
+            {{ "{{" }} range $index, $value := (lookup "cluster.open-cluster-management.io/v1" "ManagedCluster" "" "").items {{ "}}" }}
             {{ "{{" }} $clusterSet := ((index $value.metadata.labels "cluster.open-cluster-management.io/clusterset") | default "") {{ "}}" }}
             {{ "{{" }} $clusterSetLabels := (index ((index (lookup "v1" "ConfigMap" "open-cluster-policies" (printf "cluster-set.%s"  $clusterSet)) "data" "values") | default "" | fromJson) "labels") | default dict {{ "}}" }}
-            {{ "{{" }} $clusterSetLabels := (index ((index (lookup "v1" "ConfigMap" "open-cluster-policies" (printf "managed-cluster.%s"  $cluster)) "data" "values") | default "" | fromJson) "labels") | default dict {{ "}}" }}
+            {{ "{{" }} $clusterLabels := (index ((index (lookup "v1" "ConfigMap" "open-cluster-policies" (printf "managed-cluster.%s"  $value.metadata.name)) "data" "values") | default "" | fromJson) "labels") | default dict {{ "}}" }}
             - complianceType: musthave
               objectDefinition:
                 apiVersion: cluster.open-cluster-management.io/v1
@@ -34,11 +34,9 @@ spec:
                 metadata:
                   name: {{ "{{" }} $cluster {{ "}}" }}
                   labels:
-                    {{ "{{" }} $clusterSetLabels := ((lookup "v1" "ConfigMap" "open-cluster-policies" (printf "cluster-set.%s"  $clusterSet).data.values) | default "" | fromJson).labels | default dict {{ "}}" }}
-                    {{ "{{/*" }} $clusterLabels := (index ((lookup "policy.open-cluster-management.io/v1" "ConfigMap" "open-cluster-policies" (printf "managed-cluster.%s" $cluster) | fromJson) "data" "values" "labels" | default "" | fromJson).labels | default dict {{ "*/}}" }}
                     {{ "{{" }} $labels := merge $clusterLabels $clusterSetLabels {{ "}}" }} 
                     {{ "{{" }} range $key, $value := $labels {{ "}}" }}
-                    {{ "{{" }} $key {{ "}}" }}: {{ "{{" }} $value {{ "}}" }}
+                    {{ "{{" }} $key {{ "}}" }}: {{ "{{" }} $value | quote {{ "}}" }}
                     {{ "{{" }} end {{ "}}" }}
               pruneObjectBehavior: None
               remediationAction: enforce
