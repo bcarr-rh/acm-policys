@@ -47,12 +47,12 @@ spec:
             name: {{ .Values.acs.operatorNamespace }}
             namespace: {{ .Values.acs.operatorNamespace }}
           subscription:
-            name: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/acs-name" | default {{ .Values.acs.name }} hub{{ "}}" }}'
+            name: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/acs-name" | default "{{ .Values.acs.name }}" hub{{ "}}" }}'
             namespace: {{ .Values.acs.operatorNamespace }}
-            source: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/acs-source" | default {{ .Values.acs.source }} hub{{ "}}" }}'
-            sourceNamespace: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/acs-source-namespace" | default {{ .Values.acs.sourceNamespace }} hub{{ "}}" }}'
-            channel: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/acs-channel" | default {{ .Values.acs.channel }} hub{{ "}}" }}'
-          upgradeApproval: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/acs-install-plan-approval" | default {{ .Values.acs.installPlanApproval }} hub{{ "}}" }}'
+            source: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/acs-source" | default "{{ .Values.acs.source }}" hub{{ "}}" }}'
+            sourceNamespace: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/acs-source-namespace" | default "{{ .Values.acs.sourceNamespace }}" hub{{ "}}" }}'
+            channel: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/acs-channel" | default "{{ .Values.acs.channel }}" hub{{ "}}" }}'
+          upgradeApproval: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/acs-install-plan-approval" | default "{{ .Values.acs.installPlanApproval }}" hub{{ "}}" }}'
 ---
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
