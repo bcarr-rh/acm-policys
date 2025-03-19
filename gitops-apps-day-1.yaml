@@ -13,7 +13,7 @@ spec:
       repoURL: https://github.com/bcarr-rh/acm-policys.git
       revision: config-rework
       directories:
-      - path: 'apps/day-1/testing/*'
+      - path: 'apps/day-1/*'
   template:
     metadata:
       name: '{{ .path.basename }}'
