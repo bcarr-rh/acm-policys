@@ -1,4 +1,5 @@
-# This policy uses OpenShift Logging Operator to forward logs to Loki.
+# This policy uses OpenShift Logging Operator to forward 
+# logs to Loki.
 #
 # Note that OpenShift 4.18 is required.
 apiVersion: policy.open-cluster-management.io/v1
@@ -33,7 +34,7 @@ spec:
         spec:
           remediationAction: inform # will be overridden by remediationAction in parent policy
           severity: high
-          object-templates-raw: |
+          object-templates:
             - complianceType: musthave
               objectDefinition:
                 kind: ServiceAccount
@@ -143,7 +144,7 @@ spec:
   {{- range $clusterSet, $value := $.Values.hubClusterSets }}
     - {{ $clusterSet }}
   {{- end }}
-    predicates:
+  predicates:
     - requiredClusterSelector:
         labelSelector:
           matchExpressions:
