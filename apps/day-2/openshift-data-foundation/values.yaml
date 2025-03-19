@@ -8,6 +8,11 @@ odf:
     installPlanApproval: Automatic
     source: redhat-operators
     sourceNamespace: openshift-marketplace
-    clusterSets:
-      - hub
-      - managed
+hubClusterSets:
+  hub:
+    labels:
+      test1: 'test'
+clusterSets:
+  managed:
+    labels:
+      test4: 'test'

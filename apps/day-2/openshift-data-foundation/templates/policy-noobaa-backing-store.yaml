@@ -3,7 +3,7 @@
 #
 # If set to "enforce" it'll install the operator.
 #
-# Note that OpenShift 4.6 is required.
+# Note that OpenShift 4.18 is required.
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
@@ -38,7 +38,7 @@ spec:
                 kind: BackingStore
                 metadata:
                   name: noobaa-default-backing-store
-                  namespace: openshift-storage
+                  namespace: {{ .Values.odf.namespace }}
                 spec:
                   pvPool:
                     numVolumes: 1
@@ -60,8 +60,11 @@ metadata:
   namespace: open-cluster-policies
 spec:
   clusterSets:
-  {{- range .Values.odf.clusterSets }}
-    - {{ . }}
+  {{- range $clusterSet, $value := $.Values.clusterSets }}
+    - {{ $clusterSet }}
+  {{- end }}
+  {{- range $clusterSet, $value := $.Values.hubClusterSets }}
+    - {{ $clusterSet }}
   {{- end }}
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable

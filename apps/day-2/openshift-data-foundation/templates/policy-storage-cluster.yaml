@@ -3,7 +3,7 @@
 #
 # If set to "enforce" it'll install the operator.
 #
-# Note that OpenShift 4.6 is required.
+# Note that OpenShift 4.18 is required.
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
@@ -29,7 +29,7 @@ spec:
         metadata:
           name: storage-cluster-install
         spec:
-          remediationAction: inform # will be overridden by remediationAction in parent policy
+          remediationAction: enforce
           severity: high
           object-templates:
             - complianceType: musthave
@@ -38,7 +38,7 @@ spec:
                 kind: StorageCluster
                 metadata:
                   name: ocs-storagecluster
-                  namespace: openshift-storage
+                  namespace: {{ .Values.odf.namespace }}
                 spec:
                   arbiter: {}
                   encryption:
@@ -58,6 +58,34 @@ spec:
                   mirroring: {}
                   multiCloudGateway:
                     reconcileStrategy: standalone
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: storage-cluster-install-test
+        spec:
+          remediationAction: inform
+          severity: high
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: ocs.openshift.io/v1
+                kind: StorageCluster
+                metadata:
+                  name: ocs-storagecluster
+                  namespace: {{ .Values.odf.namespace }}
+                status:
+                  conditions:
+                    - status: 'False'
+                      type: VersionMismatch
+                    - status: 'True'
+                      type: ReconcileComplete
+                    - status: 'True'
+                      type: Available
+                    - status: 'False'
+                      type: Progressing
+                    - status: 'False'
+                      type: Degraded
 ---
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
@@ -66,8 +94,11 @@ metadata:
   namespace: open-cluster-policies
 spec:
   clusterSets:
-  {{- range .Values.odf.clusterSets }}
-    - {{ . }}
+  {{- range $clusterSet, $value := $.Values.clusterSets }}
+    - {{ $clusterSet }}
+  {{- end }}
+  {{- range $clusterSet, $value := $.Values.hubClusterSets }}
+    - {{ $clusterSet }}
   {{- end }}
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
