@@ -66,7 +66,7 @@ spec:
                 apiVersion: operators.coreos.com/v1alpha1
                 kind: ClusterServiceVersion
                 metadata:
-                  namespace: openshift-logging
+                  namespace: {{ .Values.logging.namespace }}
                 spec:
                   displayName: Red Hat OpenShift Logging
                 status:
@@ -79,8 +79,11 @@ metadata:
   namespace: open-cluster-policies
 spec:
   clusterSets:
-  {{- range .Values.logging.clusterSets }}
-    - {{ . }}
+  {{- range $clusterSet, $value := $.Values.clusterSets }}
+    - {{ $clusterSet }}
+  {{- end }}
+  {{- range $clusterSet, $value := $.Values.hubClusterSets }}
+    - {{ $clusterSet }}
   {{- end }}
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
