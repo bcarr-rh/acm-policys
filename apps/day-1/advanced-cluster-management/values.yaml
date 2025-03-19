@@ -17,7 +17,7 @@ hubClusterSets:
   hub:
     labels:
       test1: 'test'
-  testHub:
+  test-hub:
     labels:
       test2: 'test'
 clusterSets:
