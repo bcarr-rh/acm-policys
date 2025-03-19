@@ -9,6 +9,11 @@ compliance:
     sourceNamespace: openshift-marketplace
     nameSub: compliance-operator
     channel: stable
-    clusterSets:
-      - hub
-      - managed
+hubClusterSets:
+  hub:
+    labels:
+      test1: 'test'
+clusterSets:
+  managed:
+    labels:
+      test4: 'test'

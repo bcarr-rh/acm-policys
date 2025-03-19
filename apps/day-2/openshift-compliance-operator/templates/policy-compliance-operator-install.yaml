@@ -31,48 +31,28 @@ spec:
                 apiVersion: v1
                 kind: Namespace
                 metadata:
-                  name: openshift-compliance
+                  name: {{ .Values.compliance.namespace }}
     - objectDefinition:
-        apiVersion: policy.open-cluster-management.io/v1
-        kind: ConfigurationPolicy
+        apiVersion: policy.open-cluster-management.io/v1beta1
+        kind: OperatorPolicy
         metadata:
-          name: comp-operator-operator-group
+          name: install-comp-operator
         spec:
-          remediationAction: inform # will be overridden by remediationAction in parent policy
+          remediationAction: enforce
           severity: high
-          object-templates:
-            - complianceType: musthave
-              objectDefinition:
-                apiVersion: operators.coreos.com/v1
-                kind: OperatorGroup
-                metadata:
-                  name: compliance-operator
-                  namespace: openshift-compliance
-                spec:
-                  targetNamespaces:
-                    - openshift-compliance
-    - objectDefinition:
-        apiVersion: policy.open-cluster-management.io/v1
-        kind: ConfigurationPolicy
-        metadata:
-          name: comp-operator-subscription
-        spec:
-          remediationAction: inform # will be overridden by remediationAction in parent policy
-          severity: high
-          object-templates:
-            - complianceType: musthave
-              objectDefinition:
-                apiVersion: operators.coreos.com/v1alpha1
-                kind: Subscription
-                metadata:
-                  name: {{ .Values.compliance.nameSub | default "compliance-operator"}}
-                  namespace: openshift-compliance
-                spec:
-                  installPlanApproval: {{ .Values.compliance.installPlanApproval | default "Automatic"}}
-                  channel: {{ .Values.compliance.channel | default "stable"}}
-                  name: {{ .Values.compliance.name | default "compliance-operator"}}
-                  source: {{ .Values.compliance.source | default "redhat-operators"}}
-                  sourceNamespace: {{ .Values.compliance.sourceNamespace | default "openshift-marketplace"}}
+          complianceType: musthave
+          operatorGroup:
+            name: {{ .Values.compliance.name | default "compliance-operator"}}
+            namespace: {{ .Values.compliance.namespace | default "openshift-compliance"}}
+            targetNamespaces:
+              - {{ .Values.compliance.namespace | default "openshift-compliance"}}
+          subscription:
+            namespace: {{ .Values.compliance.namespace | default "openshift-compliance"}}
+            channel: {{ .Values.compliance.channel | default "stable"}}
+            name: {{ .Values.compliance.name | default "compliance-operator"}}
+            source: {{ .Values.compliance.source | default "redhat-operators"}}
+            sourceNamespace: {{ .Values.compliance.sourceNamespace | default "openshift-marketplace"}}
+          upgradeApproval: {{ .Values.compliance.installPlanApproval | default "Automatic"}}
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
@@ -87,7 +67,7 @@ spec:
                 apiVersion: operators.coreos.com/v1alpha1
                 kind: ClusterServiceVersion
                 metadata:
-                  namespace: openshift-compliance
+                  namespace: {{ .Values.compliance.namespace | default "openshift-compliance"}}
                 spec:
                   displayName: Compliance Operator
                 status:
@@ -100,8 +80,11 @@ metadata:
   namespace: open-cluster-policies
 spec:
   clusterSets:
-  {{- range .Values.compliance.clusterSets }}
-    - {{ . }}
+  {{- range $clusterSet, $value := $.Values.clusterSets }}
+    - {{ $clusterSet }}
+  {{- end }}
+  {{- range $clusterSet, $value := $.Values.hubClusterSets }}
+    - {{ $clusterSet }}
   {{- end }}
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable

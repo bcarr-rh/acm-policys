@@ -34,7 +34,7 @@ spec:
                 kind: ScanSettingBinding
                 metadata:
                   name: stig
-                  namespace: openshift-compliance
+                  namespace: {{ .Values.compliance.namespace }}
                 profiles:
                   - apiGroup: compliance.openshift.io/v1alpha1
                     kind: Profile
@@ -64,7 +64,7 @@ spec:
                 kind: ComplianceSuite
                 metadata:
                   name: stig
-                  namespace: openshift-compliance
+                  namespace: {{ .Values.compliance.namespace }}
                 status:
                   phase: DONE
 ---
@@ -75,8 +75,11 @@ metadata:
   namespace: open-cluster-policies
 spec:
   clusterSets:
-  {{- range .Values.compliance.clusterSets }}
-    - {{ . }}
+  {{- range $clusterSet, $value := $.Values.clusterSets }}
+    - {{ $clusterSet }}
+  {{- end }}
+  {{- range $clusterSet, $value := $.Values.hubClusterSets }}
+    - {{ $clusterSet }}
   {{- end }}
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
