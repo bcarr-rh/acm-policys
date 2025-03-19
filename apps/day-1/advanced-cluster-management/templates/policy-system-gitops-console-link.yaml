@@ -18,7 +18,7 @@ spec:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: gitops-dev-console-link
+          name: system-gitops-console-link
         spec:
           remediationAction: inform
           severity: high
