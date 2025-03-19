@@ -32,7 +32,7 @@ spec:
                 metadata:
                   name: {{ .Values.coo.namespace }}
                   labels:
-                    {{ "{{-" }} range (index .ManagedClusterLabel "autoshift.io/infra-nodes") {{ "}}" }}
+                    {{ "{{-" }} range (index .ManagedClusterLabels "autoshift.io/infra-nodes") {{ "}}" }}
                     {{ "{{" }} .key {{ "}}" }}: {{ "{{" }} quote .value {{ "}}" }}
                     {{ "{{-" }} end {{ "}}" }}
     - objectDefinition:
