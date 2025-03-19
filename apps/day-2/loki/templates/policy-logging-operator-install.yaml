@@ -1,7 +1,5 @@
 # This policy verifies the installation of the official & supported version of
-# the Compliance Operator on the managed clusters.
-#
-# If set to "enforce" it'll install the operator.
+# the OpenShift Logging on the managed clusters.
 #
 # Note that OpenShift 4.18 is required.
 apiVersion: policy.open-cluster-management.io/v1
@@ -48,10 +46,10 @@ spec:
           subscription:
             name: {{ .Values.logging.name }}
             namespace: {{ .Values.logging.namespace }}
-            source: {{ .Values.logging.source }}
-            sourceNamespace: {{ .Values.logging.sourceNamespace }}
-            channel: {{ .Values.logging.channel }}
-          upgradeApproval: {{ .Values.logging.installPlanApproval }}
+            source: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/logging-source" | default "{{ .Values.logging.source }}" hub{{ "}}" }}'
+            sourceNamespace: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/logging-source-namespace" | default "{{ .Values.logging.sourceNamespace }}" hub{{ "}}" }}'
+            channel: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/logging-channel" | default "{{ .Values.logging.channel }}" hub{{ "}}" }}'
+          upgradeApproval: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/logging-install-plan-approval" | default "{{ .Values.logging.installPlanApproval }}" hub{{ "}}" }}'
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
@@ -85,6 +83,15 @@ spec:
   {{- range $clusterSet, $value := $.Values.hubClusterSets }}
     - {{ $clusterSet }}
   {{- end }}
+  predicates:
+    - requiredClusterSelector:
+        labelSelector:
+          matchExpressions:
+            - key: 'autoshift.io/logging'
+              operator: In
+              values:
+              - 'true'
+              - 'True'
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists

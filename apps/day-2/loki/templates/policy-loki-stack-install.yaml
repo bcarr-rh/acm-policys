@@ -1,7 +1,4 @@
-# This policy verifies the installation of the official & supported version of
-# the Compliance Operator on the managed clusters.
-#
-# If set to "enforce" it'll install the operator.
+# This policy creates a loki stack using a nooba bucket from OpenShift Data Foundation.
 #
 # Note that OpenShift 4.18 is required.
 apiVersion: policy.open-cluster-management.io/v1
@@ -37,7 +34,7 @@ spec:
                 apiVersion: loki.grafana.com/v1
                 kind: LokiStack
                 metadata:
-                  name: {{ .Values.loki.lokistackName }}
+                  name: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/loki-lokistack-name" | default "{{ .Values.loki.lokistackName }}" hub{{ "}}" }}'
                   namespace: {{ .Values.logging.namespace }}
                 spec:
                   hashRing:
@@ -50,8 +47,8 @@ spec:
                       queries:
                         queryTimeout: 3m
                   managementState: Managed
-                  storageClassName: {{ .Values.loki.storageClass }} #TODO: make parameter
-                  size: {{ .Values.loki.size }}
+                  storageClassName: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/loki-storageclass" | default "{{ .Values.loki.storageClass }}" hub{{ "}}" }}'
+                  size: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/loki-size" | default "{{ .Values.loki.size }}" hub{{ "}}" }}'
                   storage:
                     schemas:
                       - effectiveDate: '2024-09-22'
@@ -218,6 +215,15 @@ spec:
   {{- range $clusterSet, $value := $.Values.hubClusterSets }}
     - {{ $clusterSet }}
   {{- end }}
+  predicates:
+    - requiredClusterSelector:
+        labelSelector:
+          matchExpressions:
+            - key: 'autoshift.io/loki'
+              operator: In
+              values:
+              - 'true'
+              - 'True'
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists
