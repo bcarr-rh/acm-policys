@@ -32,8 +32,8 @@ spec:
                 metadata:
                   name: {{ .Values.coo.namespace }}
                   labels:
-                    {{ "{{-" }} range .ManagedClusterLabels["autoshift.io/infra-nodes"]) {{ "}}" }}
-                    {{ "{{" }} .key {{ "}}" }}: {{ "{{" }} quote .value {{ "}}" }}
+                    {{ "{{-" }} if .ManagedClusterLabels["autoshift.io/infra-nodes"]) {{ "}}" }}
+                    infra-nodes: {{ "{{" }} quote .ManagedClusterLabels["autoshift.io/infra-nodes"] {{ "}}" }}
                     {{ "{{-" }} end {{ "}}" }}
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1beta1
