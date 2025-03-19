@@ -31,10 +31,6 @@ spec:
                 kind: Namespace
                 metadata:
                   name: {{ .Values.coo.namespace }}
-                  labels:
-                    {{ "{{" }}hub- if ne "none" (index .ManagedClusterLabels "autoshift.io/infra-nodes") hub{{ "}}" }}
-                    autoshift.io/infra-nodes: {{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/infra-nodes" hub{{ "}}" }}
-                    {{ "{{" }}hub- end hub{{ "}}" }}
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1beta1
         kind: OperatorPolicy

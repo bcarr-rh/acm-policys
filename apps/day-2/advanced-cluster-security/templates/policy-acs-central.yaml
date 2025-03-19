@@ -95,6 +95,15 @@ spec:
   {{- range $clusterSet, $value := .Values.hubClusterSets }}
     - {{ $clusterSet }}
   {{- end }}
+  predicates:
+    - requiredClusterSelector:
+        labelSelector:
+          matchExpressions:
+            - key: 'autoshift.io/acs'
+              operator: In
+              values:
+              - 'true'
+              - 'True'
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists

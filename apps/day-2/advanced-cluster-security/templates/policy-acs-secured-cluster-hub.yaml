@@ -1,13 +1,3 @@
-# This policy deploys the Red Hat Advanced Cluster Security Secure Cluster
-# Services to all OpenShift managed clusters.  Note that it is set to
-# enforce by default and it requires RHACM 2.3 template support.
-#
-# Prior to applying this policy you must visit 
-# https://github.com/stolostron/acs 
-# and follow the instructions there to deploy prerequisite bundles
-# needed by the Secure Cluster Services for communicating with the
-# Central server.
-#
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
@@ -98,6 +88,15 @@ spec:
   {{- range $clusterSet, $value := .Values.hubClusterSets }}
     - {{ $clusterSet }}
   {{- end }}
+  predicates:
+    - requiredClusterSelector:
+        labelSelector:
+          matchExpressions:
+            - key: 'autoshift.io/acs'
+              operator: In
+              values:
+              - 'true'
+              - 'True'
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists
