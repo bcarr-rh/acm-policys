@@ -1,5 +1,5 @@
 ---
-# Source: quay-operator/templates/policy--rhtas-operator-install.yaml
+# Source: quay-operator/templates/policy-rhtas-operator-install.yaml
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
 metadata:
@@ -15,7 +15,7 @@ spec:
     - key: cluster.open-cluster-management.io/unavailable
       operator: Exists
 ---
-# Source: quay-operator/templates/policy--rhtas-operator-install.yaml
+# Source: quay-operator/templates/policy-rhtas-operator-install.yaml
 apiVersion: policy.open-cluster-management.io/v1
 kind: PlacementBinding
 metadata:
@@ -30,7 +30,7 @@ subjects:
     apiGroup: policy.open-cluster-management.io
     kind: Policy
 ---
-# Source: quay-operator/templates/policy--rhtas-operator-install.yaml
+# Source: quay-operator/templates/policy-rhtas-operator-install.yaml
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
@@ -59,43 +59,24 @@ spec:
                 metadata:
                   name: openshift-operators
     - objectDefinition:
-        apiVersion: policy.open-cluster-management.io/v1
-        kind: ConfigurationPolicy
+        apiVersion: policy.open-cluster-management.io/v1beta1
+        kind: OperatorPolicy
         metadata:
-          name: rhtas-operator-group
+          name: install-operator-rhtas
         spec:
           remediationAction: enforce
           severity: high
-          object-templates:
-            - complianceType: musthave
-              objectDefinition:
-                apiVersion: operators.coreos.com/v1
-                kind: OperatorGroup
-                metadata:
-                  name: openshift-operators
-                  namespace: openshift-operators
-    - objectDefinition:
-        apiVersion: policy.open-cluster-management.io/v1
-        kind: ConfigurationPolicy
-        metadata:
-          name: rhtas-operator-subscription
-        spec:
-          remediationAction: enforce
-          severity: high
-          object-templates:
-            - complianceType: musthave
-              objectDefinition:
-                apiVersion: operators.coreos.com/v1alpha1
-                kind: Subscription
-                metadata:
-                  name: rhtas-operator
-                  namespace: openshift-operators
-                spec:
-                  installPlanApproval: Automatic
-                  channel: stable
-                  name: rhtas-operator
-                  source: redhat-operators
-                  sourceNamespace: openshift-marketplace
+          complianceType: musthave
+          operatorGroup:
+            name: global-operators
+            namespace: openshift-operators
+          subscription:
+            name: rhtas-operator
+            namespace: openshift-operators
+            source: redhat-operators
+            sourceNamespace: openshift-marketplace
+            channel: stable
+          upgradeApproval: Automatic
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy

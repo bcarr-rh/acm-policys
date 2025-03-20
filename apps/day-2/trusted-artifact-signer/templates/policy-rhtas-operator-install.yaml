@@ -26,43 +26,24 @@ spec:
                 metadata:
                   name: openshift-operators
     - objectDefinition:
-        apiVersion: policy.open-cluster-management.io/v1
-        kind: ConfigurationPolicy
+        apiVersion: policy.open-cluster-management.io/v1beta1
+        kind: OperatorPolicy
         metadata:
-          name: rhtas-operator-group
+          name: install-operator-rhtas
         spec:
           remediationAction: enforce
           severity: high
-          object-templates:
-            - complianceType: musthave
-              objectDefinition:
-                apiVersion: operators.coreos.com/v1
-                kind: OperatorGroup
-                metadata:
-                  name: openshift-operators
-                  namespace: openshift-operators
-    - objectDefinition:
-        apiVersion: policy.open-cluster-management.io/v1
-        kind: ConfigurationPolicy
-        metadata:
-          name: rhtas-operator-subscription
-        spec:
-          remediationAction: enforce
-          severity: high
-          object-templates:
-            - complianceType: musthave
-              objectDefinition:
-                apiVersion: operators.coreos.com/v1alpha1
-                kind: Subscription
-                metadata:
-                  name: {{ .Values.rhtasOperator.name }}
-                  namespace: {{ .Values.rhtasOperator.namespace }}
-                spec:
-                  installPlanApproval: {{ .Values.rhtasOperator.installPlanApproval }}
-                  channel: {{ .Values.rhtasOperator.channel }}
-                  name: {{ .Values.rhtasOperator.name }}
-                  source: {{ .Values.rhtasOperator.source }}
-                  sourceNamespace: {{ .Values.rhtasOperator.sourceNamespace }}
+          complianceType: musthave
+          operatorGroup:
+            name: global-operators
+            namespace: openshift-operators
+          subscription:
+            name: {{ .Values.rhtasOperator.name }}
+            namespace: openshift-operators
+            source: {{ .Values.rhtasOperator.source }}
+            sourceNamespace: {{ .Values.rhtasOperator.sourceNamespace }}
+            channel: {{ .Values.rhtasOperator.channel }}
+          upgradeApproval: {{ .Values.rhtasOperator.installPlanApproval }}
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
