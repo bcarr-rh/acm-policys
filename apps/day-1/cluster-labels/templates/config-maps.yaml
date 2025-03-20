@@ -18,7 +18,7 @@ metadata:
 data: 
   values: '{{ $data | toJson }}'
   labels: '{{ $prefixedClusterLabels | toJson }}'
-{{- end -}}
+{{- end }}
 {{- range $clusterSet, $data := .Values.clusterSets -}}
 ---
   {{- $prefixedClusterSetLabels := dict -}}
@@ -38,5 +38,5 @@ metadata:
 data:
   values: '{{ $data | toJson }}'
   labels: '{{ $prefixedClusterSetLabels | toJson }}'
-{{- end -}}
+{{- end }}
 {{- end -}}
