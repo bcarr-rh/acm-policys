@@ -6,7 +6,7 @@
       {{ $_ := set $prefixedClusterLabels (printf "%s%s" $.Values.autoshiftLabelPrefix $label)  "_" }}
     {{ else }}
       {{ $_ := set $prefixedClusterLabels (printf "%s%s" $.Values.autoshiftLabelPrefix $label) $value }}
-    {{ else }}
+    {{ end }}
   {{ end }}
   {{ $_ := set $data "labels" $prefixedClusterLabels}}
 apiVersion: v1
@@ -26,7 +26,7 @@ data:
       {{ $_ := set $prefixedClusterSetLabels (printf "%s%s" $.Values.autoshiftLabelPrefix $label)  "_" }}
     {{ else }}
       {{ $_ := set $prefixedClusterSetLabels (printf "%s%s" $.Values.autoshiftLabelPrefix $label) $value }}
-    {{ else }}
+    {{ end }}
   {{ end }}
   {{ $_ := set $data "labels" $prefixedClusterSetLabels}}
 apiVersion: v1
