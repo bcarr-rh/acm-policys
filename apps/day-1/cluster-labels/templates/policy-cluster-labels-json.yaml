@@ -65,9 +65,9 @@ metadata:
   namespace: open-cluster-policies
 spec:
   clusterSets:
-  {{- range $clusterSet, $vale := $.Values.hubClusterSets -}}
+  {{- range $clusterSet, $vale := $.Values.hubClusterSets }}
     - {{ $clusterSet }}
-  {{- end -}}
+  {{- end }}
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists
@@ -77,7 +77,7 @@ spec:
 apiVersion: policy.open-cluster-management.io/v1
 kind: PlacementBinding
 metadata:
-  name: {{ $placementName}}
+  name: {{ $placementName }}
   namespace: open-cluster-policies
 placementRef:
   name: {{ $placementName}}
