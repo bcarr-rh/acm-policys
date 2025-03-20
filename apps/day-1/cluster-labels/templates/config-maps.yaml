@@ -1,14 +1,15 @@
-{{ range $cluster, $data := .Values.clusters }}
+{{- if (.Values.enabled | default false) -}}
+{{- range $cluster, $data := .Values.clusters -}}
 ---
-  {{ $prefixedClusterLabels := dict }}
-  {{ range $label, $value := $data.labels }}
-    {{ if (eq $value "") }}
-      {{ $_ := set $prefixedClusterLabels (printf "%s%s" $.Values.autoshiftLabelPrefix $label)  "_" }}
-    {{ else }}
-      {{ $_ := set $prefixedClusterLabels (printf "%s%s" $.Values.autoshiftLabelPrefix $label) $value }}
-    {{ end }}
-  {{ end }}
-  {{ $_ := set $data "labels" $prefixedClusterLabels}}
+  {{- $prefixedClusterLabels := dict -}}
+  {{- range $label, $value := $data.labels -}}
+    {{- if (eq $value "") -}}
+      {{- $_ := set $prefixedClusterLabels (printf "%s%s" $.Values.autoshiftLabelPrefix $label)  "_" -}}
+    {{- else -}}
+      {{- $_ := set $prefixedClusterLabels (printf "%s%s" $.Values.autoshiftLabelPrefix $label) $value -}}
+    {{- end -}}
+  {{- end -}}
+  {{- $_ := set $data "labels" $prefixedClusterLabels}}
 apiVersion: v1
 kind: ConfigMap
 metadata: 
@@ -17,18 +18,18 @@ metadata:
 data: 
   values: '{{ $data | toJson }}'
   labels: '{{ $prefixedClusterLabels | toJson }}'
-{{ end }}
-{{ range $clusterSet, $data := .Values.clusterSets }}
+{{- end -}}
+{{- range $clusterSet, $data := .Values.clusterSets -}}
 ---
-  {{ $prefixedClusterSetLabels := dict }}
-  {{ range $label, $value := $data.labels }}
-    {{ if (eq $value "") }}
-      {{ $_ := set $prefixedClusterSetLabels (printf "%s%s" $.Values.autoshiftLabelPrefix $label)  "_" }}
-    {{ else }}
-      {{ $_ := set $prefixedClusterSetLabels (printf "%s%s" $.Values.autoshiftLabelPrefix $label) $value }}
-    {{ end }}
-  {{ end }}
-  {{ $_ := set $data "labels" $prefixedClusterSetLabels}}
+  {{- $prefixedClusterSetLabels := dict -}}
+  {{- range $label, $value := $data.labels -}}
+    {{- if (eq $value "") -}}
+      {{- $_ := set $prefixedClusterSetLabels (printf "%s%s" $.Values.autoshiftLabelPrefix $label)  "_" -}}
+    {{- else -}}
+      {{- $_ := set $prefixedClusterSetLabels (printf "%s%s" $.Values.autoshiftLabelPrefix $label) $value -}}
+    {{- end -}}
+  {{- end -}}
+  {{- $_ := set $data "labels" $prefixedClusterSetLabels -}}
 apiVersion: v1
 kind: ConfigMap
 metadata: 
@@ -37,4 +38,4 @@ metadata:
 data:
   values: '{{ $data | toJson }}'
   labels: '{{ $prefixedClusterSetLabels | toJson }}'
-{{ end }}
+{{- end -}}
