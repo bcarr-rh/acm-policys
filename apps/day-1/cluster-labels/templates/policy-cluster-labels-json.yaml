@@ -1,3 +1,4 @@
+{{ if false }}
 {{ range $clusterSetKey, $clusterSetValue := .Values.clusterSets }}
 {{ $hubClusterSet := $.Values.hubClusterSet | default "hub" }}
 {{ $policyName := printf "policy-%s-cluster-labels" $clusterSetKey }}
@@ -83,4 +84,5 @@ subjects:
     apiGroup: policy.open-cluster-management.io
     kind: Policy
 ---
+{{ end }}
 {{ end }}
