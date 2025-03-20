@@ -57,8 +57,6 @@ spec:
               {{ "{{" }} end {{ "}}" }}
             ]
 ---
-{{/* if or (not ($label | hasPrefix $.Values.autoshiftLabelPrefix)) (not (eq $value "")) }}
-{{ if not (and ($label | hasPrefix $.Values.autoshiftLabelPrefix) (eq $value "")) */}}
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
 metadata:
