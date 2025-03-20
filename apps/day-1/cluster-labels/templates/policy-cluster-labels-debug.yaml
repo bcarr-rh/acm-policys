@@ -47,7 +47,7 @@ spec:
                                   {{ "{{" }} $labels := merge $clusterLabels $clusterSetLabels $existingClusterLabels {{ "}}" }} 
                                   {{ "{{" }} range $label, $labelValue := $labels {{ "}}" }}
                                     {{ "{{" }} if not (and ($label | hasPrefix "{{ $.Values.autoshiftLabelPrefix }}") (eq $labelValue "")) {{ "}}" }}
-                                      {{ "{{" }} {{ $label }} {{ "}}" }}: {{ "{{" }}$labelValue {{ "}}" }}
+                                      {{ "{{" }} $label {{ "}}" }}: {{ "{{" }} $labelValue {{ "}}" }}
                                       {{ "{{" }} $_ := set $newLabels $label $labelValue {{ "}}" }}
                                     {{ "{{" }} end {{ "}}" }}
                                   {{ "{{" }} end {{ "}}" }}
