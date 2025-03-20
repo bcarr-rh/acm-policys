@@ -1,9 +1,9 @@
-{{- if (.Values.enabled | default false) -}}
-{{- range $clusterSetKey, $clusterSetValue := .Values.clusterSets -}}
-{{- $hubClusterSet := $.Values.hubClusterSet | default "hub" -}}
-{{- $policyName := printf "policy-%s-cluster-labels" $clusterSetKey -}}
-{{- $configPolicyName := printf "cluster-labels-%s" $clusterSetKey -}}
-{{- $placementName := printf "placement-%s" $policyName -}}
+{{- if (.Values.enabled | default false) }}
+{{- range $clusterSetKey, $clusterSetValue := .Values.clusterSets }}
+{{- $hubClusterSet := $.Values.hubClusterSet | default "hub" }}
+{{- $policyName := printf "policy-%s-cluster-labels" $clusterSetKey }}
+{{- $configPolicyName := printf "cluster-labels-%s" $clusterSetKey }}
+{{- $placementName := printf "placement-%s" $policyName }}
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
@@ -87,5 +87,5 @@ subjects:
     apiGroup: policy.open-cluster-management.io
     kind: Policy
 ---
-{{- end -}}
-{{- end -}}
+{{- end }}
+{{- end }}
