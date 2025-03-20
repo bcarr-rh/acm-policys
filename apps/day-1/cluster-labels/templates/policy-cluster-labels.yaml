@@ -25,7 +25,7 @@ spec:
         spec:
           object-templates-raw: |
             {{ "{{" }} range $index, $value := (lookup "cluster.open-cluster-management.io/v1" "ManagedCluster" "" "").items {{ "}}" }}
-              {{ "{{" }} $newLables := dict {{ "}}" }}
+              {{ "{{" }} $newLabels := dict {{ "}}" }}
               {{ "{{" }} $prefixedLabels := dict {{ "}}" }}
               {{ "{{" }} $managedCluster := $value.metadata.name {{ "}}" }}
               {{ "{{" }} $existingClusterLabels := $value.metadata.labels {{ "}}" }}
@@ -34,10 +34,10 @@ spec:
               {{ "{{" }} $clusterLabels := (index ((index (lookup "v1" "ConfigMap" "open-cluster-policies" (printf "managed-cluster.%s"  $value.metadata.name)) "data" "values") | default "" | fromJson) "labels") | default dict {{ "}}" }}
               {{ "{{" }} $configMapLabels := merge $clusterLabels $clusterSetLabels {{ "}}" }}
               {{ "{{" }} range $configLabel, $configValue := $configMapLabels {{ "}}" }}
-                {{ "{{" }} if not ($label | hasPrefix {{ $.Values.autoshiftLabelPrefix }})) {{ "}}" }}
-                  {{ "{{" }} $_ := set $prefixedLabels (printf "{{ $.Values.autoshiftLabelPrefix }}" $label) $value {{ "}}" }}
+                {{ "{{" }} if not ($configLabel | hasPrefix {{ $.Values.autoshiftLabelPrefix }})) {{ "}}" }}
+                  {{ "{{" }} $_ := set $prefixedLabels (printf "{{ $.Values.autoshiftLabelPrefix }}" $configLabel) $configValue {{ "}}" }}
                 {{ "{{" }} else {{ "}}" }}
-                  {{ "{{" }} $_ := set $newLabels $label $value {{ "}}" }}
+                  {{ "{{" }} $_ := set $newLabels $configLabel $value {{ "}}" }}
                 {{ "{{" }} end {{ "}}" }}
               {{ "{{" }} end {{ "}}" }}
               {{ "{{" }} $labels := merge $clusterLabels $clusterSetLabels $existingClusterLabels {{ "}}" }} 
@@ -54,7 +54,7 @@ spec:
                   name: {{ "{{" }} $value.metadata.name {{ "}}" }}
                   labels:
                     {{ "{{" }} range $key, $value := $labels {{ "}}" }}
-                    {{ $.Values.autoshiftLabelPrefix }}{{ "{{" }} $key {{ "}}" }}: {{ "{{" }} $value | quote {{ "}}" }}
+                    {{ "{{" }} $key {{ "}}" }}: {{ "{{" }} $value | quote {{ "}}" }}
                     {{ "{{" }} end {{ "}}" }}
               pruneObjectBehavior: None
               remediationAction: enforce
