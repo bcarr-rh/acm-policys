@@ -43,7 +43,7 @@ spec:
                 {{ "{{" }} $configMapLabels := merge $clusterLabels $clusterSetLabels {{ "}}" }}
                 {{ "{{" }} $labels := merge $clusterLabels $clusterSetLabels $existingClusterLabels {{ "}}" }} 
                 {{ "{{" }} range $label, $labelValue := $labels {{ "}}" }}
-                  {{ "{{" }} if not (and ($label | hasPrefix "{{ $.Values.autoshiftLabelPrefix }}") (eq $labelValue "")) {{ "}}" }}
+                  {{ "{{" }} if not (and ($label | hasPrefix "{{ $.Values.autoshiftLabelPrefix }}") (eq $labelValue "_")) {{ "}}" }}
                     {{ "{{" }}$_ := set $newLabels $label $labelValue {{ "}}" }}
                   {{ "{{" }} end {{ "}}" }}
                 {{ "{{" }} end {{ "}}" }}
