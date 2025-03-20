@@ -53,12 +53,12 @@ spec:
                                   {{ "{{" }} $metadata := set $value.metadata "labels" $newLabels {{ "}}" }}
                                   {{ "{{" }} $objectDefinition := set $value "metadata" $metadata {{ "}}" }}
                                   {{ "{{" }} $_ := unset $objectDefinition "status" {{ "}}" }}
-                                  {
-                                    "complianceType": "mustonlyhave",
-                                    "objectDefinition": {{ "{{" }} $objectDefinition | toRawJson  {{ "}}" }}
-                                  }{{ "{{" }} if ne $lastIndex $index {{ "}}" }},{{ "{{" }} end {{ "}}" }}
+                                {
+                                  "complianceType": "mustonlyhave",
+                                  "objectDefinition": {{ "{{" }} $objectDefinition | toRawJson  {{ "}}" }}
+                                }{{ "{{" }} if ne $lastIndex $index {{ "}}" }},{{ "{{" }} end {{ "}}" }}
                                 {{ "{{" }} end {{ "}}" }}
-                               ]
+                              ]
 ---
 {{/* (index ((index (lookup "v1" "ConfigMap" "open-cluster-policies" (printf "cluster-set.%s"  $clusterSet)) "data" "values") | fromJson) "labels") | default dict */}}
 apiVersion: cluster.open-cluster-management.io/v1beta1
