@@ -34,8 +34,10 @@ spec:
                 data:
                   ClusterDefinition: | 
                               [
-                                {{ "{{" }} $_ := $clusters := (lookup "cluster.open-cluster-management.io/v1" "ManagedCluster" "" "").items {{ "}}" }}
-                                {{ "{{" }} $lastIndex := sub (len $clusters) 1 {{ "}}" }}
+                                {{ "{{" }} 
+                                  $clusters := (lookup "cluster.open-cluster-management.io/v1" "ManagedCluster" "" "").items
+                                  $lastIndex := sub (len $clusters) 1 
+                                {{ "}}" }}
                                 {{ "{{" }} range $index, $value := $clusters {{ "}}" }}
                                   {{ "{{" }} $newLabels := dict {{ "}}" }}
                                   {{ "{{" }} $managedCluster := $value.metadata.name {{ "}}" }}
