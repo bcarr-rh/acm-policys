@@ -5,7 +5,7 @@
 selfManaged: false
 acmversion: "2.12"
 hubClusterSet: "hub"
-debug: false
+debug: true
 autoshiftLabelPrefix: "autoshift.io/"
 
 
