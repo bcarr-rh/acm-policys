@@ -27,7 +27,7 @@ spec:
         spec:
           object-templates-raw: |
             [
-              {{ "{{" }} $clusters := (lookup "cluster.open-cluster-management.io/v1" "ManagedCluster" "" "").items {{ "}}" }}
+              {{ "{{-" }} $clusters := (lookup "cluster.open-cluster-management.io/v1" "ManagedCluster" "" "").items {{ "}}" }}
               {{ "{{" }} $lastIndex := sub (len $clusters) 1 {{ "}}" }}
               {{ "{{" }} range $index, $value := $clusters {{ "}}" }}
                 {{ "{{" }} $newLabels := dict {{ "}}" }}
@@ -45,7 +45,7 @@ spec:
                 {{ "{{" }} $labels := merge $clusterLabels $clusterSetLabels $existingClusterLabels {{ "}}" }} 
                 {{ "{{" }} range $label, $labelValue := $labels {{ "}}" }}
                   {{ "{{" }} if not (and ($label | hasPrefix "{{ $.Values.autoshiftLabelPrefix }}") (eq $labelValue "_")) {{ "}}" }}
-                    {{ "{{" }}$_ := set $newLabels $label $labelValue {{ "}}" }}
+                    {{ "{{" }} $_ := set $newLabels $label $labelValue {{ "}}" }}
                   {{ "{{" }} end {{ "}}" }}
                 {{ "{{" }} end {{ "}}" }}
                 {{ "{{" }} $metadata := set $value.metadata "labels" $newLabels {{ "}}" }}
