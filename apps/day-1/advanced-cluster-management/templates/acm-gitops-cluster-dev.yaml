@@ -1,0 +1,17 @@
+apiVersion: apps.open-cluster-management.io/v1beta1
+kind: GitOpsCluster
+metadata:
+  name: argo-acm-importer
+  namespace: {{ .Values.acm.gitops_namespace | default "openshift-gitops-dev"}}
+  annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+    argocd.argoproj.io/sync-wave: "7"
+spec:
+  argoServer:
+    cluster: notused
+    argoNamespace: {{ .Values.acm.gitops_namespace | default "openshift-gitops-dev"}}
+  placementRef:
+    kind: Placement
+    apiVersion: cluster.open-cluster-management.io/v1beta1
+    name: {{ .Values.acm.gitops_auto_clusterset }}
+    namespace: {{ .Values.acm.gitops_namespace | default "openshift-gitops-dev"}}

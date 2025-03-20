@@ -8,8 +8,6 @@ hubClusterSet: "hub"
 debug: true
 enabled: true
 autoshiftLabelPrefix: "autoshift.io/"
-hubClusterSets: 
-  - "hub"
 hubClusters:
   localCluster:
     name: "local-cluster"
@@ -22,7 +20,7 @@ hubClusters:
       worker-nodes-memory-mib:  '32768'
       worker-nodes-numcores-per-socket:  '4'
       worker-nodes:  '3'
-clusterSets:
+hubClusterSets:
   hub:
     labels: 
       infra-nodes-numcpu: '8'
@@ -35,6 +33,7 @@ clusterSets:
       worker-nodes:  '3'
       hub-Cluster: ''
       test-worked: 'false'
+managedClusterSets:
   managed:
     labels: 
       infra-nodes-numcpu: '8'

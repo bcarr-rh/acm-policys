@@ -1,5 +1,5 @@
 {{- if (.Values.enabled | default false) }}
-{{- range $cluster, $data := .Values.clusters }}
+{{- range $cluster, $data := $.Values.clusters }}
 ---
   {{- $prefixedClusterLabels := dict -}}
   {{- range $label, $value := $data.labels -}}
@@ -19,7 +19,27 @@ data:
   values: '{{ $data | toJson }}'
   labels: '{{ $prefixedClusterLabels | toJson }}'
 {{- end }}
-{{- range $clusterSet, $data := .Values.clusterSets }}
+{{- range $clusterSet, $data := $.Values.hubClusterSets }}
+---
+  {{- $prefixedClusterSetLabels := dict -}}
+  {{- range $label, $value := $data.labels }}
+    {{- if (eq $value "") -}}
+      {{- $_ := set $prefixedClusterSetLabels (printf "%s%s" $.Values.autoshiftLabelPrefix $label)  "_" -}}
+    {{- else }}
+      {{- $_ := set $prefixedClusterSetLabels (printf "%s%s" $.Values.autoshiftLabelPrefix $label) $value -}}
+    {{- end }}
+  {{- end }}
+  {{- $_ := set $data "labels" $prefixedClusterSetLabels }}
+apiVersion: v1
+kind: ConfigMap
+metadata: 
+  name: {{ printf "cluster-set.%s" $clusterSet }}
+  namespace: "open-cluster-policies" 
+data:
+  values: '{{ $data | toJson }}'
+  labels: '{{ $prefixedClusterSetLabels | toJson }}'
+{{- end }}
+{{- range $clusterSet, $data := $.Values.managedClusterSets }}
 ---
   {{- $prefixedClusterSetLabels := dict -}}
   {{- range $label, $value := $data.labels }}

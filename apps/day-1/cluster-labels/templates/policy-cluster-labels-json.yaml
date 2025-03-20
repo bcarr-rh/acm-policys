@@ -1,5 +1,6 @@
 {{- if (.Values.enabled | default false) }}
-{{- range $clusterSetKey, $clusterSetValue := .Values.clusterSets }}
+{{- $allClusterSets := merge $.Values.hubClusterSets $.Values.managedClusterSets -}}
+{{- range $clusterSetKey, $clusterSetValue := $allClusterSets }}
 {{- $hubClusterSet := $.Values.hubClusterSet | default "hub" }}
 {{- $policyName := printf "policy-%s-cluster-labels" $clusterSetKey }}
 {{- $configPolicyName := printf "cluster-labels-%s" $clusterSetKey }}
