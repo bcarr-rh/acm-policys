@@ -34,7 +34,7 @@ spec:
               {{ "{{" }} $clusterLabels := (index ((index (lookup "v1" "ConfigMap" "open-cluster-policies" (printf "managed-cluster.%s"  $value.metadata.name)) "data" "values") | default "" | fromJson) "labels") | default dict {{ "}}" }}
               {{ "{{" }} $configMapLabels := merge $clusterLabels $clusterSetLabels {{ "}}" }}
               {{ "{{" }} range $configLabel, $configValue := $configMapLabels {{ "}}" }}
-                {{ "{{" }} if not ($configLabel | hasPrefix "{{ $.Values.autoshiftLabelPrefix }}")) {{ "}}" }}
+                {{ "{{" }} if not ($configLabel | hasPrefix "{{ $.Values.autoshiftLabelPrefix }}") {{ "}}" }}
                   {{ "{{" }} $_ := set $prefixedLabels (printf "{{ $.Values.autoshiftLabelPrefix }}" $configLabel) $configValue {{ "}}" }}
                 {{ "{{" }} else {{ "}}" }}
                   {{ "{{" }} $_ := set $newLabels $configLabel $value {{ "}}" }}
