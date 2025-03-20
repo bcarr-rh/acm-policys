@@ -25,9 +25,27 @@ spec:
         spec:
           object-templates-raw: |
             {{ "{{" }} range $index, $value := (lookup "cluster.open-cluster-management.io/v1" "ManagedCluster" "" "").items {{ "}}" }}
-            {{ "{{" }} $clusterSet := ((index $value.metadata.labels "cluster.open-cluster-management.io/clusterset") | default "") {{ "}}" }}
-            {{ "{{" }} $clusterSetLabels := (index ((index (lookup "v1" "ConfigMap" "open-cluster-policies" (printf "cluster-set.%s"  $clusterSet)) "data" "values") | default "" | fromJson) "labels") | default dict {{ "}}" }}
-            {{ "{{" }} $clusterLabels := (index ((index (lookup "v1" "ConfigMap" "open-cluster-policies" (printf "managed-cluster.%s"  $value.metadata.name)) "data" "values") | default "" | fromJson) "labels") | default dict {{ "}}" }}
+              {{ "{{" }} $newLables := dict {{ "}}" }}
+              {{ "{{" }} $prefixedLabels := dict {{ "}}" }}
+              {{ "{{" }} $managedCluster := $value.metadata.name {{ "}}" }}
+              {{ "{{" }} $existingClusterLabels := $value.metadata.labels {{ "}}" }}
+              {{ "{{" }} $clusterSet := ((index $value.metadata.labels "cluster.open-cluster-management.io/clusterset") | default "") {{ "}}" }}
+              {{ "{{" }} $clusterSetLabels := (index ((index (lookup "v1" "ConfigMap" "open-cluster-policies" (printf "cluster-set.%s"  $clusterSet)) "data" "values") | default "" | fromJson) "labels") | default dict {{ "}}" }}
+              {{ "{{" }} $clusterLabels := (index ((index (lookup "v1" "ConfigMap" "open-cluster-policies" (printf "managed-cluster.%s"  $value.metadata.name)) "data" "values") | default "" | fromJson) "labels") | default dict {{ "}}" }}
+              {{ "{{" }} $configMapLabels := merge $clusterLabels $clusterSetLabels {{ "}}" }}
+              {{ "{{" }} range $configLabel, $configValue := $configMapLabels {{ "}}" }}
+                {{ "{{" }} if not ($label | hasPrefix {{ $.Values.autoshiftLabelPrefix }})) {{ "}}" }}
+                  {{ "{{" }} $_ := set $prefixedLabels (printf "{{ $.Values.autoshiftLabelPrefix }}" $label) $value {{ "}}" }}
+                {{ "{{" }} else {{ "}}" }}
+                  {{ "{{" }} $_ := set $newLabels $label $value {{ "}}" }}
+                {{ "{{" }} end {{ "}}" }}
+              {{ "{{" }} end {{ "}}" }}
+              {{ "{{" }} $labels := merge $clusterLabels $clusterSetLabels $existingClusterLabels {{ "}}" }} 
+              {{ "{{" }} range $label, $value := $labels {{ "}}" }}
+                {{ "{{" }} if not (and ($label | hasPrefix {{ $.Values.autoshiftLabelPrefix }}) (eq $value "")) ({{ "}}" }}
+                  $_ := set $newLabels $label $value
+                {{ "{{" }} end {{ "}}" }}
+              {{ "{{" }} end {{ "}}" }}
             - complianceType: musthave
               objectDefinition:
                 apiVersion: cluster.open-cluster-management.io/v1
@@ -35,15 +53,16 @@ spec:
                 metadata:
                   name: {{ "{{" }} $value.metadata.name {{ "}}" }}
                   labels:
-                    {{ "{{" }} $labels := merge $clusterLabels $clusterSetLabels {{ "}}" }} 
                     {{ "{{" }} range $key, $value := $labels {{ "}}" }}
-                    autoshift.io/{{ "{{" }} $key {{ "}}" }}: {{ "{{" }} $value | quote {{ "}}" }}
+                    {{ $.Values.autoshiftLabelPrefix }}{{ "{{" }} $key {{ "}}" }}: {{ "{{" }} $value | quote {{ "}}" }}
                     {{ "{{" }} end {{ "}}" }}
               pruneObjectBehavior: None
               remediationAction: enforce
               severity: high
             {{ "{{" }} end {{ "}}" }}
 ---
+{{/* if or (not ($label | hasPrefix $.Values.autoshiftLabelPrefix)) (not (eq $value "")) }}
+{{ if not (and ($label | hasPrefix $.Values.autoshiftLabelPrefix) (eq $value "")) */}}
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
 metadata:

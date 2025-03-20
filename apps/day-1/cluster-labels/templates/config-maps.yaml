@@ -1,5 +1,10 @@
 {{ range $cluster, $data := .Values.clusters }}
 ---
+  {{ $prefixedClusterLabels := dict }}
+  {{ range $label, $value := $data.labels }}
+    {{ $_ := set $prefixedClusterLabels (printf "%s%s" $.Values.autoshiftLabelPrefix $label)  $value }}
+  {{ end }}
+  {{ $_ := set $data "labels" $prefixedClusterLabels}}
 apiVersion: v1
 kind: ConfigMap
 metadata: 
@@ -7,9 +12,15 @@ metadata:
   namespace: "open-cluster-policies" 
 data: 
   values: '{{ $data | toJson }}'
+  labels: '{{ $prefixedClusterLabels | toJson }}'
 {{ end }}
 {{ range $clusterSet, $data := .Values.clusterSets }}
 ---
+  {{ $prefixedClusterSetLabels := dict }}
+  {{ range $label, $value := $data.labels }}
+    {{ $_ := set $prefixedClusterSetLabels (printf "%s%s" $.Values.autoshiftLabelPrefix $label)  $value }}
+  {{ end }}
+  {{ $_ := set $data "labels" $prefixedClusterSetLabels}}
 apiVersion: v1
 kind: ConfigMap
 metadata: 
@@ -17,4 +28,5 @@ metadata:
   namespace: "open-cluster-policies" 
 data:
   values: '{{ $data | toJson }}'
+  labels: '{{ $prefixedClusterSetLabels | toJson }}'
 {{ end }}
