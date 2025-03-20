@@ -35,7 +35,7 @@ spec:
                   ClusterDefinition: | 
                               [
                                 {{ "{{" }} 
-                                  $clusters := (lookup "cluster.open-cluster-management.io/v1" "ManagedCluster" "" "").items
+                                  $clusters := (lookup "cluster.open-cluster-management.io/v1" "ManagedCluster" "" "").items;
                                   $lastIndex := sub (len $clusters) 1 
                                 {{ "}}" }}
                                 {{ "{{" }} range $index, $value := $clusters {{ "}}" }}
