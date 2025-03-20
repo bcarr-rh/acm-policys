@@ -48,11 +48,11 @@ spec:
               - {{ .Values.compliance.namespace | default "openshift-compliance"}}
           subscription:
             namespace: {{ .Values.compliance.namespace | default "openshift-compliance"}}
-            channel: {{ .Values.compliance.channel | default "stable"}}
+            channel: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/compliance-channel" | default "{{ .Values.compliance.channel | default "stable"}}" hub{{ "}}" }}'
             name: {{ .Values.compliance.name | default "compliance-operator"}}
-            source: {{ .Values.compliance.source | default "redhat-operators"}}
-            sourceNamespace: {{ .Values.compliance.sourceNamespace | default "openshift-marketplace"}}
-          upgradeApproval: {{ .Values.compliance.installPlanApproval | default "Automatic"}}
+            source: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/compliance-source" | default "{{ .Values.compliance.source | default "redhat-operators"}}" hub{{ "}}" }}'
+            sourceNamespace: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/compliance-source-namespace" | default "{{ .Values.compliance.sourceNamespace | default "openshift-marketplace"}}" hub{{ "}}" }}'
+          upgradeApproval: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/compliance-install-plan-approval" | default "{{ .Values.compliance.installPlanApproval | default "Automatic"}}" hub{{ "}}" }}'
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
@@ -86,6 +86,15 @@ spec:
   {{- range $clusterSet, $value := $.Values.hubClusterSets }}
     - {{ $clusterSet }}
   {{- end }}
+  predicates:
+    - requiredClusterSelector:
+        labelSelector:
+          matchExpressions:
+            - key: 'autoshift.io/compliance'
+              operator: In
+              values:
+              - 'true'
+              - 'True'
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists

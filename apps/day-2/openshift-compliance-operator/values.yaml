@@ -17,3 +17,10 @@ clusterSets:
   managed:
     labels:
       test4: 'test'
+
+# Labels
+# compliance<bool>: If not set Compliance Operator will not be managed. Helm chart config map must be set with profiles and remediations
+# compliance-install-plan-approval<String>: default Automatic
+# compliance-source<String>: default redhat-operators
+# compliance-source-namespace<String>: default openshift-marketplace
+# compliance-channel<String>: default stable
