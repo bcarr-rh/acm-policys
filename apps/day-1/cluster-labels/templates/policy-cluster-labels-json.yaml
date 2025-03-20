@@ -1,4 +1,4 @@
-{{ if false }}
+{{ if (.Values.enabled | default false) }}
 {{ range $clusterSetKey, $clusterSetValue := .Values.clusterSets }}
 {{ $hubClusterSet := $.Values.hubClusterSet | default "hub" }}
 {{ $policyName := printf "policy-%s-cluster-labels" $clusterSetKey }}
@@ -32,6 +32,11 @@ spec:
                 {{ "{{" }} $newLabels := dict {{ "}}" }}
                 {{ "{{" }} $managedCluster := $value.metadata.name {{ "}}" }}
                 {{ "{{" }} $existingClusterLabels := $value.metadata.labels {{ "}}" }}
+                {{ "{{" }} range $existingKey, $existingValue := $existingClusterLabels {{ "}}" }}
+                  {{ "{{" }} if ($existingKey | hasPrefix "{{ $.Values.autoshiftLabelPrefix }}") {{ "}}" }}
+                    {{ "{{" }} $_ := unset $existingClusterLabels $existingKey {{ "}}" }}
+                  {{ "{{" }} end {{ "}}" }}
+                {{ "{{" }} end {{ "}}" }}
                 {{ "{{" }} $clusterSet := ((index $value.metadata.labels "cluster.open-cluster-management.io/clusterset") | default "") {{ "}}" }}
                 {{ "{{" }} $clusterSetLabels := (index ((index (lookup "v1" "ConfigMap" "open-cluster-policies" (printf "cluster-set.%s"  $clusterSet)) "data" "values") | default "" | fromJson) "labels") | default dict {{ "}}" }}
                 {{ "{{" }} $clusterLabels := (index ((index (lookup "v1" "ConfigMap" "open-cluster-policies" (printf "managed-cluster.%s"  $value.metadata.name)) "data" "values") | default "" | fromJson) "labels") | default dict {{ "}}" }}
@@ -84,5 +89,6 @@ subjects:
     apiGroup: policy.open-cluster-management.io
     kind: Policy
 ---
+{{ end }}
 {{ end }}
 {{ end }}
