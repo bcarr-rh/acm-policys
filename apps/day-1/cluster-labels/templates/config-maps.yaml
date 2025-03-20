@@ -39,3 +39,4 @@ data:
   values: '{{ $data | toJson }}'
   labels: '{{ $prefixedClusterSetLabels | toJson }}'
 {{- end -}}
+{{- end -}}
