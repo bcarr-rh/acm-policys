@@ -33,17 +33,40 @@ spec:
             hubClusterSets:
               hub:
                 labels:
-                  test1: 'test'
-              testHub:
+                  acs: 'true'
+                  compliance: 'true'
+                  loki: 'true'
+                  logging: 'true'
+                  coo: 'true'
+              test-hub:
                 labels:
                   test2: 'test'
-            clusterSets:
+            managedClusterSets:
               sandbox:
                 labels:
                   test3: 'test'
               managed:
                 labels:
-                  test4: 'test'
+                  acs: 'true'
+                  compliance: 'true'
+                  loki: 'true'
+                  logging: 'true'
+                  coo: 'true'
+            clusters:
+              nonprod:
+                labels:
+                  infra-nodes-numcpu: '8'
+                  infra-nodes-memory-mib:  '24576'
+                  infra-nodes-numcores-per-socket:  '4'
+                  infra-nodes:  '6'
+                  worker-nodes-numcpu:  '8'
+                  worker-nodes-memory-mib:  '32768'
+                  worker-nodes-numcores-per-socket:  '4'
+                  worker-nodes:  '3'
+              local-cluster: 
+                labels: 
+                  test-worked: 'true'
+                  second-label: ''
       ignoreDifferences:
       - group: "apps"
         kind: "Project"

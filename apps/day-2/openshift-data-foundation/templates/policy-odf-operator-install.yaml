@@ -79,7 +79,7 @@ metadata:
   namespace: open-cluster-policies
 spec:
   clusterSets:
-  {{- range $clusterSet, $value := $.Values.clusterSets }}
+  {{- range $clusterSet, $value := $.Values.managedClusterSets }}
     - {{ $clusterSet }}
   {{- end }}
   {{- range $clusterSet, $value := $.Values.hubClusterSets }}

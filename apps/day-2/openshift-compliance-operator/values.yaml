@@ -13,7 +13,7 @@ hubClusterSets:
   hub:
     labels:
       test1: 'test'
-clusterSets:
+managedClusterSets:
   managed:
     labels:
       test4: 'test'

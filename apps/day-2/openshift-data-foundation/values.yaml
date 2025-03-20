@@ -12,7 +12,15 @@ hubClusterSets:
   hub:
     labels:
       test1: 'test'
-clusterSets:
+managedClusterSets:
   managed:
     labels:
       test4: 'test'
+
+# Labels
+# autoshift.io/odf<bool>: If not set OpenShift Data Foundation will not be managed. if Storage Nodes are enable will deploy ODF on local storage/ storage nodes
+# autoshift.io/odf-multi-cloud-gateway<String>: example standalone. Install ODF with only nooba object gateway or full odf
+# autoshift.io/odf-channel<String>: default stable-4.17
+# autoshift.io/odf-installPlanApproval<String>: default Automatic
+# autoshift.io/odf-source<String>: default redhat-operators
+# autoshift.io/odf-sourceNamespace<String>: default openshift-marketplace

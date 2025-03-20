@@ -44,7 +44,7 @@ metadata:
   namespace: {{ .Values.acm.gitops_namespace }}
 spec:
   clusterSets:
-  {{- range $clusterSet, $value := .Values.clusterSets }}
+  {{- range $clusterSet, $value := .Values.managedClusterSets }}
     - {{ $clusterSet }}
   {{- end }}
   {{- range $clusterSet, $value := .Values.hubClusterSets }}

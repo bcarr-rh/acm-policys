@@ -79,7 +79,7 @@ metadata:
   namespace: {{ .Values.acs.namespace }}
 spec:
   clusterSets:
-  {{- range $clusterSet, $value := .Values.clusterSets }}
+  {{- range $clusterSet, $value := .Values.managedClusterSets }}
     - {{ $clusterSet }}
   {{- end }}
   predicates:

@@ -1,4 +1,4 @@
-{{- range $clusterSet, $value := .Values.clusterSets }}
+{{- range $clusterSet, $value := .Values.managedClusterSets }}
 {{- range $team, $teamjson := $.Values.teams }}
 ---
 apiVersion: cluster.open-cluster-management.io/v1beta2
