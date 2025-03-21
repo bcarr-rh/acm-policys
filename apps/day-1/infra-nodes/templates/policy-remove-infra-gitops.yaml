@@ -21,7 +21,7 @@ spec:
           name: {{ $configPolicyName }}
         spec:
           object-templates:
-            - complianceType: mustnothave
+            - complianceType: musthave
               objectDefinition:
                 apiVersion: pipelines.openshift.io/v1alpha1
                 kind: GitopsService
@@ -41,7 +41,7 @@ metadata:
   namespace: open-cluster-policies
 spec:
   clusterSets:
-  {{- range  merge .Values.infraNodes.clusterSets }}
+  {{- range .Values.infraNodes.clusterSets }}
     - {{ . }}
   {{- end }}
   predicates:
