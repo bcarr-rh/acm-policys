@@ -39,6 +39,9 @@ spec:
                   {{ "{{-" }} end {{ "}}" }}
                 {{ "{{-" }} end {{ "}}" }}
                 {{ "{{-" }} $clusterSet := ((index $value.metadata.labels "cluster.open-cluster-management.io/clusterset") | default "") {{ "}}" }}
+                {{ "{{-" }} if eq ($clusterSet "") {{ "}}" }}
+                  {{ "{{-" }} continue {{ "}}" }}
+                {{ "{{-" }} end {{ "}}" }}
                 {{ "{{-" }} $clusterSetLabels := (index ((index (lookup "v1" "ConfigMap" "open-cluster-policies" (printf "cluster-set.%s"  $clusterSet)) "data" "values") | default "" | fromJson) "labels") | default dict {{ "}}" }}
                 {{ "{{-" }} $clusterLabels := (index ((index (lookup "v1" "ConfigMap" "open-cluster-policies" (printf "managed-cluster.%s"  $value.metadata.name)) "data" "values") | default "" | fromJson) "labels") | default dict {{ "}}" }}
                 {{ "{{-" }} $configMapLabels := merge $clusterLabels $clusterSetLabels {{ "}}" }}
