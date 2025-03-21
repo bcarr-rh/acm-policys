@@ -65,9 +65,7 @@ metadata:
   namespace: open-cluster-policies
 spec:
   clusterSets:
-  {{- range $clusterSet, $value := $.Values.hubClusterSets }}
-    - {{ $clusterSet }}
-  {{- end }}
+    - {{ $clusterSetKey }}
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists
