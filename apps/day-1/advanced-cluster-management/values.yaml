@@ -20,7 +20,7 @@ hubClusterSets:
   test-hub:
     labels:
       test2: 'test'
-clusterSets:
+managedClusterSets:
   sandbox:
     labels:
       test3: 'test'
