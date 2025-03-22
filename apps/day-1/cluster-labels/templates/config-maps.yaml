@@ -3,8 +3,8 @@
 ---
   {{- $prefixedClusterLabels := dict -}}
   {{- range $label, $value := $data.labels -}}
-    {{- if (eq $value "") -}}
-      {{- $_ := set $prefixedClusterLabels (printf "%s%s" $.Values.autoshiftLabelPrefix $label)  "_" -}}
+    {{- if eq ($value | trim) "" -}}
+        {{- continue }}
     {{- else -}}
       {{- $_ := set $prefixedClusterLabels (printf "%s%s" $.Values.autoshiftLabelPrefix $label) $value -}}
     {{- end -}}
@@ -24,8 +24,8 @@ data:
 ---
   {{- $prefixedClusterSetLabels := dict }}
   {{- range $label, $value := $data.labels }}
-    {{- if (eq $value "") -}}
-      {{- $_ := set $prefixedClusterSetLabels (printf "%s%s" $.Values.autoshiftLabelPrefix $label)  "_" -}}
+    {{- if eq ($value | trim) "" -}}
+      {{- continue -}}
     {{- else }}
       {{- $_ := set $prefixedClusterSetLabels (printf "%s%s" $.Values.autoshiftLabelPrefix $label) $value -}}
     {{- end }}
