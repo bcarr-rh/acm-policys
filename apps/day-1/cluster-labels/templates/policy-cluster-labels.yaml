@@ -42,8 +42,8 @@ spec:
                     {{ "{{-" }} $_ := unset $existingClusterLabels $existingKey {{ "}}" }}
                   {{ "{{-" }} end {{ "}}" }}
                 {{ "{{-" }} end {{ "}}" }}
-                {{ "{{-" }} $clusterSetLabels := (index ((index (lookup "v1" "ConfigMap" "open-cluster-policies" (printf "cluster-set.%s"  $clusterSet)) "data" "values") | default "" | fromJson) "labels") | default dict {{ "}}" }}
-                {{ "{{-" }} $clusterLabels := (index ((index (lookup "v1" "ConfigMap" "open-cluster-policies" (printf "managed-cluster.%s"  $value.metadata.name)) "data" "values") | default "" | fromJson) "labels") | default dict {{ "}}" }}
+                {{ "{{-" }} $clusterSetLabels := (index (index (index (lookup "v1" "ConfigMap" "open-cluster-policies" (printf "cluster-set.%s"  $clusterSet)) "data" | default "") "values" | default "" | fromJson) "labels") | default dict {{ "}}" }}
+                {{ "{{-" }} $clusterLabels := (index (index (index (lookup "v1" "ConfigMap" "open-cluster-policies" (printf "managed-cluster.%s"  $value.metadata.name)) "data" | default "") "values" | default "" | fromJson) "labels") | default dict {{ "}}" }}
                 {{ "{{-" }} $configMapLabels := merge $clusterLabels $clusterSetLabels {{ "}}" }}
                 {{ "{{-" }} $labels := merge $clusterLabels $clusterSetLabels $existingClusterLabels {{ "}}" }} 
                 {{ "{{-" }} range $label, $labelValue := $labels {{ "}}" }}
