@@ -20,7 +20,7 @@ spec:
     kind: Policy
     name: {{ . }}
     namespace: open-cluster-policies
-    {{- end }}
+  {{- end }}
   policy-templates:
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
