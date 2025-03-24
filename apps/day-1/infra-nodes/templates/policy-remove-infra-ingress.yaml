@@ -34,7 +34,6 @@ spec:
                     nodeSelector:
                       matchLabels:
                         node-role.kubernetes.io/infra: ''
-                    tolerations: {}
           pruneObjectBehavior: {{ .Values.infraNodes.pruneObjectBehavior | default "None" }}
           remediationAction: inform
           severity: high
