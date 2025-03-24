@@ -57,7 +57,7 @@ spec:
                 apiVersion: v1
                 kind: Namespace
                 metadata:
-                  name: openshift-operators
+                  name: rhdh-operator
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1beta1
         kind: OperatorPolicy
@@ -68,11 +68,11 @@ spec:
           severity: high
           complianceType: musthave
           operatorGroup:
-            name: global-operators
-            namespace: openshift-operators
+            name: rhdh-operator
+            namespace: rhdh-operator
           subscription:
             name: rhdh
-            namespace: openshift-operators
+            namespace: rhdh-operator
             source: redhat-operators
             sourceNamespace: openshift-marketplace
             channel: fast
@@ -91,8 +91,7 @@ spec:
                 apiVersion: operators.coreos.com/v1alpha1
                 kind: ClusterServiceVersion
                 metadata:
-                  namespace: openshift-operators
-                spec:
-                  displayName: Developer Hub Operator
+                  namespace: rhdh-operator
+                  name: rhdh
                 status:
                   phase: Succeeded

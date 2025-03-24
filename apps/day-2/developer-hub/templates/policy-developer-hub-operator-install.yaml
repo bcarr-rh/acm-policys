@@ -1,3 +1,9 @@
+# This policy verifies the installation of the official & supported version of
+# the Developer Hub Operator on the managed clusters.
+#
+# If set to "enforce" it'll install the operator.
+#
+# Note that OpenShift 4.6 is required.
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
@@ -16,7 +22,7 @@ spec:
         metadata:
           name: developer-hub-operator-ns
         spec:
-          remediationAction: enforce
+          remediationAction: enforce # will be overridden by remediationAction in parent policy
           severity: high
           object-templates:
             - complianceType: musthave
@@ -24,7 +30,7 @@ spec:
                 apiVersion: v1
                 kind: Namespace
                 metadata:
-                  name: openshift-operators
+                  name: {{ .Values.developerHub.namespace }}
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1beta1
         kind: OperatorPolicy
@@ -35,11 +41,11 @@ spec:
           severity: high
           complianceType: musthave
           operatorGroup:
-            name: global-operators
-            namespace: openshift-operators
+            name: {{ .Values.developerHub.namespace }}
+            namespace: {{ .Values.developerHub.namespace }}
           subscription:
             name: {{ .Values.developerHub.name }}
-            namespace: openshift-operators
+            namespace: {{ .Values.developerHub.namespace }}
             source: {{ .Values.developerHub.source }}
             sourceNamespace: {{ .Values.developerHub.sourceNamespace }}
             channel: {{ .Values.developerHub.channel }}
@@ -48,9 +54,9 @@ spec:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: developer-hub-status
+          name: developer-hub-operator-status
         spec:
-          remediationAction: inform
+          remediationAction: inform # will be overridden by remediationAction in parent policy
           severity: high
           object-templates:
             - complianceType: musthave
@@ -58,11 +64,11 @@ spec:
                 apiVersion: operators.coreos.com/v1alpha1
                 kind: ClusterServiceVersion
                 metadata:
-                  namespace: openshift-operators
+                  namespace: {{ .Values.developerHub.namespace }}
                 spec:
                   displayName: Developer Hub Operator
                 status:
-                  phase: Succeeded
+                  phase: Succeeded # check the csv status to determine if operator is running or not
 ---
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
