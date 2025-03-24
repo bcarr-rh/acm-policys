@@ -22,15 +22,15 @@ data:
 
 {{- range $clusterSet, $data := merge $.Values.hubClusterSets $.Values.managedClusterSets }}
 ---
-  {{- $prefixedClusterSetLabels := dict }}
-  {{- range $label, $value := $data.labels }}
+  {{- $prefixedClusterSetLabels := dict -}}
+  {{- range $label, $value := $data.labels -}}
     {{- if eq ($value | trim) "" -}}
       {{- continue -}}
-    {{- else }}
+    {{- else -}}
       {{- $_ := set $prefixedClusterSetLabels (printf "%s%s" $.Values.autoshiftLabelPrefix $label) $value -}}
-    {{- end }}
-  {{- end }}
-  {{- $_ := set $data "labels" $prefixedClusterSetLabels }}
+    {{- end -}}
+  {{- end -}}
+  {{- $_ := set $data "labels" $prefixedClusterSetLabels -}}
 apiVersion: v1
 kind: ConfigMap
 metadata: 
