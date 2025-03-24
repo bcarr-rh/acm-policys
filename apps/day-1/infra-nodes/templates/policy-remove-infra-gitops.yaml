@@ -1,5 +1,5 @@
-{{ $policyName := "policy-infra-image-registry" }}
-{{ $configPolicyName := "create-infra-image-registry" }}
+{{ $policyName := "policy-remove-infra-gitops" }}
+{{ $configPolicyName := "remove-infra-gitops" }}
 {{ $placementName := printf "placement-%s" $policyName }}
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
@@ -11,16 +11,8 @@ metadata:
     policy.open-cluster-management.io/controls: CM-2 Baseline Configuration
     policy.open-cluster-management.io/standards: NIST SP 800-53
 spec:
-  disabled: {{ not .Values.infraNodes.imageRegistry.migrate }}
-  remediationAction: {{ .Values.infraNodes.imageRegistry.remediationAction | default "enforce" }}
-  dependencies:
-  {{- range .Values.infraNodes.dependencies.install }}
-  - apiVersion: policy.open-cluster-management.io/v1
-    compliance: Compliant
-    kind: Policy
-    name: {{ . }}
-    namespace: open-cluster-policies
-  {{- end }}
+  disabled: {{ not .Values.infraNodes.gitops.migrate }}
+  remediationAction: {{ .Values.infraNodes.gitops.remediationAction | default "enforce" }}
   policy-templates:
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
@@ -31,19 +23,14 @@ spec:
           object-templates:
             - complianceType: musthave
               objectDefinition:
-                apiVersion: imageregistry.operator.openshift.io/v1
-                kind: Config
+                apiVersion: pipelines.openshift.io/v1alpha1
+                kind: GitopsService
                 metadata:
                   name: cluster
+                  namespace: {{ .Values.infraNodes.gitops.namespace }}
                 spec:
-                  nodeSelector: 
-                    node-role.kubernetes.io/infra: ""
-                  tolerations:
-                  - effect: NoSchedule
-                    key: node-role.kubernetes.io/infra
-                  - effect: NoExecute
-                    key: node-role.kubernetes.io/infra
-          pruneObjectBehavior: {{ .Values.infraNodes.imageRegistry.pruneObjectBehavior | default "None" }}
+                  runOnInfra: true
+                  tolerations: {}
           remediationAction: inform
           severity: high
 ---
@@ -62,7 +49,7 @@ spec:
         labelSelector:
           matchExpressions:
             - key: {{ printf $labelPrefix "infra-nodes" }}
-              operator: Exists
+              operator: DoesNotExist
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists
@@ -72,13 +59,13 @@ spec:
 apiVersion: policy.open-cluster-management.io/v1
 kind: PlacementBinding
 metadata:
-  name: {{ $placementName }}
-  namespace: open-cluster-policies
+ name: {{ $placementName }}
+ namespace: open-cluster-policies
 placementRef:
-  name: {{ $placementName }}
-  apiGroup: cluster.open-cluster-management.io
-  kind: Placement
+ name: {{ $placementName }}
+ apiGroup: cluster.open-cluster-management.io
+ kind: Placement
 subjects:
-  - name: {{ $policyName }}
-    apiGroup: policy.open-cluster-management.io
-    kind: Policy
+ - name: {{ $policyName }}
+   apiGroup: policy.open-cluster-management.io
+   kind: Policy
