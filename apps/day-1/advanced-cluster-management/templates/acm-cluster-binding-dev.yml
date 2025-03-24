@@ -2,7 +2,7 @@ apiVersion: cluster.open-cluster-management.io/v1beta2
 kind: ManagedClusterSetBinding
 metadata:
   name: {{ .Values.acm.gitops_auto_clusterset }}
-  namespace: {{ .Values.acm.gitops_namespace | default "openshift-gitops-dev"}}
+  namespace: {{ .Values.acm.gitops_namespace_dev | default "openshift-gitops-dev"}}
   annotations:
     argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
     argocd.argoproj.io/sync-wave: "5"
