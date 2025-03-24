@@ -92,5 +92,7 @@ spec:
                 kind: ClusterServiceVersion
                 metadata:
                   namespace: openshift-operators
+                spec:
+                  displayName: 'Red Hat OpenShift Pipelines'     
                 status:
                   phase: Succeeded
