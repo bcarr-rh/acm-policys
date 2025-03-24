@@ -24,45 +24,26 @@ spec:
                 apiVersion: v1
                 kind: Namespace
                 metadata:
-                  name: openshift-operators-redhat
+                  name: {{ .Values.devspaces.namespace }}
     - objectDefinition:
-        apiVersion: policy.open-cluster-management.io/v1
-        kind: ConfigurationPolicy
+        apiVersion: policy.open-cluster-management.io/v1beta1
+        kind: OperatorPolicy
         metadata:
-          name: redhat-operator-group
+          name: install-operator-devspaces
         spec:
           remediationAction: enforce
           severity: high
-          object-templates:
-            - complianceType: musthave
-              objectDefinition:
-                apiVersion: operators.coreos.com/v1
-                kind: OperatorGroup
-                metadata:
-                  name: openshift-operators-redhat
-                  namespace: openshift-operators-redhat
-    - objectDefinition:
-        apiVersion: policy.open-cluster-management.io/v1
-        kind: ConfigurationPolicy
-        metadata:
-          name: openshift-devspaces-subscription
-        spec:
-          remediationAction: enforce
-          severity: high
-          object-templates:
-            - complianceType: musthave
-              objectDefinition:
-                apiVersion: operators.coreos.com/v1alpha1
-                kind: Subscription
-                metadata:
-                  name: {{ .Values.devspaces.name }}
-                  namespace: {{ .Values.devspaces.namespace }}
-                spec:
-                  installPlanApproval: {{ .Values.devspaces.installPlanApproval }}
-                  channel: {{ .Values.devspaces.channel }}
-                  name: {{ .Values.devspaces.name }}
-                  source: {{ .Values.devspaces.source }}
-                  sourceNamespace: {{ .Values.devspaces.sourceNamespace }}
+          complianceType: musthave
+          operatorGroup:
+            name: {{ .Values.devspaces.namespace }}
+            namespace: {{ .Values.devspaces.namespace }}
+          subscription:
+            name: {{ .Values.devspaces.name }}
+            namespace: {{ .Values.devspaces.namespace }}
+            source: {{ .Values.devspaces.source }}
+            sourceNamespace: {{ .Values.devspaces.sourceNamespace }}
+            channel: {{ .Values.devspaces.channel }}
+          upgradeApproval: {{ .Values.devspaces.installPlanApproval }}
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
@@ -78,8 +59,6 @@ spec:
                 kind: ClusterServiceVersion
                 metadata:
                   namespace: openshift-operators-redhat
-                spec:
-                  displayName: DevSpaces Operator
                 status:
                   phase: Succeeded
 ---

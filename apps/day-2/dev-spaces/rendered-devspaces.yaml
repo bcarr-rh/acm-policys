@@ -59,43 +59,24 @@ spec:
                 metadata:
                   name: openshift-operators-redhat
     - objectDefinition:
-        apiVersion: policy.open-cluster-management.io/v1
-        kind: ConfigurationPolicy
+        apiVersion: policy.open-cluster-management.io/v1beta1
+        kind: OperatorPolicy
         metadata:
-          name: redhat-operator-group
+          name: install-operator-devspaces
         spec:
           remediationAction: enforce
           severity: high
-          object-templates:
-            - complianceType: musthave
-              objectDefinition:
-                apiVersion: operators.coreos.com/v1
-                kind: OperatorGroup
-                metadata:
-                  name: openshift-operators-redhat
-                  namespace: openshift-operators-redhat
-    - objectDefinition:
-        apiVersion: policy.open-cluster-management.io/v1
-        kind: ConfigurationPolicy
-        metadata:
-          name: openshift-devspaces-subscription
-        spec:
-          remediationAction: enforce
-          severity: high
-          object-templates:
-            - complianceType: musthave
-              objectDefinition:
-                apiVersion: operators.coreos.com/v1alpha1
-                kind: Subscription
-                metadata:
-                  name: devspaces
-                  namespace: openshift-operators-redhat
-                spec:
-                  installPlanApproval: Automatic
-                  channel: stable-6.1
-                  name: devspaces
-                  source: redhat-operators
-                  sourceNamespace: openshift-marketplace
+          complianceType: musthave
+          operatorGroup:
+            name: openshift-operators-redhat
+            namespace: openshift-operators-redhat
+          subscription:
+            name: devspaces
+            namespace: openshift-operators-redhat
+            source: redhat-operators
+            sourceNamespace: openshift-marketplace
+            channel: stable
+          upgradeApproval: Automatic
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
@@ -111,7 +92,5 @@ spec:
                 kind: ClusterServiceVersion
                 metadata:
                   namespace: openshift-operators-redhat
-                spec:
-                  displayName: DevSpaces Operator
                 status:
                   phase: Succeeded
