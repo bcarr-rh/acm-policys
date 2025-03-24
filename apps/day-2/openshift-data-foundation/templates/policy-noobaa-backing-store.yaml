@@ -41,7 +41,7 @@ spec:
                   namespace: {{ .Values.odf.namespace }}
                 spec:
                   pvPool:
-                    numVolumes: 1
+                    numVolumes: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/odf-nooba-store-size" | default "{{ .Values.odf.noobaStoreNumVolumes }}" hub{{ "}}" }}'
                     resources:
                       limits:
                         cpu: 1000m
@@ -49,7 +49,7 @@ spec:
                       requests:
                         cpu: 500m
                         memory: 500Mi
-                        storage: 500Gi
+                        storage: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/odf-nooba-store-num-volumes" | default "{{ .Values.odf.noobaStoreSize }}" hub{{ "}}" }}'
                     secret: {}
                   type: pv-pool
 ---
@@ -66,6 +66,20 @@ spec:
   {{- range $clusterSet, $value := $.Values.hubClusterSets }}
     - {{ $clusterSet }}
   {{- end }}
+  predicates:
+    - requiredClusterSelector:
+        labelSelector:
+          matchExpressions:
+            - key: 'autoshift.io/odf-nooba-pvpool'
+              operator: In
+              values:
+              - 'true'
+              - 'True'
+            - key: 'autoshift.io/odf'
+              operator: In
+              values:
+              - 'true'
+              - 'True'
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists

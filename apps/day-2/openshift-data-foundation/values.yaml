@@ -8,6 +8,13 @@ odf:
     installPlanApproval: Automatic
     source: redhat-operators
     sourceNamespace: openshift-marketplace
+    noobaStoreSize: 500Gi
+    noobaStoreNumVolumes: 1
+    ocsStorageClassName: gp3-csi
+    ocsStorageSize: 2Ti
+    ocsStorageCount: 1
+    ocsStorageReplicas: 3
+    resourceProfile: balanced # lean: suitable for clusters with limited resources, balanced: suitable for most use cases, performance: suitable for clusters with high amount of resources.
 hubClusterSets:
   hub:
     labels:
@@ -19,7 +26,15 @@ managedClusterSets:
 
 # Labels
 # autoshift.io/odf<bool>: If not set OpenShift Data Foundation will not be managed. if Storage Nodes are enable will deploy ODF on local storage/ storage nodes
-# autoshift.io/odf-multi-cloud-gateway<String>: example standalone. Install ODF with only nooba object gateway or full odf
+# autoshift.io/odf-multi-cloud-gateway<String>: values standalone or standard. Install ODF with only nooba object gateway or full odf
+# autoshift.io/odf-nooba-pvpool<bool>: if not set nooba will be deployed with default settings. Recomended don't set for cloud providers. Use pv pool for storage
+# autoshift.io/odf-nooba-store-size<String>: example 500Gi. if pvpool set. Size of nooba backing store
+# autoshift.io/odf-nooba-store-num-volumes<String>: example 1. if pvpool set. number of volumes
+# autoshift.io/odf-ocs-storage-class-name<String>: if not using local-storage, storage class to use for ocs
+# autoshift.io/odf-ocs-storage-size<String>: storage size per nvme
+# autoshift.io/odf-ocs-storage-count<String>: number of replica sets of nvme drives, note total amount will count * replicas
+# autoshift.io/odf-ocs-storage-replicas<String>: replicas, 3 is recommended
+# autoshift.io/odf-resource-profile<String>: default balanced. lean: suitable for clusters with limited resources, balanced: suitable for most use cases, performance: suitable for clusters with high amount of resources.
 # autoshift.io/odf-channel<String>: default stable-4.17
 # autoshift.io/odf-installPlanApproval<String>: default Automatic
 # autoshift.io/odf-source<String>: default redhat-operators

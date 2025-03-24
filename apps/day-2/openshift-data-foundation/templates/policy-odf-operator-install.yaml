@@ -42,16 +42,16 @@ spec:
           complianceType: musthave
           operatorGroup:
             name: {{ .Values.odf.namespace }}
-            namespace: namespace: {{ .Values.odf.namespace }}
-            targetNamespaces:
-              - namespace: {{ .Values.odf.namespace }}
-          subscription:
-            channel: {{ .Values.odf.channel }}
-            name: {{ .Values.odf.name }}
-            source: {{ .Values.odf.source }}
-            sourceNamespace: {{ .Values.odf.sourceNamespace }}
             namespace: {{ .Values.odf.namespace }}
-          upgradeApproval: {{ .Values.odf.installPlanApproval }}
+            targetNamespaces:
+              - {{ .Values.odf.namespace }}
+          subscription:
+            name: {{ .Values.odf.name }}
+            namespace: {{ .Values.odf.namespace }}
+            source: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/odf-source" | default "{{ .Values.odf.source }}" hub{{ "}}" }}'
+            sourceNamespace: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/odf-source-namespace" | default "{{ .Values.odf.sourceNamespace }}" hub{{ "}}" }}'
+            channel: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/odf-channel" | default "{{ .Values.odf.channel }}" hub{{ "}}" }}'
+          upgradeApproval: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/odf-install-plan-approval" | default "{{ .Values.odf.installPlanApproval }}" hub{{ "}}" }}'
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
@@ -85,6 +85,15 @@ spec:
   {{- range $clusterSet, $value := $.Values.hubClusterSets }}
     - {{ $clusterSet }}
   {{- end }}
+  predicates:
+    - requiredClusterSelector:
+        labelSelector:
+          matchExpressions:
+            - key: 'autoshift.io/odf'
+              operator: In
+              values:
+              - 'true'
+              - 'True'
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists

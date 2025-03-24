@@ -40,24 +40,76 @@ spec:
                   name: ocs-storagecluster
                   namespace: {{ .Values.odf.namespace }}
                 spec:
-                  arbiter: {}
+                  storageDeviceSets:
+                    - config: {}
+                      resources: {}
+                      placement: {}
+                      name: ocs-deviceset
+                      dataPVCTemplate:
+                        metadata: {}
+                        spec:
+                          accessModes:
+                            - ReadWriteOnce
+                          resources:
+                            requests:
+                              storage: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/odf-ocs-storage-size" | default "{{ .Values.odf.ocsStorageSize }}" hub{{ "}}" }}'
+                      {{ "{{" }}hub- if ne (index .ManagedClusterLabels "autoshift.io/local-storage" | default "") "" }}" hub{{ "}}" }}
+                          storageClassName: nvme-storageclass
+                      {{ "{{" }}hub- else hub{{ "}}" }}
+                          storageClassName: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/odf-ocs-storage-class-name" | default "{{ .Values.odf.ocsStorageClassName }}" hub{{ "}}" }}'
+                      {{ "{{" }}hub- end hub{{ "}}" }}
+                          volumeMode: Block
+                      count: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/odf-ocs-storage-count" | default "{{ .Values.odf.ocsStorageCount }}"}}" hub{{ "}}" }}'
+                      replica: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/odf-ocs-storage-replicas" | default "{{ .Values.odf.ocsStorageReplicas }}" hub{{ "}}" }}'
+                      portable: true
+                      preparePlacement: {}
                   encryption:
+                    clusterWide: true
+                    enable: true
+                    keyRotation:
+                      schedule: '@weekly'
                     kms: {}
-                  externalStorage: {}
+                  mirroring: {}
                   managedResources:
                     cephObjectStoreUsers: {}
                     cephCluster: {}
-                    cephBlockPools: {}
-                    cephNonResilientPools: {}
+                    cephBlockPools:
+                      defaultStorageClass: true
+                    cephNonResilientPools:
+                      count: 1
+                      resources: {}
+                      volumeClaimTemplate:
+                        metadata: {}
+                        spec:
+                          resources: {}
+                        status: {}
                     cephObjectStores: {}
-                    cephFilesystems: {}
-                    cephRBDMirror: {}
+                    cephFilesystems:
+                      dataPoolSpec:
+                        application: ''
+                        erasureCoded:
+                          codingChunks: 0
+                          dataChunks: 0
+                        mirroring: {}
+                        quotas: {}
+                        replicated:
+                          size: 0
+                        statusCheck:
+                          mirror: {}
+                    cephRBDMirror:
+                      daemonCount: 1
                     cephToolbox: {}
                     cephDashboard: {}
                     cephConfig: {}
-                  mirroring: {}
-                  multiCloudGateway:
-                    reconcileStrategy: standalone
+                  arbiter: {}
+                  network:
+                    connections:
+                      encryption:
+                        enabled: true
+                    multiClusterService: {}
+                  nodeTopologies: {}
+                  externalStorage: {}
+                  resourceProfile: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/odf-resource-profile" | default "{{ .Values.odf.resourceProfile }}" hub{{ "}}" }}'
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
@@ -100,6 +152,20 @@ spec:
   {{- range $clusterSet, $value := $.Values.hubClusterSets }}
     - {{ $clusterSet }}
   {{- end }}
+  predicates:
+    - requiredClusterSelector:
+        labelSelector:
+          matchExpressions:
+            - key: 'autoshift.io/odf-multi-cloud-gateway'
+              operator: NotIn
+              values:
+              - 'standalone'
+              - 'Standalone'
+            - key: 'autoshift.io/odf'
+              operator: In
+              values:
+              - 'true'
+              - 'True'
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists
