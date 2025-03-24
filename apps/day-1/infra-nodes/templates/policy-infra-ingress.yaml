@@ -20,8 +20,8 @@ spec:
     compliance: Compliant
     kind: Policy
     name: {{ . }}
-    {{- end }}
     namespace: open-cluster-policies
+    {{- end }}
   policy-templates:
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
