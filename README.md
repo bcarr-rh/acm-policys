@@ -44,13 +44,9 @@ acs-channel<String>: default stable
 
 acs-install-plan-approval<String>: default Automatic
 
-acs-name-sub<String>: default rhacs-operator
-
 acs-source<String>: default redhat-operators
 
-acs-sourceNamespace<String>: default openshift-marketplace
-
-acs-namespace<String>: default stackrox
+acs-source-namespace<String>: default openshift-marketplace
 
 ### Developer Spaces
 dev-spaces<bool>: If not set Developer Spaces will not be managed
@@ -59,13 +55,9 @@ dev-spaces-channel<String>: default stable
 
 dev-spaces-install-plan-approval<String>: default Automatic
 
-dev-spaces-name-sub<String>: default rhacs-operator
-
 dev-spaces-source<String>: default redhat-operators
 
-dev-spaces-sourceNamespace<String>: default openshift-marketplace
-
-dev-spaces-namespace<String>: default stackrox
+dev-spaces-source-namespace<String>: default openshift-marketplace
 
 ### Developer OpenShift Gitops
 gitops-dev<bool>: If not set Developer OpenShift Gitops intances will not be managed
@@ -75,17 +67,13 @@ gitops-dev-teams<list<String>>: List of teams that will need their own OpenShift
 ### Loki
 loki<bool>: If not set Loki will not be managed. Dependent on ODF Multi Object Gateway
 
-loki-name-sub<String>: default loki-operator
-
-loki-namespace<String>: default openshift-operators-redhat
-
 loki-channel<String>: default stable-6.1
 
 loki-install-plan-approval<String>: default Automatic
 
 loki-source<String>: default redhat-operators
 
-loki-sourcenamespace<String>: default openshift-marketplace
+loki-source-namespace<String>: default openshift-marketplace
 
 loki-size<String>: default 1x.extra-small
 
@@ -96,61 +84,75 @@ loki-lokistack-name<String>: default logging-lokistack
 ### OpenShift Logging
 logging<bool>: If not set OpenShift Logging will not be managed, Dependent on Loki and COO
 
-logging-name-sub<String>: default cluster-logging
-
-logging-namespace<String>: default openshift-logging
-
 logging-channel<String>: default stable-6.1
 
-logging-installPlanApproval<String>: default Automatic
+logging-install-plan-approval<String>: default Automatic
 
 logging-source<String>: default redhat-operators
 
-logging-sourceNamespace<String>: default openshift-marketplace
+logging-source-namespace<String>: default openshift-marketplace
 
 ### Cluster Observability Operator
 coo<bool>: If not set Cluster Observability Operator will not be managed
 
-coo-name-sub<String>: default cluster-observability-operator
-
-coo-namespace<String>: default openshift-cluster-observability-operator
-
 coo-channel<String>: default stable
 
-coo-installPlanApproval<String>: default Automatic
+coo-install-plan-approval<String>: default Automatic
 
 coo-source<String>: default redhat-operators
 
-coo-sourceNamespace<String>: default openshift-marketplace
+coo-source-namespace<String>: default openshift-marketplace
 
 ### Compliance Operator Stig Apply
 compliance<bool>: If not set Compliance Operator will not be managed. Helm chart config map must be set with profiles and remediations
 
 compliance-name<String>: default compliance-operator
 
-compliance-namespace<String>: default openshift-compliance
-
-compliance-installPlanApproval<String>: default Automatic
+compliance-install-plan-approval<String>: default Automatic
 
 compliance-source<String>: default redhat-operators
 
-compliance-sourceNamespace<String>: default openshift-marketplace
-
-compliance-nameSub<String>: default compliance-operator
+compliance-source-namespace<String>: default openshift-marketplace
 
 compliance-channel<String>: default stable
 
+### Local Storage Operator
+
+local-storage<bool>: if not set to true, local storage will not be managed or deployed.
+
+local-storage-channel<String>: 
+
+local-storage-source<String>: 
+
+local-storage-source-namespace<String>: 
+
+local-storage-install-plan-approval<String>: 
+
 ### OpenShift Data Foundation
-odf<bool>: If not set OpenShift Data Foundation will not be managed. If Storage Nodes are enable ODF will be installed on Storage Nodes. If Storage Nodes are Disabled only Nooba Multi Object Gateway will be installed
+odf<bool>: If not set OpenShift Data Foundation will not be managed. if Storage Nodes are enable will deploy ODF on local storage/ storage nodes
 
-odf-name-sub<String>: default odf-operator
+odf-multi-cloud-gateway<String>: values standalone or standard. Install ODF with only nooba object gateway or full odf
 
-odf-namespace<String>: default openshift-storage
+odf-nooba-pvpool<bool>: if not set nooba will be deployed with default settings. Recomended don't set for cloud providers. Use pv pool for storage
+
+odf-nooba-store-size<String>: example 500Gi. if pvpool set. Size of nooba backing store
+
+odf-nooba-store-num-volumes<String>: example 1. if pvpool set. number of volumes
+
+odf-ocs-storage-class-name<String>: if not using local-storage, storage class to use for ocs
+
+odf-ocs-storage-size<String>: storage size per nvme
+
+odf-ocs-storage-count<String>: number of replica sets of nvme drives, note total amount will count * replicas
+
+odf-ocs-storage-replicas<String>: replicas, 3 is recommended
+
+odf-resource-profile<String>: default balanced. lean: suitable for clusters with limited resources, balanced: suitable for most use cases, performance: suitable for clusters with high amount of resources.
 
 odf-channel<String>: default stable-4.17
 
-odf-installPlanApproval<String>: default Automatic
+odf-install-plan-approval<String>: default Automatic
 
 odf-source<String>: default redhat-operators
 
-odf-sourceNamespace<String>: default openshift-marketplace
+odf-source-namespace<String>: default openshift-marketplace

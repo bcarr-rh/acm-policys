@@ -36,6 +36,6 @@ managedClusterSets:
 # autoshift.io/odf-ocs-storage-replicas<String>: replicas, 3 is recommended
 # autoshift.io/odf-resource-profile<String>: default balanced. lean: suitable for clusters with limited resources, balanced: suitable for most use cases, performance: suitable for clusters with high amount of resources.
 # autoshift.io/odf-channel<String>: default stable-4.17
-# autoshift.io/odf-installPlanApproval<String>: default Automatic
+# autoshift.io/odf-install-plan-approval<String>: default Automatic
 # autoshift.io/odf-source<String>: default redhat-operators
-# autoshift.io/odf-sourceNamespace<String>: default openshift-marketplace
+# autoshift.io/odf-source-namespace<String>: default openshift-marketplace

@@ -42,17 +42,17 @@ spec:
           severity: high
           complianceType: musthave
           operatorGroup:
-            name: {{ .Values.compliance.name | default "compliance-operator"}}
-            namespace: {{ .Values.compliance.namespace | default "openshift-compliance"}}
+            name: {{ .Values.compliance.name }}
+            namespace: {{ .Values.compliance.namespace }}
             targetNamespaces:
-              - {{ .Values.compliance.namespace | default "openshift-compliance"}}
+              - {{ .Values.compliance.namespace }}
           subscription:
-            namespace: {{ .Values.compliance.namespace | default "openshift-compliance"}}
-            channel: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/compliance-channel" | default "{{ .Values.compliance.channel | default "stable"}}" hub{{ "}}" }}'
-            name: {{ .Values.compliance.name | default "compliance-operator"}}
-            source: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/compliance-source" | default "{{ .Values.compliance.source | default "redhat-operators"}}" hub{{ "}}" }}'
-            sourceNamespace: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/compliance-source-namespace" | default "{{ .Values.compliance.sourceNamespace | default "openshift-marketplace"}}" hub{{ "}}" }}'
-          upgradeApproval: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/compliance-install-plan-approval" | default "{{ .Values.compliance.installPlanApproval | default "Automatic"}}" hub{{ "}}" }}'
+            namespace: {{ .Values.compliance.namespace }}
+            channel: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/compliance-channel" | default "{{ .Values.compliance.channel }}" hub{{ "}}" }}'
+            name: {{ .Values.compliance.name }}
+            source: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/compliance-source" | default "{{ .Values.compliance.source }}" hub{{ "}}" }}'
+            sourceNamespace: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/compliance-source-namespace" | default "{{ .Values.compliance.sourceNamespace }}" hub{{ "}}" }}'
+          upgradeApproval: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/compliance-install-plan-approval" | default "{{ .Values.compliance.installPlanApproval }}" hub{{ "}}" }}'
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy

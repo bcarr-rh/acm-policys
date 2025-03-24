@@ -46,12 +46,12 @@ managedClusterSets:
 
 # logging<bool>: If not set OpenShift Logging will not be managed, Dependent on Loki and COO
 # logging-channel<String>: default stable-6.1
-# logging-installPlanApproval<String>: default Automatic
+# logging-install-plan-approval<String>: default Automatic
 # logging-source<String>: default redhat-operators
-# logging-sourceNamespace<String>: default openshift-marketplace
+# logging-source-namespace<String>: default openshift-marketplace
 
 # coo<bool>: If not set Cluster Observability Operator will not be managed
 # coo-channel<String>: default stable
-# coo-installPlanApproval<String>: default Automatic
+# coo-install-plan-approval<String>: default Automatic
 # coo-source<String>: default redhat-operators
-# coo-sourceNamespace<String>: default openshift-marketplace
+# coo-source-namespace<String>: default openshift-marketplace
