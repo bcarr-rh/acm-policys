@@ -2,6 +2,8 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 infraNodes:
+  labelPrefix: "autoshift.io/"
+  remediationAction: "inform"
   clusterSets:
     - hub
     - managed
@@ -19,7 +21,16 @@ infraNodes:
     remediationAction: enforce
     namespace: openshift-gitops
   zones:
-    - 0
+    - us-east-2b
   externalIngress:
     clusterSets:
       - managed  
+  dependencies: 
+    install: 
+      - "policy-infra-nodes"
+    remove: 
+      - policy-remove-infra-gitiops 
+      - policy-remove-infra-image-registry
+      - policy-remove-infra-ingress
+      - policy-remove-infra-monitoring 
+

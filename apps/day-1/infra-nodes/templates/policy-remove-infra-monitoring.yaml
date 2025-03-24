@@ -1,6 +1,6 @@
-{{ $policyName := "policy-infra-monitoring" }}
-{{ $configMapName := "cluster-monitoring-config" }}
-{{ $configPolicyName := "cluster-infra-monitoring" }}
+{{ $policyName := "policy-remove-infra-monitoring" }} 
+{{ $configMapName := "cluster-remove-monitoring-config" }}
+{{ $configPolicyName := "cluster-infra-remove-monitoring" }}
 {{ $placementName := printf "placement-%s" $policyName }}
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
@@ -14,14 +14,6 @@ metadata:
 spec:
   disabled: {{ not .Values.infraNodes.monitoring.migrate }}
   remediationAction: {{ .Values.infraNodes.monitoring.remediationAction | default "enforce" }}
-  dependencies:
-  {{- range .Values.infraNodes.dependencies.install }}
-  - apiVersion: policy.open-cluster-management.io/v1
-    compliance: Compliant
-    kind: Policy
-    name: {{ . }}
-    namespace: open-cluster-policies
-    {{- end }}
   policy-templates:
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
@@ -42,75 +34,39 @@ spec:
                     alertmanagerMain:
                       nodeSelector: 
                         node-role.kubernetes.io/infra: ""
-                      tolerations:
-                      - key: node-role.kubernetes.io/infra
-                        effect: NoSchedule
-                      - key: node-role.kubernetes.io/infra
-                        effect: NoExecute
+                      tolerations: {}
                     prometheusK8s:
                       nodeSelector:
                         node-role.kubernetes.io/infra: ""
-                      tolerations:
-                      - key: node-role.kubernetes.io/infra
-                        effect: NoSchedule
-                      - key: node-role.kubernetes.io/infra
-                        effect: NoExecute
+                      tolerations: {}
                     prometheusOperator:
                       nodeSelector:
                         node-role.kubernetes.io/infra: ""
-                      tolerations:
-                      - key: node-role.kubernetes.io/infra
-                        effect: NoSchedule
-                      - key: node-role.kubernetes.io/infra
-                        effect: NoExecute
+                      tolerations: {}
                     k8sPrometheusAdapter:
                       nodeSelector:
                         node-role.kubernetes.io/infra: ""
-                      tolerations:
-                      - key: node-role.kubernetes.io/infra
-                        effect: NoSchedule
-                      - key: node-role.kubernetes.io/infra
-                        effect: NoExecute
+                      tolerations: {}
                     kubeStateMetrics:
                       nodeSelector:
                         node-role.kubernetes.io/infra: ""
-                      tolerations:
-                      - key: node-role.kubernetes.io/infra
-                        effect: NoSchedule
-                      - key: node-role.kubernetes.io/infra
-                        effect: NoExecute
+                      tolerations: {}
                     telemeterClient:
                       nodeSelector:
                         node-role.kubernetes.io/infra: ""
-                      tolerations:
-                      - key: node-role.kubernetes.io/infra
-                        effect: NoSchedule
-                      - key: node-role.kubernetes.io/infra
-                        effect: NoExecute
+                      tolerations: {}
                     openshiftStateMetrics:
                       nodeSelector:
                         node-role.kubernetes.io/infra: ""
-                      tolerations:
-                      - key: node-role.kubernetes.io/infra
-                        effect: NoSchedule
-                      - key: node-role.kubernetes.io/infra
-                        effect: NoExecute
+                      tolerations: {}
                     thanosQuerier:
                       nodeSelector:
                         node-role.kubernetes.io/infra: ""
-                      tolerations:
-                      - key: node-role.kubernetes.io/infra
-                        effect: NoSchedule
-                      - key: node-role.kubernetes.io/infra
-                        effect: NoExecute
+                      tolerations: {}
                     monitoringPlugin:
                       nodeSelector:
                         node-role.kubernetes.io/infra: ""
-                      tolerations:
-                      - key: node-role.kubernetes.io/infra
-                        effect: NoSchedule
-                      - key: node-role.kubernetes.io/infra
-                        effect: NoExecute
+                      tolerations: {}
           pruneObjectBehavior: {{ .Values.infraNodes.monitoring.pruneObjectBehavior | default "None" }}
           remediationAction: inform
           severity: high
@@ -130,7 +86,7 @@ spec:
         labelSelector:
           matchExpressions:
             - key: {{ printf $labelPrefix "infra-nodes" }}
-              operator: Exists
+              operator: DoesNotExist
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists
@@ -147,6 +103,6 @@ placementRef:
   apiGroup: cluster.open-cluster-management.io
   kind: Placement
 subjects:
-  - name: {{ $policyName }}
+  - name: {{ $policyName}}
     apiGroup: policy.open-cluster-management.io
     kind: Policy
