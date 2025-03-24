@@ -1,0 +1,13 @@
+# Default values for quay.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+quayOperator:
+    name: quay-operator
+    namespace: openshift-operators
+    channel: stable-3.9
+    installPlanApproval: Automatic
+    source: redhat-operators
+    sourceNamespace: openshift-marketplace
+    clusterSets:
+      - hub
+      - managed

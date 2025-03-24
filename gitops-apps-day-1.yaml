@@ -74,12 +74,13 @@ spec:
         - /metadata/annotations
         - /metadata/labels
       syncPolicy:
-        preserveResourcesOnDeletion: true
+        preserveResourcesOnDeletion: false
         automated:
-          prune: false
+          prune: true
           selfHeal: true
         syncOptions:
         - RespectIgnoreDifferences=true
+        - Validate=false 
       destination:
         server: https://kubernetes.default.svc
         namespace: openshift-gitops
