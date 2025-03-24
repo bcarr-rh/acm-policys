@@ -30,7 +30,6 @@ spec:
                 spec:
                   nodeSelector: 
                     node-role.kubernetes.io/infra: ""
-                  tolerations: {}
           pruneObjectBehavior: {{ .Values.infraNodes.imageRegistry.pruneObjectBehavior | default "None" }}
           remediationAction: inform
           severity: high
