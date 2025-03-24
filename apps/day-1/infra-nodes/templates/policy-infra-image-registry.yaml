@@ -15,11 +15,11 @@ spec:
   remediationAction: {{ .Values.infraNodes.imageRegistry.remediationAction | default "enforce" }}
   dependencies:
   {{- range .Values.infraNodes.dependencies.install }}
-    - apiVersion: policy.open-cluster-management.io/v1
-      compliance: Compliant
-      kind: Policy
-      name: {{ . }}
-      namespace: open-cluster-policies
+  - apiVersion: policy.open-cluster-management.io/v1
+    compliance: Compliant
+    kind: Policy
+    name: {{ . }}
+    namespace: open-cluster-policies
   {{- end }}
   policy-templates:
     - objectDefinition:
