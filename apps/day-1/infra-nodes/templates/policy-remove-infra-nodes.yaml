@@ -12,7 +12,7 @@ metadata:
     policy.open-cluster-management.io/standards: NIST SP 800-53
 spec:
   disabled: false
-  remediationAction: true 
+  remediationAction: enforce
   dependencies: 
   {{- range .Values.infraNodes.dependencies.remove }}
   - apiVersion: policy.open-cluster-management.io/v1
@@ -135,7 +135,7 @@ spec:
 #                        {{ "{{-" }} end {{ "}}" }}
 #              {{ "{{-" }} end {{ "}}" }}
           pruneObjectBehavior: {{ .Values.infraNodes.pruneObjectBehavior | default "DeleteAll" }}
-          remediationAction: {{ .Values.infraNodes.remediationAtion | default "enforce" }}
+          remediationAction: {{ .Values.infraNodes.remediationAction | default "enforce" }}
           severity: high
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
