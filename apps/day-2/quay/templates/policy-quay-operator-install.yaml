@@ -35,11 +35,11 @@ spec:
           severity: high
           complianceType: musthave
           operatorGroup:
-            name: global-operators
-            namespace: openshift-operators
+            name: {{ .Values.quayOperator.namespace }}
+            namespace: {{ .Values.quayOperator.namespace }}
           subscription:
             name: {{ .Values.quayOperator.name }}
-            namespace: quay-operator
+            namespace: {{ .Values.quayOperator.namespace }}
             source: {{ .Values.quayOperator.source }}
             sourceNamespace: {{ .Values.quayOperator.sourceNamespace }}
             channel: {{ .Values.quayOperator.channel }}
@@ -60,7 +60,7 @@ spec:
                 metadata:
                   namespace: {{ .Values.quayOperator.namespace }}
                 spec:
-                  displayName: Quay Operator
+                  displayName: 'Red Hat Quay'
                 status:
                   phase: Succeeded
 ---

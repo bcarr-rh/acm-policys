@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 quayOperator:
     name: quay-operator
-    namespace: openshift-operators
+    namespace: quay-operator
     channel: stable-3.9
     installPlanApproval: Automatic
     source: redhat-operators

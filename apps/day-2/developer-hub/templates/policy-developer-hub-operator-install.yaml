@@ -41,7 +41,7 @@ spec:
           severity: high
           complianceType: musthave
           operatorGroup:
-            name: {{ .Values.developerHub.namespace }}
+            name: rhdh-operator-bcsvc
             namespace: {{ .Values.developerHub.namespace }}
           subscription:
             name: {{ .Values.developerHub.name }}
@@ -65,8 +65,6 @@ spec:
                 kind: ClusterServiceVersion
                 metadata:
                   namespace: {{ .Values.developerHub.namespace }}
-                spec:
-                  displayName: Developer Hub Operator
                 status:
                   phase: Succeeded # check the csv status to determine if operator is running or not
 ---

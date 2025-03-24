@@ -93,6 +93,6 @@ spec:
                 metadata:
                   namespace: openshift-operators
                 spec:
-                  displayName: Trusted Artifact Signer Operator
+                  displayName: 'Red Hat Trusted Artifact Signer'
                 status:
                   phase: Succeeded
