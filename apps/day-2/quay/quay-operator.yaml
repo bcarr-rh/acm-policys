@@ -1,3 +1,36 @@
+---
+# Source: quay-operator/templates/policy-quay-operator-install.yaml
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: placement-policy-quay-operator-install
+  namespace: open-cluster-policies
+spec:
+  clusterSets:
+    - hub
+    - managed
+  tolerations:
+    - key: cluster.open-cluster-management.io/unreachable
+      operator: Exists
+    - key: cluster.open-cluster-management.io/unavailable
+      operator: Exists
+---
+# Source: quay-operator/templates/policy-quay-operator-install.yaml
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: placement-policy-quay-operator-install
+  namespace: open-cluster-policies
+placementRef:
+  name: placement-policy-quay-operator-install
+  apiGroup: cluster.open-cluster-management.io
+  kind: Placement
+subjects:
+  - name: policy-quay-operator-install
+    apiGroup: policy.open-cluster-management.io
+    kind: Policy
+---
+# Source: quay-operator/templates/policy-quay-operator-install.yaml
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
@@ -38,12 +71,12 @@ spec:
             name: global-operators
             namespace: openshift-operators
           subscription:
-            name: {{ .Values.quayOperator.name }}
+            name: quay-operator
             namespace: quay-operator
-            source: {{ .Values.quayOperator.source }}
-            sourceNamespace: {{ .Values.quayOperator.sourceNamespace }}
-            channel: {{ .Values.quayOperator.channel }}
-          upgradeApproval: {{ .Values.quayOperator.installPlanApproval }}
+            source: redhat-operators
+            sourceNamespace: openshift-marketplace
+            channel: stable-3.9
+          upgradeApproval: Automatic
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
@@ -58,38 +91,8 @@ spec:
                 apiVersion: operators.coreos.com/v1alpha1
                 kind: ClusterServiceVersion
                 metadata:
-                  namespace: {{ .Values.quayOperator.namespace }}
+                  namespace: openshift-operators
                 spec:
                   displayName: Quay Operator
                 status:
                   phase: Succeeded
----
-apiVersion: cluster.open-cluster-management.io/v1beta1
-kind: Placement
-metadata:
-  name: placement-policy-quay-operator-install
-  namespace: open-cluster-policies
-spec:
-  clusterSets:
-  {{- range .Values.quayOperator.clusterSets }}
-    - {{ . }}
-  {{- end }}
-  tolerations:
-    - key: cluster.open-cluster-management.io/unreachable
-      operator: Exists
-    - key: cluster.open-cluster-management.io/unavailable
-      operator: Exists
----
-apiVersion: policy.open-cluster-management.io/v1
-kind: PlacementBinding
-metadata:
-  name: placement-policy-quay-operator-install
-  namespace: open-cluster-policies
-placementRef:
-  name: placement-policy-quay-operator-install
-  apiGroup: cluster.open-cluster-management.io
-  kind: Placement
-subjects:
-  - name: policy-quay-operator-install
-    apiGroup: policy.open-cluster-management.io
-    kind: Policy
