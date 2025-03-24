@@ -15,10 +15,12 @@ spec:
   disabled: {{ not .Values.infraNodes.ingress.migrate }}
   remediationAction: {{ .Values.infraNodes.ingress.remediationAction | default "enforce" }}
   dependencies:
+  {{- range .Values.infraNodes.dependencies.install }}
   - apiVersion: policy.open-cluster-management.io/v1
     compliance: Compliant
     kind: Policy
-    name: {{ .Values.infraNodes.dependencies.install }}
+    name: {{ . }}
+    {{- end }}
     namespace: open-cluster-policies
   policy-templates:
     - objectDefinition:
