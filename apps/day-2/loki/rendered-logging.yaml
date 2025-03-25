@@ -1,0 +1,740 @@
+---
+# Source: loki/templates/policy-cluster-observ-op-install.yaml
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: placement-policy-cluster-observ-op-install
+  namespace: open-cluster-policies
+spec:
+  clusterSets:
+    - hub
+    - managed
+  tolerations:
+    - key: cluster.open-cluster-management.io/unreachable
+      operator: Exists
+    - key: cluster.open-cluster-management.io/unavailable
+      operator: Exists
+---
+# Source: loki/templates/policy-logging-install.yaml
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: placement-policy-logging-install
+  namespace: open-cluster-policies
+spec:
+  clusterSets:
+    - hub
+    - managed
+  tolerations:
+    - key: cluster.open-cluster-management.io/unreachable
+      operator: Exists
+    - key: cluster.open-cluster-management.io/unavailable
+      operator: Exists
+---
+# Source: loki/templates/policy-logging-operator-install.yaml
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: placement-policy-logging-operator-install
+  namespace: open-cluster-policies
+spec:
+  clusterSets:
+    - hub
+    - managed
+  tolerations:
+    - key: cluster.open-cluster-management.io/unreachable
+      operator: Exists
+    - key: cluster.open-cluster-management.io/unavailable
+      operator: Exists
+---
+# Source: loki/templates/policy-loki-operator-install.yaml
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: placement-policy-loki-operator-install
+  namespace: open-cluster-policies
+spec:
+  clusterSets:
+    - hub
+    - managed
+  tolerations:
+    - key: cluster.open-cluster-management.io/unreachable
+      operator: Exists
+    - key: cluster.open-cluster-management.io/unavailable
+      operator: Exists
+---
+# Source: loki/templates/policy-loki-stack-install.yaml
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: placement-policy-loki-stack-install
+  namespace: open-cluster-policies
+spec:
+  clusterSets:
+    - hub
+    - managed
+  tolerations:
+    - key: cluster.open-cluster-management.io/unreachable
+      operator: Exists
+    - key: cluster.open-cluster-management.io/unavailable
+      operator: Exists
+---
+# Source: loki/templates/policy-cluster-observ-op-install.yaml
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: placement-policy-cluster-observ-op-install
+  namespace: open-cluster-policies
+placementRef:
+  name: placement-policy-cluster-observ-op-install
+  apiGroup: cluster.open-cluster-management.io
+  kind: Placement
+subjects:
+  - name: policy-cluster-observ-op-install
+    apiGroup: policy.open-cluster-management.io
+    kind: Policy
+---
+# Source: loki/templates/policy-logging-install.yaml
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: placement-policy-logging-install
+  namespace: open-cluster-policies
+placementRef:
+  name: placement-policy-logging-install
+  apiGroup: cluster.open-cluster-management.io
+  kind: Placement
+subjects:
+  - name: policy-logging-install
+    apiGroup: policy.open-cluster-management.io
+    kind: Policy
+---
+# Source: loki/templates/policy-logging-operator-install.yaml
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: placement-policy-logging-operator-install
+  namespace: open-cluster-policies
+placementRef:
+  name: placement-policy-logging-operator-install
+  apiGroup: cluster.open-cluster-management.io
+  kind: Placement
+subjects:
+  - name: policy-logging-operator-install
+    apiGroup: policy.open-cluster-management.io
+    kind: Policy
+---
+# Source: loki/templates/policy-loki-operator-install.yaml
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: placement-policy-loki-operator-install
+  namespace: open-cluster-policies
+placementRef:
+  name: placement-policy-loki-operator-install
+  apiGroup: cluster.open-cluster-management.io
+  kind: Placement
+subjects:
+  - name: policy-loki-operator-install
+    apiGroup: policy.open-cluster-management.io
+    kind: Policy
+---
+# Source: loki/templates/policy-loki-stack-install.yaml
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: placement-policy-loki-stack-install
+  namespace: open-cluster-policies
+placementRef:
+  name: placement-policy-loki-stack-install
+  apiGroup: cluster.open-cluster-management.io
+  kind: Placement
+subjects:
+  - name: policy-loki-stack-install
+    apiGroup: policy.open-cluster-management.io
+    kind: Policy
+---
+# Source: loki/templates/policy-cluster-observ-op-install.yaml
+# This policy verifies the installation of the official & supported version of
+# the Compliance Operator on the managed clusters.
+#
+# If set to "enforce" it'll install the operator.
+#
+# Note that OpenShift 4.6 is required.
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: policy-cluster-observ-op-install
+  namespace: open-cluster-policies
+  annotations:
+    policy.open-cluster-management.io/standards: NIST SP 800-53
+    policy.open-cluster-management.io/categories: CA Security Assessment and Authorization
+    policy.open-cluster-management.io/controls: CA-2 Security Assessments, CA-7 Continuous Monitoring
+spec:
+  disabled: false
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: coo-operator-ns
+        spec:
+          remediationAction: enforce # will be overridden by remediationAction in parent policy
+          severity: high
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: v1
+                kind: Namespace
+                metadata:
+                  name: openshift-cluster-observability-operator
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1beta1
+        kind: OperatorPolicy
+        metadata:
+          name: install-operator-coo
+        spec:
+          remediationAction: enforce
+          severity: high
+          complianceType: musthave
+          operatorGroup:
+            name: openshift-cluster-observability-operator
+            namespace: openshift-cluster-observability-operator
+          subscription:
+            name: cluster-observability-operator
+            namespace: openshift-cluster-observability-operator
+            source: redhat-operators
+            sourceNamespace: openshift-marketplace
+            channel: stable
+          upgradeApproval: Automatic
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: openshift-coo-uiplugin-logging
+        spec:
+          remediationAction: inform # will be overridden by remediationAction in parent policy
+          severity: high
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: observability.openshift.io/v1alpha1
+                kind: UIPlugin
+                metadata:
+                  name: logging
+                spec:
+                  logging:
+                    lokiStack:
+                      name: logging-lokistack
+                  type: Logging
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: openshift-coo-status
+        spec:
+          remediationAction: inform # will be overridden by remediationAction in parent policy
+          severity: high
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: operators.coreos.com/v1alpha1
+                kind: ClusterServiceVersion
+                metadata:
+                  namespace: openshift-cluster-observability-operator
+                spec:
+                  displayName: Cluster Observability Operator
+                status:
+                  phase: Succeeded # check the csv status to determine if operator is running or not
+---
+# Source: loki/templates/policy-logging-install.yaml
+# This policy verifies the installation of the official & supported version of
+# the Compliance Operator on the managed clusters.
+#
+# If set to "enforce" it'll install the operator.
+#
+# Note that OpenShift 4.6 is required.
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: policy-logging-install
+  namespace: open-cluster-policies
+  annotations:
+    policy.open-cluster-management.io/standards: NIST SP 800-53
+    policy.open-cluster-management.io/categories: CA Security Assessment and Authorization
+    policy.open-cluster-management.io/controls: CA-2 Security Assessments, CA-7 Continuous Monitoring
+spec:
+  dependencies:
+    - name: policy-logging-operator-install
+      namespace: open-cluster-policies
+      apiVersion: policy.open-cluster-management.io/v1
+      compliance: Compliant
+      kind: Policy
+    - name: policy-loki-stack-install
+      namespace: open-cluster-policies
+      apiVersion: policy.open-cluster-management.io/v1
+      compliance: Compliant
+      kind: Policy    
+  remediationAction: enforce
+  disabled: false
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: logging-install
+        spec:
+          remediationAction: inform # will be overridden by remediationAction in parent policy
+          severity: high
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                kind: ServiceAccount
+                apiVersion: v1
+                metadata:
+                  name: collector
+                  namespace: openshift-logging
+            - complianceType: musthave
+              objectDefinition:
+                kind: ClusterRoleBinding
+                apiVersion: rbac.authorization.k8s.io/v1
+                metadata:
+                  name: collect-application-logs
+                subjects:
+                  - kind: ServiceAccount
+                    name: collector
+                    namespace: openshift-logging
+                roleRef:
+                  apiGroup: rbac.authorization.k8s.io
+                  kind: ClusterRole
+                  name: collect-application-logs
+            - complianceType: musthave
+              objectDefinition:
+                kind: ClusterRoleBinding
+                apiVersion: rbac.authorization.k8s.io/v1
+                metadata:
+                  name: collect-audit-logs
+                subjects:
+                  - kind: ServiceAccount
+                    name: collector
+                    namespace: openshift-logging
+                roleRef:
+                  apiGroup: rbac.authorization.k8s.io
+                  kind: ClusterRole
+                  name: collect-audit-logs
+            - complianceType: musthave
+              objectDefinition:
+                kind: ClusterRoleBinding
+                apiVersion: rbac.authorization.k8s.io/v1
+                metadata:
+                  name: collect-infrastructure-logs
+                subjects:
+                  - kind: ServiceAccount
+                    name: collector
+                    namespace: openshift-logging
+                roleRef:
+                  apiGroup: rbac.authorization.k8s.io
+                  kind: ClusterRole
+                  name: collect-infrastructure-logs
+            - complianceType: musthave
+              objectDefinition:
+                kind: ClusterRoleBinding
+                apiVersion: rbac.authorization.k8s.io/v1
+                metadata:
+                  name: logging-collector-logs-writer
+                subjects:
+                  - kind: ServiceAccount
+                    name: collector
+                    namespace: openshift-logging
+                roleRef:
+                  apiGroup: rbac.authorization.k8s.io
+                  kind: ClusterRole
+                  name: logging-collector-logs-writer
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: observability.openshift.io/v1
+                kind: ClusterLogForwarder
+                metadata:
+                  name: logging
+                  namespace: openshift-logging
+                spec:
+                  managementState: Managed
+                  outputs:
+                    - lokiStack:
+                        authentication:
+                          token:
+                            from: serviceAccount
+                        target:
+                          name: logging-lokistack
+                          namespace: openshift-operators-redhat
+                      name: logging-lokistack
+                      tls:
+                        ca:
+                          configMapName: openshift-service-ca.crt
+                          key: service-ca.crt
+                      type: lokiStack
+                  pipelines:
+                    - inputRefs:
+                        - infrastructure
+                        - application
+                      name: logs-to-loki
+                      outputRefs:
+                        - logging-lokistack
+                  serviceAccount:
+                    name: collector
+---
+# Source: loki/templates/policy-logging-operator-install.yaml
+# This policy verifies the installation of the official & supported version of
+# the Compliance Operator on the managed clusters.
+#
+# If set to "enforce" it'll install the operator.
+#
+# Note that OpenShift 4.6 is required.
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: policy-logging-operator-install
+  namespace: open-cluster-policies
+  annotations:
+    policy.open-cluster-management.io/standards: NIST SP 800-53
+    policy.open-cluster-management.io/categories: CA Security Assessment and Authorization
+    policy.open-cluster-management.io/controls: CA-2 Security Assessments, CA-7 Continuous Monitoring
+spec:
+  disabled: false
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: logging-operator-ns
+        spec:
+          remediationAction: enforce # will be overridden by remediationAction in parent policy
+          severity: high
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: v1
+                kind: Namespace
+                metadata:
+                  name: openshift-logging
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1beta1
+        kind: OperatorPolicy
+        metadata:
+          name: install-operator-logging
+        spec:
+          remediationAction: enforce
+          severity: high
+          complianceType: musthave
+          operatorGroup:
+            name: openshift-logging
+            namespace: openshift-logging
+            targetNamespaces:
+              - openshift-logging
+          subscription:
+            name: cluster-logging
+            namespace: openshift-logging
+            source: redhat-operators
+            sourceNamespace: openshift-marketplace
+            channel: stable-6.1
+          upgradeApproval: Automatic
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: openshift-logging-status
+        spec:
+          remediationAction: inform # will be overridden by remediationAction in parent policy
+          severity: high
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: operators.coreos.com/v1alpha1
+                kind: ClusterServiceVersion
+                metadata:
+                  namespace: openshift-logging
+                spec:
+                  displayName: Red Hat OpenShift Logging
+                status:
+                  phase: Succeeded # check the csv status to determine if operator is running or not
+---
+# Source: loki/templates/policy-loki-operator-install.yaml
+# This policy verifies the installation of the official & supported version of
+# the Compliance Operator on the managed clusters.
+#
+# If set to "enforce" it'll install the operator.
+#
+# Note that OpenShift 4.6 is required.
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: policy-loki-operator-install
+  namespace: open-cluster-policies
+  annotations:
+    policy.open-cluster-management.io/standards: NIST SP 800-53
+    policy.open-cluster-management.io/categories: CA Security Assessment and Authorization
+    policy.open-cluster-management.io/controls: CA-2 Security Assessments, CA-7 Continuous Monitoring
+spec:
+  disabled: false
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: loki-operator-ns
+        spec:
+          remediationAction: enforce # will be overridden by remediationAction in parent policy
+          severity: high
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: v1
+                kind: Namespace
+                metadata:
+                  name: openshift-operators-redhat
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1beta1
+        kind: OperatorPolicy
+        metadata:
+          name: install-operator-loki
+        spec:
+          remediationAction: enforce
+          severity: high
+          complianceType: musthave
+          operatorGroup:
+            name: openshift-operators-redhat
+            namespace: openshift-operators-redhat
+          subscription:
+            name: loki-operator
+            namespace: openshift-operators-redhat
+            source: redhat-operators
+            sourceNamespace: openshift-marketplace
+            channel: stable-6.1
+          upgradeApproval: Automatic
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: openshift-loki-status
+        spec:
+          remediationAction: inform # will be overridden by remediationAction in parent policy
+          severity: high
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: operators.coreos.com/v1alpha1
+                kind: ClusterServiceVersion
+                metadata:
+                  namespace: openshift-operators-redhat
+                spec:
+                  displayName: Loki Operator
+                status:
+                  phase: Succeeded # check the csv status to determine if operator is running or not
+---
+# Source: loki/templates/policy-loki-stack-install.yaml
+# This policy verifies the installation of the official & supported version of
+# the Compliance Operator on the managed clusters.
+#
+# If set to "enforce" it'll install the operator.
+#
+# Note that OpenShift 4.6 is required.
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: policy-loki-stack-install
+  namespace: open-cluster-policies
+  annotations:
+    policy.open-cluster-management.io/standards: NIST SP 800-53
+    policy.open-cluster-management.io/categories: CA Security Assessment and Authorization
+    policy.open-cluster-management.io/controls: CA-2 Security Assessments, CA-7 Continuous Monitoring
+spec:
+  dependencies:
+    - name: policy-loki-operator-install
+      namespace: open-cluster-policies
+      apiVersion: policy.open-cluster-management.io/v1
+      compliance: Compliant
+      kind: Policy
+  remediationAction: enforce
+  disabled: false
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: openshift-loki-stack
+        spec:
+          remediationAction: inform # will be overridden by remediationAction in parent policy
+          severity: high
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: loki.grafana.com/v1
+                kind: LokiStack
+                metadata:
+                  name: logging-lokistack
+                  namespace: openshift-operators-redhat
+                spec:
+                  hashRing:
+                    type: memberlist
+                  limits:
+                    global:
+                      ingestion:
+                        ingestionBurstSize: 16 
+                        ingestionRate: 8 
+                      queries:
+                        queryTimeout: 3m
+                  managementState: Managed
+                  storageClassName: gp3-csi #TODO: make parameter
+                  size: 1x.extra-small
+                  storage:
+                    schemas:
+                      - effectiveDate: '2024-09-22'
+                        version: v13
+                    tls:
+                      caName: openshift-service-ca.crt
+                      caKey:  service-ca.crt
+                    secret:
+                      name: logging-loki-odf
+                      type: s3
+                  tenants:
+                    mode: openshift-logging
+                    
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: openshift-loki-bucketclaim
+        spec:
+          remediationAction: enforce # will be overridden by remediationAction in parent policy
+          severity: high
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: objectbucket.io/v1alpha1
+                kind: ObjectBucketClaim
+                metadata:
+                  name: loki-bucket-odf
+                  namespace: openshift-logging
+                  annotations:
+                    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+                    argocd.argoproj.io/sync-wave: "4"
+                spec:
+                  generateBucketName: loki-bucket-odf
+                  storageClassName: openshift-storage.noobaa.io
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: openshift-loki-bucketrolebinding
+        spec:
+          remediationAction: enforce # will be overridden by remediationAction in parent policy
+          severity: high
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                kind: RoleBinding
+                apiVersion: rbac.authorization.k8s.io/v1
+                metadata:
+                  name: logging-bucket-secret
+                  namespace: openshift-logging
+                  annotations:
+                    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+                    argocd.argoproj.io/sync-wave: "4"
+                subjects:
+                  - kind: ServiceAccount
+                    name: logging-bucket-secret
+                    namespace: openshift-logging
+                roleRef:
+                  apiGroup: rbac.authorization.k8s.io
+                  kind: Role
+                  name: logging-bucket-secret
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: openshift-loki-bucketrole
+        spec:
+          remediationAction: enforce # will be overridden by remediationAction in parent policy
+          severity: high
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: rbac.authorization.k8s.io/v1
+                kind: Role
+                metadata:
+                  name: logging-bucket-secret
+                  namespace: openshift-logging
+                rules:
+                  - verbs:
+                      - create
+                      - patch
+                      - update
+                    apiGroups:
+                      - ''
+                    resources:
+                      - configmaps
+                      - secrets
+                  - verbs:
+                      - get
+                      - list
+                      - watch
+                    apiGroups:
+                      - ''
+                    resources:
+                      - configmaps
+                      - secrets
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: openshift-loki-serviceaccount
+        spec:
+          remediationAction: enforce # will be overridden by remediationAction in parent policy
+          severity: high
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: v1
+                kind: ServiceAccount
+                metadata:
+                  name: logging-bucket-secret
+                  namespace: openshift-logging
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: openshift-loki-bucket-secret-job
+        spec:
+          remediationAction: enforce # will be overridden by remediationAction in parent policy
+          severity: high
+          object-templates:
+            - complianceType: musthave
+              recreateOption: Always
+              objectDefinition:
+                apiVersion: batch/v1
+                kind: Job
+                metadata:
+                  name: logging-bucket-secret-job
+                  namespace: openshift-logging
+                spec:
+                  selector: {}
+                  template:
+                    metadata:
+                      name: create-logging-bucket-secret
+                    spec:
+                      containers:
+                        - name: cli-container
+                          image: image-registry.openshift-image-registry.svc:5000/openshift/cli:latest
+                          command:
+                            - /bin/bash
+                            - '-c'
+                            - |
+                              #!/usr/bin/env bash
+                              BUCKET_HOST=$(oc get -n openshift-logging configmap loki-bucket-odf -o jsonpath='{.data.BUCKET_HOST}')
+                              BUCKET_NAME=$(oc get -n openshift-logging configmap loki-bucket-odf -o jsonpath='{.data.BUCKET_NAME}')
+                              BUCKET_PORT=$(oc get -n openshift-logging configmap loki-bucket-odf -o jsonpath='{.data.BUCKET_PORT}')
+                              ACCESS_KEY_ID=$(oc get -n openshift-logging secret loki-bucket-odf -o jsonpath='{.data.AWS_ACCESS_KEY_ID}' | base64 -d)
+                              SECRET_ACCESS_KEY=$(oc get -n openshift-logging secret loki-bucket-odf -o jsonpath='{.data.AWS_SECRET_ACCESS_KEY}' | base64 -d)
+                              oc create -n openshift-logging secret generic logging-loki-odf --from-literal=access_key_id="$ACCESS_KEY_ID" --from-literal=access_key_secret="$SECRET_ACCESS_KEY" --from-literal=bucketnames="$BUCKET_NAME" --from-literal=endpoint="https://$BUCKET_HOST:$BUCKET_PORT" --dry-run -o yaml | oc apply -f -
+                      restartPolicy: Never
+                      serviceAccountName: logging-bucket-secret
