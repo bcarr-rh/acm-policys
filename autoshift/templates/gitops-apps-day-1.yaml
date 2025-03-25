@@ -1,0 +1,81 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: argo-apps-day-1
+  namespace: openshift-gitops
+  labels:
+    velero.io/exclude-from-backup: "true"
+  annotations:
+    helm.sh/hook-weight: "3"
+spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  generators:
+  - git:
+      repoURL: {{ .Values.autoshiftGitRepo }}
+      revision: {{ .Values.autoshiftGitBranchTag }}
+      directories:
+      - path: 'apps/day-1/*'
+  template:
+    metadata:
+      name: '{{"{{"}} .path.basename {{"}}"}}'
+      labels:
+        app: argo-apps-day-1
+        velero.io/exclude-from-backup: "true"
+    spec:
+      project: default
+      source:
+        path: '{{"{{"}} .path.path {{"}}"}}'
+        repoURL: {{ .Values.autoshiftGitRepo }}
+        targetRevision: {{ .Values.autoshiftGitBranchTag }}
+        helm:
+          valueFiles:
+          - values.yaml
+          valuesObject:
+            {{- if .Values.hubClusterSets }}
+            hubClusterSets:
+            {{-  range $cluster, $clustervalue := .Values.hubClusterSets }}
+              {{ $cluster }}:
+                labels:
+                {{-  range $labelkey, $labelvalue := $clustervalue.labels }}
+                  {{ $labelkey }}: '{{ $labelvalue }}'
+                {{- end }}
+            {{- end }}
+            {{- end }}
+            {{- if .Values.managedClusterSets }}
+            managedClusterSets:
+              {{-  range $cluster, $clustervalue := .Values.managedClusterSets }}
+              {{ $cluster }}:
+                labels:
+                {{-  range $labelkey, $labelvalue := $clustervalue.labels }}
+                  {{ $labelkey }}: '{{ $labelvalue }}'
+                {{- end }}
+            {{- end }}
+            {{- end }}
+            {{- if .Values.clusters }}
+            clusters:
+              {{-  range $cluster, $clustervalue := .Values.clusters }}
+              {{ $cluster }}:
+                labels:
+                {{-  range $labelkey, $labelvalue := $clustervalue.labels }}
+                  {{ $labelkey }}: '{{ $labelvalue }}'
+                {{- end }}
+            {{- end }}
+            {{- end }}
+      ignoreDifferences:
+      - group: "apps"
+        kind: "Project"
+        jsonPointers:
+        - /metadata/annotations
+        - /metadata/labels
+      syncPolicy:
+        preserveResourcesOnDeletion: false
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+        - RespectIgnoreDifferences=true
+        - Validate=false 
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: openshift-gitops

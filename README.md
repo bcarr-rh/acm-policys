@@ -1,4 +1,47 @@
-# acm-policys
+# AutoShiftv2
+
+## How To Install
+
+Fork, clone, or use upstream git repo
+
+install helm on local machine
+
+install oc from hub cluster
+
+login to hub cluster as cluster-admin
+```
+oc login
+```
+
+Update openshift-gitops/values.yaml with desired source mirror registry for disconnected or leave as is for connected
+
+Install OpenShift Gitops
+```
+helm install openshift-gitops openshift-gitops 
+```
+or
+```
+helm template openshift-gitops | oc apply -f -
+```
+
+Note: If OpenShift GitOps is already installed manually on cluster this will create two Operator Groups for OpenShift GitOps. Removing one will fix the issue.
+
+Update autoshift/values.yaml with desired feature flags and repo url
+
+Note: If your GitOps does not have access to git url provided you will need to add the repo to OpenShift GitOps
+
+Install AutoShiftv2
+```
+helm install autoshift autoshift
+```
+or
+```
+helm template autoshift | oc apply -f -
+```
+
+Given the labels and cluster sets provided in the values file, ACM cluster sets will be created along with ACM. Manually select which cluster will belong to each cluster set, or when provisioning a new cluster from ACM you can select the desired cluster set from ACM at time of creation.
+
+That's it. Welcome to OpenShift Platform Plus!
 
 ## Cluster Labels
 #### values can be set on a per clusterset level to decide what features of autoshift will be applied to each cluster

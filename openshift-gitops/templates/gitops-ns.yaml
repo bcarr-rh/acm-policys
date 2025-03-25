@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .Values.gitops.namespace | default "openshift-gitops-operator"}}
+  annotations:
+    helm.sh/hook-weight: "0"
+  labels:
+    openshift.io/cluster-monitoring: "true"
+spec: {}

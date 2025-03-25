@@ -1,0 +1,13 @@
+# Default values for the gitops operator
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+gitops:
+  namespace: openshift-gitops-operator
+  group: openshift-gitops-operator
+  source: redhat-operators
+  channel: latest
+  sourceNamespace: openshift-marketplace
+  installPlanApproval: Automatic
+  nameSub: openshift-gitops-operator
+  name: openshift-gitops-operator

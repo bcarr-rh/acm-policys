@@ -1,0 +1,13 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: {{ .Values.gitops.nameSub | default "openshift-gitops-operator" }}
+  namespace: {{ .Values.gitops.namespace | default "openshift-gitops-operator" }}
+  annotations:
+    helm.sh/hook-weight: "2"
+spec:
+  channel: {{ .Values.gitops.channel | default "latest" }} 
+  installPlanApproval: {{ .Values.gitops.installPlanApproval | default "Automatic" }}
+  name: {{ .Values.gitops.name | default "openshift-gitops-operator" }}
+  source: {{ .Values.gitops.source | default "redhat-operators" }}
+  sourceNamespace: {{ .Values.gitops.sourceNamespace | default "openshift-marketplace" }}
