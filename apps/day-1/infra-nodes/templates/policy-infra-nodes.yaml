@@ -61,7 +61,7 @@ spec:
                         providerSpec:
                         {{ "{{-" }} if eq $worker_ms.spec.template.spec.providerSpec.value.kind "VSphereMachineProviderSpec" {{ "}}" }}
                           value:
-                            numCoresPerSocket: {{ "{{hub" }} (index .ManagedClusterLabels "infra-nodes-numcores-per-socket") | default $worker_ms.spec.template.spec.providerSpec.value.numCoresPerSocket {{ "hub}}" }}
+                            numCoresPerSocket: {{ "{{" }} {{ "{{hub" }} (index .ManagedClusterLabels "infra-nodes-numcores-per-socket") {{ "hub}}" }} | default $worker_ms.spec.template.spec.providerSpec.value.numCoresPerSocket  {{ "}}" }}
                             diskGiB: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.diskGiB {{ "}}" }}
                             snapshot: ''
                             userDataSecret:
