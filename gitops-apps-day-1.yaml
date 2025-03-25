@@ -25,10 +25,12 @@ spec:
       source:
         path: '{{ .path.path }}'
         repoURL: https://github.com/bcarr-rh/acm-policys.git
-        targetRevision: config-rework
+        targetRevision: infra-node-removal
         helm:
           parameters:
             - name: "autoshiftLabelPrefix" 
+              value: "autoshift.io/"
+            - name: "labelPrefix" 
               value: "autoshift.io/"
           valueFiles:
           - values.yaml
