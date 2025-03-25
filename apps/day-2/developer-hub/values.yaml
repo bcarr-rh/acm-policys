@@ -1,10 +1,10 @@
-# Default values for quay.
+# Default values for developer-hub.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-quayOperator:
-    name: quay-operator
-    namespace: quay-operator
-    channel: stable-3.9
+developerHub:
+    name: rhdh
+    namespace: rhdh-operator
+    channel: fast
     installPlanApproval: Automatic
     source: redhat-operators
     sourceNamespace: openshift-marketplace

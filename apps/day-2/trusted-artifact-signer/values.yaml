@@ -1,0 +1,11 @@
+# Default values for rhtas-operator.
+rhtasOperator:
+  name: rhtas-operator
+  namespace: openshift-operators
+  channel: stable
+  installPlanApproval: Automatic
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+  clusterSets:
+    - hub
+    - managed
