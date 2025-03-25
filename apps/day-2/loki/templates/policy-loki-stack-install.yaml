@@ -1,9 +1,6 @@
-# This policy verifies the installation of the official & supported version of
-# the Compliance Operator on the managed clusters.
+# This policy creates a loki stack using a nooba bucket from OpenShift Data Foundation.
 #
-# If set to "enforce" it'll install the operator.
-#
-# Note that OpenShift 4.6 is required.
+# Note that OpenShift 4.18 is required.
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
@@ -37,8 +34,8 @@ spec:
                 apiVersion: loki.grafana.com/v1
                 kind: LokiStack
                 metadata:
-                  name: {{ .Values.loki.lokistackName }}
-                  namespace: {{ .Values.loki.namespace }}
+                  name: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/loki-lokistack-name" | default "{{ .Values.loki.lokistackName }}" hub{{ "}}" }}'
+                  namespace: {{ .Values.logging.namespace }}
                 spec:
                   hashRing:
                     type: memberlist
@@ -50,8 +47,8 @@ spec:
                       queries:
                         queryTimeout: 3m
                   managementState: Managed
-                  storageClassName: {{ .Values.loki.storageClass }} #TODO: make parameter
-                  size: {{ .Values.loki.size }}
+                  storageClassName: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/loki-storageclass" | default "{{ .Values.loki.storageClass }}" hub{{ "}}" }}'
+                  size: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/loki-size" | default "{{ .Values.loki.size }}" hub{{ "}}" }}'
                   storage:
                     schemas:
                       - effectiveDate: '2024-09-22'
@@ -63,7 +60,7 @@ spec:
                       name: logging-loki-odf
                       type: s3
                   tenants:
-                    mode: openshift-logging
+                    mode: {{ .Values.logging.namespace }}
                     
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
@@ -80,7 +77,7 @@ spec:
                 kind: ObjectBucketClaim
                 metadata:
                   name: loki-bucket-odf
-                  namespace: openshift-logging
+                  namespace: {{ .Values.logging.namespace }}
                   annotations:
                     argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
                     argocd.argoproj.io/sync-wave: "4"
@@ -102,14 +99,14 @@ spec:
                 apiVersion: rbac.authorization.k8s.io/v1
                 metadata:
                   name: logging-bucket-secret
-                  namespace: openshift-logging
+                  namespace: {{ .Values.logging.namespace }}
                   annotations:
                     argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
                     argocd.argoproj.io/sync-wave: "4"
                 subjects:
                   - kind: ServiceAccount
                     name: logging-bucket-secret
-                    namespace: openshift-logging
+                    namespace: {{ .Values.logging.namespace }}
                 roleRef:
                   apiGroup: rbac.authorization.k8s.io
                   kind: Role
@@ -129,7 +126,7 @@ spec:
                 kind: Role
                 metadata:
                   name: logging-bucket-secret
-                  namespace: openshift-logging
+                  namespace: {{ .Values.logging.namespace }}
                 rules:
                   - verbs:
                       - create
@@ -164,7 +161,7 @@ spec:
                 kind: ServiceAccount
                 metadata:
                   name: logging-bucket-secret
-                  namespace: openshift-logging
+                  namespace: {{ .Values.logging.namespace }}
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
@@ -181,7 +178,7 @@ spec:
                 kind: Job
                 metadata:
                   name: logging-bucket-secret-job
-                  namespace: openshift-logging
+                  namespace: {{ .Values.logging.namespace }}
                 spec:
                   selector: {}
                   template:
@@ -196,12 +193,12 @@ spec:
                             - '-c'
                             - |
                               #!/usr/bin/env bash
-                              BUCKET_HOST=$(oc get -n openshift-logging configmap loki-bucket-odf -o jsonpath='{.data.BUCKET_HOST}')
-                              BUCKET_NAME=$(oc get -n openshift-logging configmap loki-bucket-odf -o jsonpath='{.data.BUCKET_NAME}')
-                              BUCKET_PORT=$(oc get -n openshift-logging configmap loki-bucket-odf -o jsonpath='{.data.BUCKET_PORT}')
-                              ACCESS_KEY_ID=$(oc get -n openshift-logging secret loki-bucket-odf -o jsonpath='{.data.AWS_ACCESS_KEY_ID}' | base64 -d)
-                              SECRET_ACCESS_KEY=$(oc get -n openshift-logging secret loki-bucket-odf -o jsonpath='{.data.AWS_SECRET_ACCESS_KEY}' | base64 -d)
-                              oc create -n openshift-logging secret generic logging-loki-odf --from-literal=access_key_id="$ACCESS_KEY_ID" --from-literal=access_key_secret="$SECRET_ACCESS_KEY" --from-literal=bucketnames="$BUCKET_NAME" --from-literal=endpoint="https://$BUCKET_HOST:$BUCKET_PORT" --dry-run -o yaml | oc apply -f -
+                              BUCKET_HOST=$(oc get -n {{ .Values.logging.namespace }} configmap loki-bucket-odf -o jsonpath='{.data.BUCKET_HOST}')
+                              BUCKET_NAME=$(oc get -n {{ .Values.logging.namespace }} configmap loki-bucket-odf -o jsonpath='{.data.BUCKET_NAME}')
+                              BUCKET_PORT=$(oc get -n {{ .Values.logging.namespace }} configmap loki-bucket-odf -o jsonpath='{.data.BUCKET_PORT}')
+                              ACCESS_KEY_ID=$(oc get -n {{ .Values.logging.namespace }} secret loki-bucket-odf -o jsonpath='{.data.AWS_ACCESS_KEY_ID}' | base64 -d)
+                              SECRET_ACCESS_KEY=$(oc get -n {{ .Values.logging.namespace }} secret loki-bucket-odf -o jsonpath='{.data.AWS_SECRET_ACCESS_KEY}' | base64 -d)
+                              oc create -n {{ .Values.logging.namespace }} secret generic logging-loki-odf --from-literal=access_key_id="$ACCESS_KEY_ID" --from-literal=access_key_secret="$SECRET_ACCESS_KEY" --from-literal=bucketnames="$BUCKET_NAME" --from-literal=endpoint="https://$BUCKET_HOST:$BUCKET_PORT" --dry-run -o yaml | oc apply -f -
                       restartPolicy: Never
                       serviceAccountName: logging-bucket-secret
 ---
@@ -212,9 +209,21 @@ metadata:
   namespace: open-cluster-policies
 spec:
   clusterSets:
-  {{- range .Values.loki.clusterSets }}
-    - {{ . }}
+  {{- range $clusterSet, $value := $.Values.managedClusterSets }}
+    - {{ $clusterSet }}
   {{- end }}
+  {{- range $clusterSet, $value := $.Values.hubClusterSets }}
+    - {{ $clusterSet }}
+  {{- end }}
+  predicates:
+    - requiredClusterSelector:
+        labelSelector:
+          matchExpressions:
+            - key: 'autoshift.io/loki'
+              operator: In
+              values:
+              - 'true'
+              - 'True'
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists

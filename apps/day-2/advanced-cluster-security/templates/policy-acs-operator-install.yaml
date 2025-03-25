@@ -1,13 +1,3 @@
-# This policy deploys the Red Hat Advanced Cluster Security Secure Cluster
-# Services to all OpenShift managed clusters.  Note that it is set to
-# enforce by default and it requires RHACM 2.3 template support.
-#
-# Prior to applying this policy you must visit 
-# https://github.com/stolostron/acs 
-# and follow the instructions there to deploy prerequisite bundles
-# needed by the Secure Cluster Services for communicating with the
-# Central server.
-#
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
@@ -37,43 +27,32 @@ spec:
                 apiVersion: v1
                 kind: Namespace
                 metadata:
-                  name: stackrox
+                  name: {{ .Values.acs.namespace }}
             - complianceType: musthave
               objectDefinition:
                 apiVersion: v1
                 kind: Namespace
                 metadata:
-                  name: rhacs-operator
-            - complianceType: musthave
-              objectDefinition:
-                apiVersion: operators.coreos.com/v1
-                kind: OperatorGroup
-                metadata:
-                  name: rhacs-operator-group
-                  namespace: rhacs-operator
-                spec: {}
+                  name: {{ .Values.acs.operatorNamespace }}
     - objectDefinition:
-        apiVersion: policy.open-cluster-management.io/v1
-        kind: ConfigurationPolicy
+        apiVersion: policy.open-cluster-management.io/v1beta1
+        kind: OperatorPolicy
         metadata:
-          name: managed-cluster-security-operator-sub
+          name: install-operator-acs
         spec:
-          remediationAction: inform
+          remediationAction: enforce
           severity: high
-          object-templates:
-            - complianceType: musthave
-              objectDefinition:
-                apiVersion: operators.coreos.com/v1alpha1
-                kind: Subscription
-                metadata:
-                  name: rhacs-operator
-                  namespace: rhacs-operator
-                spec:
-                  channel: {{ .Values.acs.channel }}
-                  installPlanApproval: {{ .Values.acs.installPlanApproval }}
-                  name: {{ .Values.acs.name }}
-                  source: {{ .Values.acs.source }}
-                  sourceNamespace: {{ .Values.acs.sourceNamespace }}
+          complianceType: musthave
+          operatorGroup:
+            name: {{ .Values.acs.operatorNamespace }}
+            namespace: {{ .Values.acs.operatorNamespace }}
+          subscription:
+            name: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/acs-name" | default "{{ .Values.acs.name }}" hub{{ "}}" }}'
+            namespace: {{ .Values.acs.operatorNamespace }}
+            source: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/acs-source" | default "{{ .Values.acs.source }}" hub{{ "}}" }}'
+            sourceNamespace: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/acs-source-namespace" | default "{{ .Values.acs.sourceNamespace }}" hub{{ "}}" }}'
+            channel: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/acs-channel" | default "{{ .Values.acs.channel }}" hub{{ "}}" }}'
+          upgradeApproval: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/acs-install-plan-approval" | default "{{ .Values.acs.installPlanApproval }}" hub{{ "}}" }}'
 ---
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
@@ -82,10 +61,21 @@ metadata:
   namespace: open-cluster-policies
 spec:
   clusterSets:
-  {{- range .Values.acs.managedClusterSets }}
-    - {{ . }}
+  {{- range $clusterSet, $value := .Values.managedClusterSets }}
+    - {{ $clusterSet }}
   {{- end }}
-    - {{ .Values.acs.hubClusterSet }}
+  {{- range $clusterSet, $value := .Values.hubClusterSets }}
+    - {{ $clusterSet }}
+  {{- end }}
+  predicates:
+    - requiredClusterSelector:
+        labelSelector:
+          matchExpressions:
+            - key: 'autoshift.io/acs'
+              operator: In
+              values:
+              - 'true'
+              - 'True'
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists

@@ -4,22 +4,9 @@
 ---
 selfManaged: false
 acmversion: "2.12"
-hubClusterSet: "hub"
 debug: true
 enabled: true
 autoshiftLabelPrefix: "autoshift.io/"
-hubClusters:
-  localCluster:
-    name: "local-cluster"
-    labels:
-      infra-nodes-numcpu: '8'
-      infra-nodes-memory-mib:  '24576'
-      infra-nodes-numcores-per-socket:  '4'
-      infra-nodes:  '6'
-      worker-nodes-numcpu:  '8'
-      worker-nodes-memory-mib:  '32768'
-      worker-nodes-numcores-per-socket:  '4'
-      worker-nodes:  '3'
 hubClusterSets:
   hub:
     labels: 
@@ -31,7 +18,6 @@ hubClusterSets:
       worker-nodes-memory-mib:  '32768'
       worker-nodes-numcores-per-socket:  '4'
       worker-nodes:  '3'
-      hub-Cluster: ''
       test-worked: 'false'
 managedClusterSets:
   managed:
@@ -46,8 +32,6 @@ managedClusterSets:
       worker-nodes:  '3'
 clusters:
   nonprod:
-    cluster-set: 'hub' 
-    rollback: 'false'
     labels:
       infra-nodes-numcpu: '8'
       infra-nodes-memory-mib:  '24576'

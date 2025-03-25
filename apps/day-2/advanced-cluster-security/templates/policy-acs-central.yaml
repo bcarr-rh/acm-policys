@@ -27,7 +27,7 @@ spec:
         metadata:
           name: acs-central
         spec:
-          remediationAction: inform
+          remediationAction: enforce
           severity: high
           object-templates:
             - complianceType: musthave
@@ -35,7 +35,7 @@ spec:
                 apiVersion: platform.stackrox.io/v1alpha1
                 kind: Central
                 metadata:
-                  namespace: stackrox
+                  namespace: {{ .Values.acs.namespace }}
                   name: stackrox-central-services
                 spec:
                   central:
@@ -60,11 +60,30 @@ spec:
                         minReplicas: 2
                         replicas: 3
                     scannerComponent: Enabled
-        status:
-          conditions:
-            - reason: InstallSuccessful
-              status: 'True'
-              type: Deployed
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: acs-central-test
+        spec:
+          remediationAction: inform
+          severity: high
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: platform.stackrox.io/v1alpha1
+                kind: Central
+                metadata:
+                  namespace: {{ .Values.acs.namespace }}
+                  name: stackrox-central-services
+                status:
+                  conditions:
+                    - status: 'True'
+                      type: Deployed
+                    - status: 'True'
+                      type: Initialized
+                    - status: 'False'
+                      type: ReleaseFailed
 ---
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
@@ -73,7 +92,18 @@ metadata:
   namespace: open-cluster-policies
 spec:
   clusterSets:
-    - {{ .Values.acs.hubClusterSet }}
+  {{- range $clusterSet, $value := .Values.hubClusterSets }}
+    - {{ $clusterSet }}
+  {{- end }}
+  predicates:
+    - requiredClusterSelector:
+        labelSelector:
+          matchExpressions:
+            - key: 'autoshift.io/acs'
+              operator: In
+              values:
+              - 'true'
+              - 'True'
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists

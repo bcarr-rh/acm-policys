@@ -31,7 +31,7 @@ spec:
                   kind: ComplianceRemediation
                   metadata:
                     name: {{ "{{" }}hub . hub{{ "}}" }}
-                    namespace: openshift-compliance
+                    namespace: {{ .Values.compliance.namespace }}
                   spec:
                     apply: true
               {{ "{{" }}hub end hub{{ "}}" }}
@@ -43,7 +43,7 @@ spec:
                   kind: ComplianceRemediation
                   metadata:
                     name: {{ "{{" }}hub . hub{{ "}}" }}
-                    namespace: openshift-compliance
+                    namespace: {{ .Values.compliance.namespace }}
                   spec:
                     apply: true
               {{ "{{" }}hub end hub{{ "}}" }}
@@ -58,9 +58,21 @@ metadata:
   namespace: open-cluster-policies
 spec:
   clusterSets:
-  {{- range .Values.compliance.clusterSets }}
-    - {{ . }}
+  {{- range $clusterSet, $value := $.Values.managedClusterSets }}
+    - {{ $clusterSet }}
   {{- end }}
+  {{- range $clusterSet, $value := $.Values.hubClusterSets }}
+    - {{ $clusterSet }}
+  {{- end }}
+  predicates:
+    - requiredClusterSelector:
+        labelSelector:
+          matchExpressions:
+            - key: 'autoshift.io/compliance'
+              operator: In
+              values:
+              - 'true'
+              - 'True'
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists

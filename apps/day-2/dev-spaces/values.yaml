@@ -4,17 +4,7 @@
 devspaces:
     name: devspaces
     namespace: openshift-operators-redhat
-    channel: stable-6.1
-    installPlanApproval: Automatic
-    source: redhat-operators
-    sourceNamespace: openshift-marketplace
-    clusterSets:
-      - hub
-      - managed
-logging:
-    name: cluster-logging
-    namespace: openshift-logging
-    channel: stable-6.1
+    channel: stable
     installPlanApproval: Automatic
     source: redhat-operators
     sourceNamespace: openshift-marketplace
