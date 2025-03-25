@@ -39,7 +39,7 @@ spec:
                     namespace: openshift-machine-api
                   spec:
                     deletePolicy: Oldest
-                    replicas: {{ "{{" }} index .ManagedClusterLabels "infra-nodes" {{ "}}" }}
+                    replicas: {{ "{{hub" }} index .ManagedClusterLabels "infra-nodes" {{ "hub}}" }}
                     selector:
                       matchLabels:
                         machine.openshift.io/cluster-api-cluster: {{ "{{" }} $infrastructure_id {{ "}}" }}
@@ -61,18 +61,18 @@ spec:
                         providerSpec:
                         {{ "{{-" }} if eq $worker_ms.spec.template.spec.providerSpec.value.kind "VSphereMachineProviderSpec" {{ "}}" }}
                           value:
-                            numCoresPerSocket: {{ "{{" }} (index .ManagedClusterLabels "infra-nodes-numcores-per-socket") | default $worker_ms.spec.template.spec.providerSpec.value.numCoresPerSocket {{ "}}" }}
+                            numCoresPerSocket: {{ "{{hub" }} (index .ManagedClusterLabels "infra-nodes-numcores-per-socket") | default $worker_ms.spec.template.spec.providerSpec.value.numCoresPerSocket {{ "hub}}" }}
                             diskGiB: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.diskGiB {{ "}}" }}
                             snapshot: ''
                             userDataSecret:
                               name: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.userDataSecret.name {{ "}}" }}
-                            memoryMiB: {{ "{{" }} (index .ManagedClusterLabels "infra-nodes-memory-mib") | default $worker_ms.spec.template.spec.providerSpec.value.memoryMiB {{ "}}" }}
+                            memoryMiB: {{ "{{hub" }} (index .ManagedClusterLabels "infra-nodes-memory-mib") | default $worker_ms.spec.template.spec.providerSpec.value.memoryMiB {{ "hub}}" }}
                             credentialsSecret:
                               name: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.credentialsSecret.name {{ "}}" }}
                             network:
                               devices:
                                 - networkName: {{ "{{" }} (index ($worker_ms.spec.template.spec.providerSpec.value.network.devices) 0).networkName {{ "}}" }}
-                            numCPUs: {{ "{{" }} (index .ManagedClusterLabels "infra-nodes-numcpu") | default $worker_ms.spec.template.spec.providerSpec.value.numCPUs {{ "}}" }}
+                            numCPUs: {{ "{{hub" }} (index .ManagedClusterLabels "infra-nodes-numcpu") | default $worker_ms.spec.template.spec.providerSpec.value.numCPUs {{ "hub}}" }}
                             kind: VSphereMachineProviderSpec
                             workspace:
                               datacenter: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.workspace.datacenter {{ "}}" }}
@@ -159,7 +159,7 @@ spec:
                     name: {{ "{{" }} $infrastructure_id {{ "}}" }}-{{ "{{" }} $machineset_role {{ "}}" }}-{{ "{{" }} $zone {{ "}}" }}
                     namespace: openshift-machine-api
                   spec:
-                    replicas: {{ "{{" }} index .ManagedClusterLabels "infra-nodes" {{ "}}" }}
+                    replicas: {{ "{{hub" }} index .ManagedClusterLabels "infra-nodes" {{ "hub}}" }}
               {{ "{{-" }} end {{ "}}" }}
 ---
 apiVersion: cluster.open-cluster-management.io/v1beta1
