@@ -31,7 +31,7 @@ spec:
         spec:
           remediationAction: enforce
           severity: high
-          object-templates:
+          object-templates-raw: |
             - complianceType: musthave
               objectDefinition:
                 apiVersion: ocs.openshift.io/v1
@@ -52,15 +52,15 @@ spec:
                             - ReadWriteOnce
                           resources:
                             requests:
-                              storage: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/odf-ocs-storage-size" | default "{{ .Values.odf.ocsStorageSize }}" hub{{ "}}" }}'
-                      {{ "{{" }}hub- if ne (index .ManagedClusterLabels "autoshift.io/local-storage" | default "") "" }}" hub{{ "}}" }}
+                              storage: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/odf-ocs-storage-size" | default "{{ .Values.odf.ocsStorageSize}}" hub{{ "}}" }}'
+                          {{ "{{" }}hub- if ne (index .ManagedClusterLabels "autoshift.io/local-storage" | default "") "" hub{{ "}}" }}
                           storageClassName: nvme-storageclass
-                      {{ "{{" }}hub- else hub{{ "}}" }}
+                          {{ "{{" }}hub- else hub{{ "}}" }}
                           storageClassName: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/odf-ocs-storage-class-name" | default "{{ .Values.odf.ocsStorageClassName }}" hub{{ "}}" }}'
-                      {{ "{{" }}hub- end hub{{ "}}" }}
+                          {{ "{{" }}hub- end hub{{ "}}" }}
                           volumeMode: Block
-                      count: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/odf-ocs-storage-count" | default "{{ .Values.odf.ocsStorageCount }}"}}" hub{{ "}}" }}'
-                      replica: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/odf-ocs-storage-replicas" | default "{{ .Values.odf.ocsStorageReplicas }}" hub{{ "}}" }}'
+                      count: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/odf-ocs-storage-count" | default "{{ .Values.odf.ocsStorageCount }}" | toInt hub{{ "}}" }}'
+                      replica: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/odf-ocs-storage-replicas" | default "{{ .Values.odf.ocsStorageReplicas }}" | toInt hub{{ "}}" }}'
                       portable: true
                       preparePlacement: {}
                   encryption:
@@ -102,6 +102,8 @@ spec:
                     cephDashboard: {}
                     cephConfig: {}
                   arbiter: {}
+                  multiCloudGateway:
+                    reconcileStrategy: manage
                   network:
                     connections:
                       encryption:
