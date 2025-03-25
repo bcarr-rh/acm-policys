@@ -1,0 +1,51 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: argo-apps-day-1
+  namespace: openshift-gitops
+  labels:
+    velero.io/exclude-from-backup: "true"
+spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  generators:
+  - git:
+      repoURL: https://github.com/bcarr-rh/acm-policys.git
+      revision: config-rework
+      directories:
+      - path: 'apps/day-1/*'
+  template:
+    metadata:
+      name: '{{ .path.basename }}'
+      labels:
+        app: argo-apps-day-1
+        velero.io/exclude-from-backup: "true"
+    spec:
+      project: default
+      source:
+        path: '{{ .path.path }}'
+        repoURL: https://github.com/bcarr-rh/acm-policys.git
+        targetRevision: config-rework
+        helm:
+          parameters:
+            - name: "autoshiftLabelPrefix" 
+              value: "autoshift.io/"
+          valueFiles:
+          - values.yaml
+      ignoreDifferences:
+      - group: "apps"
+        kind: "Project"
+        jsonPointers:
+        - /metadata/annotations
+        - /metadata/labels
+      syncPolicy:
+        preserveResourcesOnDeletion: false
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+        - RespectIgnoreDifferences=true
+        - Validate=false 
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: openshift-gitops

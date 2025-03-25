@@ -129,7 +129,6 @@ spec:
   predicates:
     - requiredClusterSelector:
         labelSelector:
-          matchExpressions:
             - key: {{ printf $labelPrefix "infra-nodes" }}
               operator: Exists
   tolerations:

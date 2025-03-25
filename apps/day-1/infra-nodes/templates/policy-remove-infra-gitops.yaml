@@ -21,19 +21,24 @@ spec:
         metadata:
           name: {{ $configPolicyName }}
         spec:
-          object-templates:
-            - complianceType: musthave
-              objectDefinition:
-                apiVersion: pipelines.openshift.io/v1alpha1
-                kind: GitopsService
-                metadata:
-                  name: cluster
-                  namespace: {{ .Values.infraNodes.gitops.namespace }}
-                spec:
-                  runOnInfra: true
-                  tolerations: {}
-          remediationAction: inform
           severity: high
+          remediationAction: enforce
+          object-templates-raw: | 
+            [
+            {{ "{{-" }} $GitOpsService := lookup("pipelines.openshift.io/v1alpha1" "GitOpsService" {{ .Values.infraNodes.gitops.namespace }} "cluster")  {{ "}}" }}
+              {{ "{{-" }} if  not (empty $GitOpsService)  {{ "}}" }}
+                {{ "{{-" }} $spec := $GitOpsService.spec {{ "}}" }} 
+                {{ "{{-" }} $newSpecNoTolerations := unset $spec "tolerations" {{ "}}" }}
+                {{ "{{-" }} $newSpec := set $newSpecNoTolerations "runOnInfra" false {{ "}}" }}
+                {{ "{{-" }} $GitOpsServiceNoStatus := unset $GitOpsService "status"  {{ "}}" }}
+                {{ "{{-" }} $objectDefinition := set $GitOpsServiceNoStatus "spec" $newSpec {{ "}}" }}
+                  {
+                    "complianceType": "mustonlyhave",
+                    "objectDefinition": {{ "{{" }} $objectDefinition | toRawJson {{ "}}" }} 
+                  }
+              {{ "{{-" }} end {{ "}}" }} 
+            ]
+             
 ---
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement

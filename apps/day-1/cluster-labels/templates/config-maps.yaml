@@ -6,7 +6,7 @@
     {{- if eq ($value | trim) "" -}}
         {{- continue }}
     {{- else -}}
-      {{- $_ := set $prefixedClusterLabels (printf "%s%s" $.Values.autoshiftLabelPrefix $label) $value -}}
+      {{- $_ := set $prefixedClusterLabels (printf "%s%s" $.Values.autoshiftLabelPrefix $label) ($value | lower | trim) -}}
     {{- end -}}
   {{- end -}}
   {{- $_ := set $data "labels" $prefixedClusterLabels -}}
@@ -27,7 +27,7 @@ data:
     {{- if eq ($value | trim) "" -}}
       {{- continue -}}
     {{- else -}}
-      {{- $_ := set $prefixedClusterSetLabels (printf "%s%s" $.Values.autoshiftLabelPrefix $label) $value -}}
+      {{- $_ := set $prefixedClusterSetLabels (printf "%s%s" $.Values.autoshiftLabelPrefix $label) ($value | lower | trim) -}}
     {{- end -}}
   {{- end -}}
   {{- $_ := set $data "labels" $prefixedClusterSetLabels -}}
