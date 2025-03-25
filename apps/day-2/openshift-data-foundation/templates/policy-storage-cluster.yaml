@@ -103,6 +103,8 @@ spec:
                     cephDashboard: {}
                     cephConfig: {}
                   arbiter: {}
+                  multiCloudGateway:
+                    reconcileStrategy: manage
                   network:
                     connections:
                       encryption:
