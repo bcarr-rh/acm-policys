@@ -11,7 +11,7 @@ spec:
   generators:
   - git:
       repoURL: https://github.com/bcarr-rh/acm-policys.git
-      revision: feature/mergeCode
+      revision: main
       directories:
       - path: 'apps/day-2/*'
   template:
@@ -25,10 +25,25 @@ spec:
       source:
         path: '{{ .path.path }}'
         repoURL: https://github.com/bcarr-rh/acm-policys.git
-        targetRevision: feature/mergeCode
+        targetRevision: main
         helm:
           valueFiles:
           - values.yaml
+          valuesObject:
+            hubClusterSets:
+              hub:
+                labels:
+                  test1: 'test'
+              testHub:
+                labels:
+                  test2: 'test'
+            managedClusterSets:
+              sandbox:
+                labels:
+                  test3: 'test'
+              managed:
+                labels:
+                  test4: 'test'
       ignoreDifferences:
       - group: "apps"
         kind: "Project"

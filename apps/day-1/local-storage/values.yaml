@@ -7,8 +7,20 @@ localStorage:
   installPlanApproval: Automatic
   source: redhat-operators
   sourceNamespace: openshift-marketplace
-  nameSub: local-storage-operator
   channel: stable
-  clusterSets:
-    - hub
-    - managed
+hubClusterSets:
+  hub:
+    labels:
+      test1: 'test'
+managedClusterSets:
+  managed:
+    labels:
+      test4: 'test'
+
+
+# Labels
+# autoshift.io/local-storage
+# autoshift.io/local-storage-channel
+# autoshift.io/local-storage-source
+# autoshift.io/local-storage-source-namespace
+# autoshift.io/local-storage-install-plan-approval

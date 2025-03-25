@@ -1,9 +1,9 @@
 # This policy verifies the installation of the official & supported version of
-# the Compliance Operator on the managed clusters.
+# the Loki Operator on the managed clusters.
 #
 # If set to "enforce" it'll install the operator.
 #
-# Note that OpenShift 4.6 is required.
+# Note that OpenShift 4.18 is required.
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
@@ -46,10 +46,10 @@ spec:
           subscription:
             name: {{ .Values.loki.name }}
             namespace: {{ .Values.loki.namespace }}
-            source: {{ .Values.loki.source }}
-            sourceNamespace: {{ .Values.loki.sourceNamespace }}
-            channel: {{ .Values.loki.channel }}
-          upgradeApproval: {{ .Values.loki.installPlanApproval }}
+            source: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/loki-source" | default "{{ .Values.loki.source }}" hub{{ "}}" }}'
+            sourceNamespace: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/loki-source-namespace" | default "{{ .Values.loki.sourceNamespace }}" hub{{ "}}" }}'
+            channel: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/loki-channel" | default "{{ .Values.loki.channel }}" hub{{ "}}" }}'
+          upgradeApproval: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/loki-install-plan-approval" | default "{{ .Values.loki.installPlanApproval }}" hub{{ "}}" }}'
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
@@ -64,7 +64,7 @@ spec:
                 apiVersion: operators.coreos.com/v1alpha1
                 kind: ClusterServiceVersion
                 metadata:
-                  namespace: openshift-operators-redhat
+                  namespace: {{ .Values.loki.namespace }}
                 spec:
                   displayName: Loki Operator
                 status:
@@ -77,9 +77,21 @@ metadata:
   namespace: open-cluster-policies
 spec:
   clusterSets:
-  {{- range .Values.loki.clusterSets }}
-    - {{ . }}
+  {{- range $clusterSet, $value := $.Values.managedClusterSets }}
+    - {{ $clusterSet }}
   {{- end }}
+  {{- range $clusterSet, $value := $.Values.hubClusterSets }}
+    - {{ $clusterSet }}
+  {{- end }}
+  predicates:
+    - requiredClusterSelector:
+        labelSelector:
+          matchExpressions:
+            - key: 'autoshift.io/loki'
+              operator: In
+              values:
+              - 'true'
+              - 'True'
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists

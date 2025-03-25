@@ -11,7 +11,7 @@ spec:
   generators:
   - git:
       repoURL: https://github.com/bcarr-rh/acm-policys.git
-      revision: config-rework
+      revision: main
       directories:
       - path: 'apps/day-1/*'
   template:
@@ -25,10 +25,48 @@ spec:
       source:
         path: '{{ .path.path }}'
         repoURL: https://github.com/bcarr-rh/acm-policys.git
-        targetRevision: config-rework
+        targetRevision: main
         helm:
           valueFiles:
           - values.yaml
+          valuesObject:
+            hubClusterSets:
+              hub:
+                labels:
+                  acs: 'true'
+                  compliance: 'true'
+                  loki: 'true'
+                  logging: 'true'
+                  coo: 'true'
+              test-hub:
+                labels:
+                  test2: 'test'
+            managedClusterSets:
+              sandbox:
+                labels:
+                  test3: 'test'
+              managed:
+                labels:
+                  acs: 'true'
+                  compliance: 'true'
+                  loki: 'true'
+                  logging: 'true'
+                  coo: 'true'
+            clusters:
+              nonprod:
+                labels:
+                  infra-nodes-numcpu: '8'
+                  infra-nodes-memory-mib:  '24576'
+                  infra-nodes-numcores-per-socket:  '4'
+                  infra-nodes:  '6'
+                  worker-nodes-numcpu:  '8'
+                  worker-nodes-memory-mib:  '32768'
+                  worker-nodes-numcores-per-socket:  '4'
+                  worker-nodes:  '3'
+              local-cluster: 
+                labels: 
+                  test-worked: 'true'
+                  second-label: ''
       ignoreDifferences:
       - group: "apps"
         kind: "Project"

@@ -1,9 +1,7 @@
 # This policy verifies the installation of the official & supported version of
-# the Compliance Operator on the managed clusters.
+# the Cluster Observability Operator on the managed clusters.
 #
-# If set to "enforce" it'll install the operator.
-#
-# Note that OpenShift 4.6 is required.
+# Note that OpenShift 4.18 is required.
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
@@ -24,7 +22,7 @@ spec:
         spec:
           remediationAction: enforce # will be overridden by remediationAction in parent policy
           severity: high
-          object-templates:
+          object-templates-raw: |
             - complianceType: musthave
               objectDefinition:
                 apiVersion: v1
@@ -46,10 +44,10 @@ spec:
           subscription:
             name: {{ .Values.coo.name }}
             namespace: {{ .Values.coo.namespace }}
-            source: {{ .Values.coo.source }}
-            sourceNamespace: {{ .Values.coo.sourceNamespace }}
-            channel: {{ .Values.coo.channel }}
-          upgradeApproval: {{ .Values.coo.installPlanApproval }}
+            source: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/coo-source" | default "{{ .Values.coo.source }}" hub{{ "}}" }}'
+            sourceNamespace: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/coo-source-namespace" | default "{{ .Values.coo.sourceNamespace }}" hub{{ "}}" }}'
+            channel: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/coo-channel" | default "{{ .Values.coo.channel }}" hub{{ "}}" }}'
+          upgradeApproval: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/coo-install-plan-approval" | default "{{ .Values.coo.installPlanApproval }}" hub{{ "}}" }}'
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
@@ -68,7 +66,7 @@ spec:
                 spec:
                   logging:
                     lokiStack:
-                      name: {{ .Values.loki.lokistackName }}
+                      name: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/loki-lokistack-name" | default "{{ .Values.loki.lokistackName }}" hub{{ "}}" }}'
                   type: Logging
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
@@ -97,9 +95,21 @@ metadata:
   namespace: open-cluster-policies
 spec:
   clusterSets:
-  {{- range .Values.coo.clusterSets }}
-    - {{ . }}
+  {{- range $clusterSet, $value := $.Values.managedClusterSets }}
+    - {{ $clusterSet }}
   {{- end }}
+  {{- range $clusterSet, $value := $.Values.hubClusterSets }}
+    - {{ $clusterSet }}
+  {{- end }}
+  predicates:
+    - requiredClusterSelector:
+        labelSelector:
+          matchExpressions:
+            - key: 'autoshift.io/coo'
+              operator: In
+              values:
+              - 'true'
+              - 'True'
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists

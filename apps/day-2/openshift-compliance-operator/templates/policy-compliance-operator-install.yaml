@@ -3,7 +3,7 @@
 #
 # If set to "enforce" it'll install the operator.
 #
-# Note that OpenShift 4.6 is required.
+# Note that OpenShift 4.18 is required.
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
@@ -31,48 +31,28 @@ spec:
                 apiVersion: v1
                 kind: Namespace
                 metadata:
-                  name: openshift-compliance
+                  name: {{ .Values.compliance.namespace }}
     - objectDefinition:
-        apiVersion: policy.open-cluster-management.io/v1
-        kind: ConfigurationPolicy
+        apiVersion: policy.open-cluster-management.io/v1beta1
+        kind: OperatorPolicy
         metadata:
-          name: comp-operator-operator-group
+          name: install-comp-operator
         spec:
-          remediationAction: inform # will be overridden by remediationAction in parent policy
+          remediationAction: enforce
           severity: high
-          object-templates:
-            - complianceType: musthave
-              objectDefinition:
-                apiVersion: operators.coreos.com/v1
-                kind: OperatorGroup
-                metadata:
-                  name: compliance-operator
-                  namespace: openshift-compliance
-                spec:
-                  targetNamespaces:
-                    - openshift-compliance
-    - objectDefinition:
-        apiVersion: policy.open-cluster-management.io/v1
-        kind: ConfigurationPolicy
-        metadata:
-          name: comp-operator-subscription
-        spec:
-          remediationAction: inform # will be overridden by remediationAction in parent policy
-          severity: high
-          object-templates:
-            - complianceType: musthave
-              objectDefinition:
-                apiVersion: operators.coreos.com/v1alpha1
-                kind: Subscription
-                metadata:
-                  name: {{ .Values.compliance.nameSub | default "compliance-operator"}}
-                  namespace: openshift-compliance
-                spec:
-                  installPlanApproval: {{ .Values.compliance.installPlanApproval | default "Automatic"}}
-                  channel: {{ .Values.compliance.channel | default "stable"}}
-                  name: {{ .Values.compliance.name | default "compliance-operator"}}
-                  source: {{ .Values.compliance.source | default "redhat-operators"}}
-                  sourceNamespace: {{ .Values.compliance.sourceNamespace | default "openshift-marketplace"}}
+          complianceType: musthave
+          operatorGroup:
+            name: {{ .Values.compliance.name }}
+            namespace: {{ .Values.compliance.namespace }}
+            targetNamespaces:
+              - {{ .Values.compliance.namespace }}
+          subscription:
+            namespace: {{ .Values.compliance.namespace }}
+            channel: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/compliance-channel" | default "{{ .Values.compliance.channel }}" hub{{ "}}" }}'
+            name: {{ .Values.compliance.name }}
+            source: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/compliance-source" | default "{{ .Values.compliance.source }}" hub{{ "}}" }}'
+            sourceNamespace: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/compliance-source-namespace" | default "{{ .Values.compliance.sourceNamespace }}" hub{{ "}}" }}'
+          upgradeApproval: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/compliance-install-plan-approval" | default "{{ .Values.compliance.installPlanApproval }}" hub{{ "}}" }}'
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
@@ -87,7 +67,7 @@ spec:
                 apiVersion: operators.coreos.com/v1alpha1
                 kind: ClusterServiceVersion
                 metadata:
-                  namespace: openshift-compliance
+                  namespace: {{ .Values.compliance.namespace | default "openshift-compliance"}}
                 spec:
                   displayName: Compliance Operator
                 status:
@@ -100,9 +80,21 @@ metadata:
   namespace: open-cluster-policies
 spec:
   clusterSets:
-  {{- range .Values.compliance.clusterSets }}
-    - {{ . }}
+  {{- range $clusterSet, $value := $.Values.managedClusterSets }}
+    - {{ $clusterSet }}
   {{- end }}
+  {{- range $clusterSet, $value := $.Values.hubClusterSets }}
+    - {{ $clusterSet }}
+  {{- end }}
+  predicates:
+    - requiredClusterSelector:
+        labelSelector:
+          matchExpressions:
+            - key: 'autoshift.io/compliance'
+              operator: In
+              values:
+              - 'true'
+              - 'True'
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists
