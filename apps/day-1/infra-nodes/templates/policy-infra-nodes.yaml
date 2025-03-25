@@ -66,7 +66,7 @@ spec:
                             snapshot: ''
                             userDataSecret:
                               name: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.userDataSecret.name {{ "}}" }}
-                            memoryMiB: {{ "{{" }} {{ "{{hub" }} (index .ManagedClusterLabels "infra-nodes-memory-mib") | default $worker_ms.spec.template.spec.providerSpec.value.memoryMiB {{ "hub}}" }} {{ "}}" }}
+                            memoryMiB: {{ "{{" }} {{ "{{hub" }} (index .ManagedClusterLabels "infra-nodes-memory-mib") {{ "hub}}" }} | default $worker_ms.spec.template.spec.providerSpec.value.memoryMiB  {{ "}}" }}
                             credentialsSecret:
                               name: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.credentialsSecret.name {{ "}}" }}
                             network:
