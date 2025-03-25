@@ -27,6 +27,9 @@ spec:
         repoURL: https://github.com/bcarr-rh/acm-policys.git
         targetRevision: config-rework
         helm:
+          parameters:
+            - name: "autoshiftLabelPrefix" 
+              value: "autoshift.io/"
           valueFiles:
           - values.yaml
       ignoreDifferences:
