@@ -52,14 +52,14 @@ spec:
                             - ReadWriteOnce
                           resources:
                             requests:
-                              storage: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/odf-ocs-storage-size" | default "{{ .Values.odf.ocsStorageSize }}" hub{{ "}}" }}'
-                          {{ "{{" }}hub- if ne (index .ManagedClusterLabels "autoshift.io/local-storage" | default "") "" }}" hub{{ "}}" }}
+                              storage: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/odf-ocs-storage-size" | default "{{ .Values.odf.ocsStorageSize}}" hub{{ "}}" }}'
+                          {{ "{{" }}hub- if ne (index .ManagedClusterLabels "autoshift.io/local-storage" | default "") "" hub{{ "}}" }}
                           storageClassName: nvme-storageclass
                           {{ "{{" }}hub- else hub{{ "}}" }}
                           storageClassName: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/odf-ocs-storage-class-name" | default "{{ .Values.odf.ocsStorageClassName }}" hub{{ "}}" }}'
                           {{ "{{" }}hub- end hub{{ "}}" }}
                           volumeMode: Block
-                      count: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/odf-ocs-storage-count" | default "{{ .Values.odf.ocsStorageCount }}"}}" hub{{ "}}" }}'
+                      count: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/odf-ocs-storage-count" | default "{{ .Values.odf.ocsStorageCount }}" hub{{ "}}" }}'
                       replica: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/odf-ocs-storage-replicas" | default "{{ .Values.odf.ocsStorageReplicas }}" hub{{ "}}" }}'
                       portable: true
                       preparePlacement: {}
