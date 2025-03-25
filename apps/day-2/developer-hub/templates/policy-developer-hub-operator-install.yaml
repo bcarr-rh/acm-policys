@@ -65,6 +65,8 @@ spec:
                 kind: ClusterServiceVersion
                 metadata:
                   namespace: {{ .Values.developerHub.namespace }}
+                spec:
+                  displayName: 'Red Hat Developer Hub Operator'                
                 status:
                   phase: Succeeded # check the csv status to determine if operator is running or not
 ---

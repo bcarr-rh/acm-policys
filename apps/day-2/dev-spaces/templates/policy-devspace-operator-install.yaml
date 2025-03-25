@@ -59,6 +59,8 @@ spec:
                 kind: ClusterServiceVersion
                 metadata:
                   namespace: openshift-operators-redhat
+                spec:
+                  displayName: 'Red Hat OpenShift Dev Spaces'
                 status:
                   phase: Succeeded
 ---
