@@ -2,6 +2,7 @@
 {{ $configMapName := "cluster-remove-monitoring-config" }}
 {{ $configPolicyName := "cluster-infra-remove-monitoring" }}
 {{ $placementName := printf "placement-%s" $policyName }}
+{{ $labelPrefix := .Values.infraNodes.labelPrefix | default "autoshift.io/" }}
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
