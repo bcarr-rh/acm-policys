@@ -1,3 +1,36 @@
+---
+# Source: daevspaces/templates/policy-pippelines-operator-install.yaml
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: placement-policy-pipelines-operator-install
+  namespace: open-cluster-policies
+spec:
+  clusterSets:
+    - hub
+    - managed
+  tolerations:
+    - key: cluster.open-cluster-management.io/unreachable
+      operator: Exists
+    - key: cluster.open-cluster-management.io/unavailable
+      operator: Exists
+---
+# Source: daevspaces/templates/policy-pippelines-operator-install.yaml
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: placement-policy-pipelines-operator-install
+  namespace: open-cluster-policies
+placementRef:
+  name: placement-policy-pipelines-operator-install
+  apiGroup: cluster.open-cluster-management.io
+  kind: Placement
+subjects:
+  - name: policy-pipelines-operator-install
+    apiGroup: policy.open-cluster-management.io
+    kind: Policy
+---
+# Source: daevspaces/templates/policy-pippelines-operator-install.yaml
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
@@ -38,12 +71,12 @@ spec:
             name: global-operators
             namespace: openshift-operators
           subscription:
-            name: {{ .Values.pipelines.name }}
+            name: openshift-pipelines-operator-rh
             namespace: openshift-operators
-            source: {{ .Values.pipelines.source }}
-            sourceNamespace: {{ .Values.pipelines.sourceNamespace }}
-            channel: {{ .Values.pipelines.channel }}
-          upgradeApproval: {{ .Values.pipelines.installPlanApproval }}
+            source: redhat-operators
+            sourceNamespace: openshift-marketplace
+            channel: pipelines-1.17
+          upgradeApproval: Automatic
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
@@ -63,33 +96,3 @@ spec:
                   displayName: 'Red Hat OpenShift Pipelines'     
                 status:
                   phase: Succeeded
----
-apiVersion: cluster.open-cluster-management.io/v1beta1
-kind: Placement
-metadata:
-  name: placement-policy-pipelines-operator-install
-  namespace: open-cluster-policies
-spec:
-  clusterSets:
-  {{- range .Values.pipelines.clusterSets }}
-    - {{ . }}
-  {{- end }}
-  tolerations:
-    - key: cluster.open-cluster-management.io/unreachable
-      operator: Exists
-    - key: cluster.open-cluster-management.io/unavailable
-      operator: Exists
----
-apiVersion: policy.open-cluster-management.io/v1
-kind: PlacementBinding
-metadata:
-  name: placement-policy-pipelines-operator-install
-  namespace: open-cluster-policies
-placementRef:
-  name: placement-policy-pipelines-operator-install
-  apiGroup: cluster.open-cluster-management.io
-  kind: Placement
-subjects:
-  - name: policy-pipelines-operator-install
-    apiGroup: policy.open-cluster-management.io
-    kind: Policy

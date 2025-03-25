@@ -26,43 +26,24 @@ spec:
                 metadata:
                   name: quay-operator
     - objectDefinition:
-        apiVersion: policy.open-cluster-management.io/v1
-        kind: ConfigurationPolicy
+        apiVersion: policy.open-cluster-management.io/v1beta1
+        kind: OperatorPolicy
         metadata:
-          name: quay-operator-group
+          name: install-operator-quay
         spec:
           remediationAction: enforce
           severity: high
-          object-templates:
-            - complianceType: musthave
-              objectDefinition:
-                apiVersion: operators.coreos.com/v1
-                kind: OperatorGroup
-                metadata:
-                  name: quay-operator
-                  namespace: quay-operator
-    - objectDefinition:
-        apiVersion: policy.open-cluster-management.io/v1
-        kind: ConfigurationPolicy
-        metadata:
-          name: quay-operator-subscription
-        spec:
-          remediationAction: enforce
-          severity: high
-          object-templates:
-            - complianceType: musthave
-              objectDefinition:
-                apiVersion: operators.coreos.com/v1alpha1
-                kind: Subscription
-                metadata:
-                  name: {{ .Values.quayOperator.name }}
-                  namespace: {{ .Values.quayOperator.namespace }}
-                spec:
-                  installPlanApproval: {{ .Values.quayOperator.installPlanApproval }}
-                  channel: {{ .Values.quayOperator.channel }}
-                  name: {{ .Values.quayOperator.name }}
-                  source: {{ .Values.quayOperator.source }}
-                  sourceNamespace: {{ .Values.quayOperator.sourceNamespace }}
+          complianceType: musthave
+          operatorGroup:
+            name: {{ .Values.quayOperator.namespace }}
+            namespace: {{ .Values.quayOperator.namespace }}
+          subscription:
+            name: {{ .Values.quayOperator.name }}
+            namespace: {{ .Values.quayOperator.namespace }}
+            source: {{ .Values.quayOperator.source }}
+            sourceNamespace: {{ .Values.quayOperator.sourceNamespace }}
+            channel: {{ .Values.quayOperator.channel }}
+          upgradeApproval: {{ .Values.quayOperator.installPlanApproval }}
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
@@ -77,9 +58,9 @@ spec:
                 apiVersion: operators.coreos.com/v1alpha1
                 kind: ClusterServiceVersion
                 metadata:
-                  namespace: quay-operator
+                  namespace: {{ .Values.quayOperator.namespace }}
                 spec:
-                  displayName: Quay Operator
+                  displayName: 'Red Hat Quay'
                 status:
                   phase: Succeeded
 ---

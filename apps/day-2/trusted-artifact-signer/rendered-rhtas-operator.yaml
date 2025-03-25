@@ -1,7 +1,40 @@
+---
+# Source: quay-operator/templates/policy-rhtas-operator-install.yaml
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: placement-policy-rhtas-operator-install
+  namespace: open-cluster-policies
+spec:
+  clusterSets:
+    - hub
+    - managed
+  tolerations:
+    - key: cluster.open-cluster-management.io/unreachable
+      operator: Exists
+    - key: cluster.open-cluster-management.io/unavailable
+      operator: Exists
+---
+# Source: quay-operator/templates/policy-rhtas-operator-install.yaml
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: placement-policy-rhtas-operator-install
+  namespace: open-cluster-policies
+placementRef:
+  name: placement-policy-rhtas-operator-install
+  apiGroup: cluster.open-cluster-management.io
+  kind: Placement
+subjects:
+  - name: policy-rhtas-operator-install
+    apiGroup: policy.open-cluster-management.io
+    kind: Policy
+---
+# Source: quay-operator/templates/policy-rhtas-operator-install.yaml
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
-  name: policy-pipelines-operator-install
+  name: policy-rhtas-operator-install
   namespace: open-cluster-policies
   annotations:
     policy.open-cluster-management.io/standards: NIST SP 800-53
@@ -14,7 +47,7 @@ spec:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: pipelines-operator-ns
+          name: rhtas-operator-ns
         spec:
           remediationAction: enforce
           severity: high
@@ -29,7 +62,7 @@ spec:
         apiVersion: policy.open-cluster-management.io/v1beta1
         kind: OperatorPolicy
         metadata:
-          name: install-operator-pipelines
+          name: install-operator-rhtas
         spec:
           remediationAction: enforce
           severity: high
@@ -38,17 +71,17 @@ spec:
             name: global-operators
             namespace: openshift-operators
           subscription:
-            name: {{ .Values.pipelines.name }}
+            name: rhtas-operator
             namespace: openshift-operators
-            source: {{ .Values.pipelines.source }}
-            sourceNamespace: {{ .Values.pipelines.sourceNamespace }}
-            channel: {{ .Values.pipelines.channel }}
-          upgradeApproval: {{ .Values.pipelines.installPlanApproval }}
+            source: redhat-operators
+            sourceNamespace: openshift-marketplace
+            channel: stable
+          upgradeApproval: Automatic
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: openshift-pipelines-status
+          name: rhtas-operator-status
         spec:
           remediationAction: inform
           severity: high
@@ -60,36 +93,6 @@ spec:
                 metadata:
                   namespace: openshift-operators
                 spec:
-                  displayName: 'Red Hat OpenShift Pipelines'     
+                  displayName: 'Red Hat Trusted Artifact Signer'
                 status:
                   phase: Succeeded
----
-apiVersion: cluster.open-cluster-management.io/v1beta1
-kind: Placement
-metadata:
-  name: placement-policy-pipelines-operator-install
-  namespace: open-cluster-policies
-spec:
-  clusterSets:
-  {{- range .Values.pipelines.clusterSets }}
-    - {{ . }}
-  {{- end }}
-  tolerations:
-    - key: cluster.open-cluster-management.io/unreachable
-      operator: Exists
-    - key: cluster.open-cluster-management.io/unavailable
-      operator: Exists
----
-apiVersion: policy.open-cluster-management.io/v1
-kind: PlacementBinding
-metadata:
-  name: placement-policy-pipelines-operator-install
-  namespace: open-cluster-policies
-placementRef:
-  name: placement-policy-pipelines-operator-install
-  apiGroup: cluster.open-cluster-management.io
-  kind: Placement
-subjects:
-  - name: policy-pipelines-operator-install
-    apiGroup: policy.open-cluster-management.io
-    kind: Policy
