@@ -72,7 +72,7 @@ spec:
                             network:
                               devices:
                                 - networkName: {{ "{{" }} (index ($worker_ms.spec.template.spec.providerSpec.value.network.devices) 0).networkName {{ "}}" }}
-                            numCPUs: {{ "{{hub" }} (index .ManagedClusterLabels "infra-nodes-numcpu") | default $worker_ms.spec.template.spec.providerSpec.value.numCPUs {{ "hub}}" }}
+                            numCPUs: {{ "{{" }} {{ "{{hub" }} (index .ManagedClusterLabels "infra-nodes-numcpu") {{ "hub}}" }} | default $worker_ms.spec.template.spec.providerSpec.value.numCPUs {{ "hub}}" }} {{ "}}" }}
                             kind: VSphereMachineProviderSpec
                             workspace:
                               datacenter: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.workspace.datacenter {{ "}}" }}
