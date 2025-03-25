@@ -4,7 +4,7 @@
 
 Fork, clone, or use upstream git repo
 
-install helm on local machine
+install [helm](https://helm.sh/docs/intro/install/) on local machine
 
 install oc from hub cluster
 
