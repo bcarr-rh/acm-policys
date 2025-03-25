@@ -39,7 +39,7 @@ spec:
                     namespace: openshift-machine-api
                   spec:
                     deletePolicy: Oldest
-                    replicas: {{ "{{" }} .ManagedClusterLabels.infra-nodes {{ "}}" }}
+                    replicas: {{ "{{" }} index .ManagedClusterLabels "infra-nodes" {{ "}}" }}
                     selector:
                       matchLabels:
                         machine.openshift.io/cluster-api-cluster: {{ "{{" }} $infrastructure_id {{ "}}" }}
