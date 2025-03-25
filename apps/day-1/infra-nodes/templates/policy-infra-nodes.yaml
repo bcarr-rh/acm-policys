@@ -1,5 +1,6 @@
 {{ $policyName := "policy-infra-nodes" }}
 {{ $configPolicyName :=  "create-infra-nodes" }}
+{{ $labelPrefix := .Values.infraNodes.labelPrefix | default "autoshift.io/" }}
 {{ $placementName := printf "placement-%s" $policyName }}
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy

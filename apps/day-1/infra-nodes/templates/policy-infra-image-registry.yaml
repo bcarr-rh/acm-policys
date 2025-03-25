@@ -1,6 +1,7 @@
 {{ $policyName := "policy-infra-image-registry" }}
 {{ $configPolicyName := "create-infra-image-registry" }}
 {{ $placementName := printf "placement-%s" $policyName }}
+{{ $labelPrefix := .Values.infraNodes.labelPrefix | default "autoshift.io/" }}
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
