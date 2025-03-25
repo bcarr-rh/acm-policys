@@ -31,9 +31,9 @@ spec:
         spec:
           remediationAction: enforce
           severity: high
-          recreateOption: IfRequired
           object-templates-raw: |
             - complianceType: musthave
+              recreateOption: IfRequired
               objectDefinition:
                 apiVersion: ocs.openshift.io/v1
                 kind: StorageCluster
