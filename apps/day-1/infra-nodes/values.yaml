@@ -20,6 +20,7 @@ infraNodes:
     migrate: true
     remediationAction: enforce
     namespace: openshift-gitops
+    apiVersion: argoproj.io/v1alpha1
   zones:
     - us-east-2b
   externalIngress:

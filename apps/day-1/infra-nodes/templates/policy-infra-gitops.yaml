@@ -32,7 +32,7 @@ spec:
           object-templates:
             - complianceType: musthave
               objectDefinition:
-                apiVersion: pipelines.openshift.io/v1alpha1
+                apiVersion: {{ .Values.infraNodes.gitops.apiVersion }}
                 kind: GitopsService
                 metadata:
                   name: cluster
