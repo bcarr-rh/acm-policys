@@ -21,6 +21,9 @@ infraNodes:
     remediationAction: enforce
     namespace: openshift-gitops
     apiVersion: argoproj.io/v1alpha1
+    kind: ArgoCD
+    metadata:
+      name: openshift-gitops
   zones:
     - us-east-2b
   externalIngress:
