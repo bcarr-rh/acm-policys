@@ -33,7 +33,7 @@ spec:
                   namespace: open-cluster-policies
                 data:
                   lookupResult: |
-                    {{ "{{" }} (lookup "cluster.open-cluster-management.io/v1" "ManagedCluster" "" "") | toRawJson {{ "}}" }}
+                    {{ "{{" }} (lookup "cluster.open-cluster-management.io/v1" "ManagedCluster" "" "thisdoesnotexist") | toRawJson {{ "}}" }}
 ---
 {{/* (index ((index (lookup "v1" "ConfigMap" "open-cluster-policies" (printf "cluster-set.%s"  $clusterSet)) "data" "values") | fromJson) "labels") | default dict */}}
                     {{/*{{ "{{-" }} (lookup "cluster.open-cluster-management.io/v1" "ManagedCluster" "" "") | toRawJson {{ "}}" }} */}}
