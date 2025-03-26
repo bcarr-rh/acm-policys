@@ -20,10 +20,10 @@ infraNodes:
     migrate: true
     remediationAction: enforce
     namespace: openshift-gitops
-    apiVersion: argoproj.io/v1alpha1
-    kind: ArgoCD
+    apiVersion: pipelines.openshift.io/v1alpha1
+    kind: GitopsService
     metadata:
-      name: openshift-gitops
+      name: cluster
   zones:
     - us-east-2b
   externalIngress:
