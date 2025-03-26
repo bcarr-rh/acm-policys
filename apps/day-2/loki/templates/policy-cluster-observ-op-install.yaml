@@ -20,7 +20,7 @@ spec:
         metadata:
           name: coo-operator-ns
         spec:
-          remediationAction: enforce # will be overridden by remediationAction in parent policy
+          remediationAction: enforce
           severity: high
           object-templates-raw: |
             - complianceType: musthave
@@ -54,7 +54,7 @@ spec:
         metadata:
           name: openshift-coo-uiplugin-logging
         spec:
-          remediationAction: inform # will be overridden by remediationAction in parent policy
+          remediationAction: enforce
           severity: high
           object-templates:
             - complianceType: musthave
@@ -74,7 +74,7 @@ spec:
         metadata:
           name: openshift-coo-status
         spec:
-          remediationAction: inform # will be overridden by remediationAction in parent policy
+          remediationAction: inform
           severity: high
           object-templates:
             - complianceType: musthave
