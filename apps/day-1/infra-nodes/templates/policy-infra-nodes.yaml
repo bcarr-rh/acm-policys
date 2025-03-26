@@ -58,6 +58,8 @@ spec:
                         taints:
                           - key: node-role.kubernetes.io/{{ "{{" }} $machineset_role {{ "}}" }}
                             effect: NoSchedule
+                          - key: node-role.kubernetes.io/{{ "{{" }} $machineset_role {{ "}}" }}
+                            effect: NoExecute
                         providerSpec:
                         {{ "{{-" }} if eq $worker_ms.spec.template.spec.providerSpec.value.kind "VSphereMachineProviderSpec" {{ "}}" }}
                           value:

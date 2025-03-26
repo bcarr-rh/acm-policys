@@ -34,7 +34,7 @@ spec:
           object-templates-raw: | 
             [
             {{ "{{-" }} $RegistryConfig := lookup("imageregistry.operator.openshift.io/v1" "Config" "" "cluster")  {{ "}}" }}
-              {{ "{{-" }} if  not (empty $GitOpsService)  {{ "}}" }}
+              {{ "{{-" }} if  not (empty $RegistryConfig)  {{ "}}" }}
                 {{ "{{-" }} $spec := $RegistryConfig.spec {{ "}}" }} 
                 {{ "{{-" }} $newSpec := unset $spec "nodeSelector" {{ "}}" }}
                 {{ "{{-" }} $RegistryConfigNoStatus := unset $RegistryConfig "status"  {{ "}}" }}

@@ -33,41 +33,32 @@ spec:
                 data:
                   config.yaml: |+
                     alertmanagerMain:
-                      nodeSelector: 
-                        node-role.kubernetes.io/infra: ""
-                      tolerations: {}
+                      nodeSelector: {}
+                      tolerations: []
                     prometheusK8s:
-                      nodeSelector:
-                        node-role.kubernetes.io/infra: ""
-                      tolerations: {}
+                      nodeSelector: {}
+                      tolerations: []
                     prometheusOperator:
-                      nodeSelector:
-                        node-role.kubernetes.io/infra: ""
-                      tolerations: {}
+                      nodeSelector: {}
+                      tolerations: []
                     k8sPrometheusAdapter:
-                      nodeSelector:
-                        node-role.kubernetes.io/infra: ""
-                      tolerations: {}
+                      nodeSelector: {}
+                      tolerations: []
                     kubeStateMetrics:
-                      nodeSelector:
-                        node-role.kubernetes.io/infra: ""
-                      tolerations: {}
+                      nodeSelector: {}
+                      tolerations: []
                     telemeterClient:
-                      nodeSelector:
-                        node-role.kubernetes.io/infra: ""
-                      tolerations: {}
+                      nodeSelector: {}
+                      tolerations: []
                     openshiftStateMetrics:
-                      nodeSelector:
-                        node-role.kubernetes.io/infra: ""
-                      tolerations: {}
+                      nodeSelector: {}
+                      tolerations: []
                     thanosQuerier:
-                      nodeSelector:
-                        node-role.kubernetes.io/infra: ""
-                      tolerations: {}
+                      nodeSelector: {}
+                      tolerations: []
                     monitoringPlugin:
-                      nodeSelector:
-                        node-role.kubernetes.io/infra: ""
-                      tolerations: {}
+                      nodeSelector: {}
+                      tolerations: []
           pruneObjectBehavior: {{ .Values.infraNodes.monitoring.pruneObjectBehavior | default "None" }}
           remediationAction: inform
           severity: high
