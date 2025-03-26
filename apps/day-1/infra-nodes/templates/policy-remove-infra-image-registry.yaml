@@ -23,7 +23,7 @@ spec:
         spec:
           object-templates-raw: | 
             [
-            {{ "{{-" }} $RegistryConfig := lookup ("imageregistry.operator.openshift.io/v1" "Config" "" "cluster")  {{ "}}" }}
+            {{ "{{-" }} $RegistryConfig := lookup "imageregistry.operator.openshift.io/v1" "Config" "" "cluster"  {{ "}}" }}
               {{ "{{-" }} if  not (empty $RegistryConfig)  {{ "}}" }}
                 {{ "{{-" }} $spec := $RegistryConfig.spec {{ "}}" }} 
                 {{ "{{-" }} $newSpec := unset $spec "nodeSelector" {{ "}}" }}
