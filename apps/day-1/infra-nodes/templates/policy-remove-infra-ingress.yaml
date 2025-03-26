@@ -53,9 +53,6 @@ spec:
                   }
               {{ "{{-" }} end {{ "}}" }} 
             ]
-          pruneObjectBehavior: {{ .Values.infraNodes.pruneObjectBehavior | default "None" }}
-          remediationAction: inform
-          severity: high
 ---
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
