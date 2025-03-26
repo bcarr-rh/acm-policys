@@ -33,9 +33,9 @@ spec:
             - complianceType: musthave
               objectDefinition:
                 apiVersion: {{ .Values.infraNodes.gitops.apiVersion }}
-                kind: GitopsService
+                kind: {{ .Values.infraNodes.gitops.kind }}
                 metadata:
-                  name: cluster
+                  name: {{ .Values.infraNodes.gitops.metadata.name }}
                   namespace: {{ .Values.infraNodes.gitops.namespace }}
                 spec:
                   runOnInfra: true

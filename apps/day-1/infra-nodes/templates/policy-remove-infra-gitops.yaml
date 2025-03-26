@@ -25,13 +25,13 @@ spec:
           remediationAction: enforce
           object-templates-raw: | 
             [
-            {{ "{{-" }} $GitOpsService := (lookup "{{ .Values.infraNodes.gitops.apiVersion }}" "GitOpsService" "{{ .Values.infraNodes.gitops.namespace }}" "cluster") | default dict  {{ "}}" }}
-              {{ "{{-" }} if  not (empty $GitOpsService)  {{ "}}" }}
-                {{ "{{-" }} $spec := $GitOpsService.spec {{ "}}" }} 
+            {{ "{{-" }} $ArgoCD := (lookup "{{ .Values.infraNodes.gitops.apiVersion }}" "{{ .Values.infraNodes.gitops.kind }}" "{{ .Values.infraNodes.gitops.namespace }}" "{{ .Values.infraNodes.gitops.metadata.name }}") | default dict  {{ "}}" }}
+              {{ "{{-" }} if  not (empty $ArgoCD)  {{ "}}" }}
+                {{ "{{-" }} $spec := $ArgoCD.spec {{ "}}" }} 
                 {{ "{{-" }} $newSpecNoTolerations := unset $spec "tolerations" {{ "}}" }}
                 {{ "{{-" }} $newSpec := set $newSpecNoTolerations "runOnInfra" false {{ "}}" }}
-                {{ "{{-" }} $GitOpsServiceNoStatus := unset $GitOpsService "status"  {{ "}}" }}
-                {{ "{{-" }} $objectDefinition := set $GitOpsServiceNoStatus "spec" $newSpec {{ "}}" }}
+                {{ "{{-" }} $ArgoCDNoStatus := unset $ArgoCD "status"  {{ "}}" }}
+                {{ "{{-" }} $objectDefinition := set $ArgoCDNoStatus "spec" $newSpec {{ "}}" }}
                   {
                     "complianceType": "mustonlyhave",
                     "objectDefinition": {{ "{{" }} $objectDefinition | toRawJson {{ "}}" }} 
