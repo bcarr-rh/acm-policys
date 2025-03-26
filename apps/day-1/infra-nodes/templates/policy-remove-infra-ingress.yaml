@@ -46,6 +46,9 @@ spec:
                 {{ "{{-" }} $objectDefinition := set $IngressControllerNoStatus "spec" $newSpec {{ "}}" }}
                   {
                     "complianceType": "mustonlyhave",
+                    "pruneObjectBehavior": "{{ .Values.infraNodes.imageRegistry.pruneObjectBehavior | default "None" }}",
+                    "remediationAction": "enforce",
+                    "severity": "high",
                     "objectDefinition": {{ "{{" }} $objectDefinition | toRawJson {{ "}}" }} 
                   }
               {{ "{{-" }} end {{ "}}" }} 
