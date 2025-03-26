@@ -35,7 +35,7 @@ spec:
                     {{ "{{-" }} $IngressController := lookup "operator.openshift.io/v1" "IngressController" "openshift-ingress-operator" "default"  {{ "}}" }}
                       {{ "{{-" }} if  not (empty $IngressController)  {{ "}}" }}
                         {{ "{{-" }} $spec := $IngressController.spec {{ "}}" }} 
-                        {{ "{{-" }} $nodePlacement := dict "nodePlacement" "test" {{ "}}" }}
+                        {{ "{{-" }} $nodePlacement := dict "nodeSelector" (dict) "tolerations" (list) {{ "}}" }}
                         {{ "{{-" }} $newSpec := set $spec "nodePlacement" $nodePlacement {{ "}}" }}
                         {{ "{{-" }} $IngressControllerNoStatus := unset $IngressController "status"  {{ "}}" }}
                         {{ "{{-" }} $objectDefinition := set $IngressControllerNoStatus "spec" $newSpec {{ "}}" }}
