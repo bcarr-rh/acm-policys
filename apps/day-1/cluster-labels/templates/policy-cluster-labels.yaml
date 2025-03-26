@@ -28,11 +28,12 @@ spec:
           severity: high 
           object-templates-raw: |
             [
+              {{ "{{-" }} $thisClusterSet := "{{ $clusterSetKey }}" {{ "}}" }}
               {{ "{{-" }} $clusters := (lookup "cluster.open-cluster-management.io/v1" "ManagedCluster" "" "").items {{ "}}" }}
               {{ "{{-" }} $lastIndex := sub (len $clusters) 1 {{ "}}" }}
               {{ "{{-" }} range $index, $value := $clusters {{ "}}" }}
                 {{ "{{-" }} $clusterSet := ((index $value.metadata.labels "cluster.open-cluster-management.io/clusterset") | default "") {{ "}}" }}
-                {{ "{{-" }} if eq $clusterSet "" {{ "}}" }}
+                {{ "{{-" }} if or (eq $clusterSet "") (ne $clusterSet $thisClusterSet) {{ "}}" }}
                   {{ "{{-" }} continue {{ "}}" }}
                 {{ "{{-" }} end {{ "}}" }}
                 {{ "{{-" }} $newLabels := dict {{ "}}" }}
@@ -43,8 +44,8 @@ spec:
                     {{ "{{-" }} $_ := unset $existingClusterLabels $existingKey {{ "}}" }}
                   {{ "{{-" }} end {{ "}}" }}
                 {{ "{{-" }} end {{ "}}" }}
-                {{ "{{-" }} $clusterSetLabels := (index (index (index (lookup "v1" "ConfigMap" "open-cluster-policies" (printf "cluster-set.%s"  $clusterSet)) "data" | default "") "values" | default "" | fromJson) "labels") | default dict {{ "}}" }}
-                {{ "{{-" }} $clusterLabels := (index (index (index (lookup "v1" "ConfigMap" "open-cluster-policies" (printf "managed-cluster.%s"  $value.metadata.name)) "data" | default "") "values" | default "" | fromJson) "labels") | default dict {{ "}}" }}
+                {{ "{{-" }} $clusterSetLabels := (index (index (index (lookup "v1" "ConfigMap" "open-cluster-policies" (printf "cluster-set.%s"  $clusterSet) | default dict ) "data" | default "") "values" | default "" | fromJson) "labels") | default dict {{ "}}" }}
+                {{ "{{-" }} $clusterLabels := (index (index (index (lookup "v1" "ConfigMap" "open-cluster-policies" (printf "managed-cluster.%s"  $value.metadata.name) | default dict) "data" | default dict) "values" | default "" | fromJson) "labels") | default dict {{ "}}" }}
                 {{ "{{-" }} $configMapLabels := merge $clusterLabels $clusterSetLabels {{ "}}" }}
                 {{ "{{-" }} $labels := merge $clusterLabels $clusterSetLabels $existingClusterLabels {{ "}}" }} 
                 {{ "{{-" }} range $label, $labelValue := $labels {{ "}}" }}
