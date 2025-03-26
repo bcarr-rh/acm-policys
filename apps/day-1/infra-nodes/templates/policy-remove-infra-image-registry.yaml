@@ -21,16 +21,6 @@ spec:
         metadata:
           name: {{ $configPolicyName }}
         spec:
-          object-templates:
-            - complianceType: musthave
-              objectDefinition:
-                apiVersion: imageregistry.operator.openshift.io/v1
-                kind: Config
-                metadata:
-                  name: cluster
-                spec:
-                  nodeSelector: 
-                    node-role.kubernetes.io/infra: ""
           object-templates-raw: | 
             [
             {{ "{{-" }} $RegistryConfig := lookup("imageregistry.operator.openshift.io/v1" "Config" "" "cluster")  {{ "}}" }}
@@ -41,13 +31,13 @@ spec:
                 {{ "{{-" }} $objectDefinition := set $RegistryConfigNoStatus "spec" $newSpec {{ "}}" }}
                   {
                     "complianceType": "mustonlyhave",
+                    "pruneObjectBehavior": "{{ .Values.infraNodes.imageRegistry.pruneObjectBehavior | default "None" }}",
+                    "remediationAction": "enforce",
+                    "severity": "high"
                     "objectDefinition": {{ "{{" }} $objectDefinition | toRawJson {{ "}}" }} 
                   }
               {{ "{{-" }} end {{ "}}" }} 
             ]
-          pruneObjectBehavior: {{ .Values.infraNodes.imageRegistry.pruneObjectBehavior | default "None" }}
-          remediationAction: inform
-          severity: high
 ---
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
