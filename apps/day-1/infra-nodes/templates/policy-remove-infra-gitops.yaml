@@ -25,7 +25,7 @@ spec:
           remediationAction: enforce
           object-templates-raw: | 
             [
-            {{ "{{-" }} $GitOpsService := (lookup "pipelines.openshift.io/v1alpha1" "GitOpsService" "{{ .Values.infraNodes.gitops.namespace }}" "cluster" | default dict)  {{ "}}" }}
+            {{ "{{-" }} $GitOpsService := (lookup "pipelines.openshift.io/v1alpha1" "GitOpsService" "{{ .Values.infraNodes.gitops.namespace }}" "cluster") | default dict  {{ "}}" }}
               {{ "{{-" }} if  not (empty $GitOpsService)  {{ "}}" }}
                 {{ "{{-" }} $spec := $GitOpsService.spec {{ "}}" }} 
                 {{ "{{-" }} $newSpecNoTolerations := unset $spec "tolerations" {{ "}}" }}
