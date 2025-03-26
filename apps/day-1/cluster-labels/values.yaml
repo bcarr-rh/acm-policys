@@ -61,3 +61,4 @@ clusters:
     labels: 
       test-worked: 'true'
       second-label: ''
+      infra-nodes: '4'
