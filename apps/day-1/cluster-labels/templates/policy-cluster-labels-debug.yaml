@@ -77,7 +77,7 @@ metadata:
   namespace: open-cluster-policies
 spec:
   clusterSets:
-  {{ range $index, $cluster := $.Values.hubClusterSets }}
+  {{ range $cluster, $value := $.Values.hubClusterSets }}
     - {{ $cluster }}
   {{ end }}
   tolerations:
