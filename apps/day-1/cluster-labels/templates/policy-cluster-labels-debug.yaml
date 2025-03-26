@@ -1,5 +1,5 @@
 {{ if (.Values.debug | default false) }}
-{{ range $clusterSetKey, $clusterSetValue := $.Values.clusterSets }}
+{{ range $clusterSetKey, $clusterSetValue := $.Values.hubClusterSets }}
 {{ $hubClusterSet := $.Values.hubClusterSet | default "hub" }}
 {{ $policyName := printf "policy-%s-cluster-labels-debug" $clusterSetKey }}
 {{ $configPolicyName := printf "cluster-labels-%s-debug" $clusterSetKey }}
@@ -33,7 +33,7 @@ spec:
                   namespace: open-cluster-policies
                 data:
                   LookupResult: |
-                    {{ "{{-" (lookup "cluster.open-cluster-management.io/v1" "ManagedCluster" "" "") | toRawJson }}
+                    {{ "{{-" }} (lookup "cluster.open-cluster-management.io/v1" "ManagedCluster" "" "") | toRawJson {{ "}}" }}
 {{/*                  ClusterDefinition: | 
                               [
                                 {{ "{{-" }} $clusters := (lookup "cluster.open-cluster-management.io/v1" "ManagedCluster" "" "").items {{ "}}" }}
