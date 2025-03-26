@@ -42,6 +42,8 @@ kind: Placement
 metadata:
   name: policy-system-gitops-console-link-placement
   namespace: {{ .Values.acm.gitops_namespace }}
+  annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
 spec:
   clusterSets:
   {{- range $clusterSet, $value := .Values.managedClusterSets }}
@@ -61,6 +63,8 @@ kind: PlacementBinding
 metadata:
   name: policy-system-gitops-console-link-placement
   namespace: {{ .Values.acm.gitops_namespace }}
+  annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
 placementRef:
   name: policy-system-gitops-console-link-placement
   apiGroup: cluster.open-cluster-management.io
