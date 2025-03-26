@@ -37,7 +37,7 @@ spec:
                         node-role.kubernetes.io/infra: ''
           object-templates-raw: | 
             [
-            {{ "{{-" }} $IngressController := lookup ("operator.openshift.io/v1" "IngressController" "openshift-ingress-operator" "default")  {{ "}}" }}
+            {{ "{{-" }} $IngressController := lookup "operator.openshift.io/v1" "IngressController" "openshift-ingress-operator" "default"  {{ "}}" }}
               {{ "{{-" }} if  not (empty $IngressController)  {{ "}}" }}
                 {{ "{{-" }} $spec := $IngressController.spec {{ "}}" }} 
                 {{ "{{-" }} $nodePlacement := dict "nodePlacement" (dict "tolerations" (list) "nodeSelector" (dict)) {{ "}}" }}
