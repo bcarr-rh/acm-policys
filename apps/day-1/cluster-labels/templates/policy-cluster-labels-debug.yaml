@@ -23,7 +23,7 @@ spec:
         metadata:
           name: {{ $configPolicyName }}
         spec:
-          object-templates-raw: |
+          object-templates:
             - complianceType: mustonlyhave 
               objectDefinition: 
                 apiVersion: v1 
