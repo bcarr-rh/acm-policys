@@ -17,7 +17,7 @@ infraNodes:
     migrate: true
     remediationAction: enforce
   gitops: 
-    migrate: false
+    migrate: true
     remediationAction: enforce
     namespace: openshift-gitops
   zones:
