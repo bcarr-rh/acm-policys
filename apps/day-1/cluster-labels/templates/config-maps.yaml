@@ -25,7 +25,7 @@ data:
   {{- $prefixedClusterSetLabels := dict -}}
   {{- range $label, $value := $data.labels -}}
     {{- if eq ($value | trim) "" -}}
-      {{- $_ := set $prefixedClusterLabels (printf "%s%s" $.Values.autoshiftLabelPrefix $label) "_" -}}
+      {{- $_ := set $prefixedClusterSetLabels (printf "%s%s" $.Values.autoshiftLabelPrefix $label) "_" -}}
     {{- else -}}
       {{- $_ := set $prefixedClusterSetLabels (printf "%s%s" $.Values.autoshiftLabelPrefix $label) ($value | lower | trim) -}}
     {{- end -}}
