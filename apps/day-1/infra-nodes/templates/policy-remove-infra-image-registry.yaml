@@ -23,7 +23,7 @@ spec:
         spec:
           object-templates-raw: | 
             [
-            {{ "{{-" }} $RegistryConfig := lookup("imageregistry.operator.openshift.io/v1" "Config" "" "cluster")  {{ "}}" }}
+            {{ "{{-" }} $RegistryConfig := lookup ("imageregistry.operator.openshift.io/v1" "Config" "" "cluster")  {{ "}}" }}
               {{ "{{-" }} if  not (empty $RegistryConfig)  {{ "}}" }}
                 {{ "{{-" }} $spec := $RegistryConfig.spec {{ "}}" }} 
                 {{ "{{-" }} $newSpec := unset $spec "nodeSelector" {{ "}}" }}
@@ -33,7 +33,7 @@ spec:
                     "complianceType": "mustonlyhave",
                     "pruneObjectBehavior": "{{ .Values.infraNodes.imageRegistry.pruneObjectBehavior | default "None" }}",
                     "remediationAction": "enforce",
-                    "severity": "high"
+                    "severity": "high",
                     "objectDefinition": {{ "{{" }} $objectDefinition | toRawJson {{ "}}" }} 
                   }
               {{ "{{-" }} end {{ "}}" }} 
