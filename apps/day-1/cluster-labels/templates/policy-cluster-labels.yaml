@@ -49,7 +49,7 @@ spec:
                   {{ "{{-" }} $clusterSetConfigMapData := (index $clusterSetConfigMap "data") | default dict {{ "}}" }} 
                   {{ "{{-" }} $clusterSetConfigMapValues := (index $clusterSetConfigMapData "values") | default dict {{ "}}" }}  
                   {{ "{{-" }} $clusterSetLabels := (index ($clusterSetConfigMapValues | fromJson | default dict) "labels") | default dict {{ "}}" }} 
-                  {{ "{{-" }} $clusterConfigMap := (lookup "v1" "ConfigMap" "open-cluster-policies" (printf "managed-cluster.%s" $cluster)) | default dict {{ "}}" }}   
+                  {{ "{{-" }} $clusterConfigMap := (lookup "v1" "ConfigMap" "open-cluster-policies" (printf "managed-cluster.%s" $value.metadata.name)) | default dict {{ "}}" }}   
                   {{ "{{-" }} $clusterConfigMapData := (index $clusterConfigMap "data") | default dict {{ "}}" }} 
                   {{ "{{-" }} $clusterConfigMapValues := (index $clusterConfigMapData "values") | default dict {{ "}}" }}  
                   {{ "{{-" }} $clusterLabels := (index ($clusterConfigMapValues | fromJson | default dict) "labels") | default dict {{ "}}" }} 
