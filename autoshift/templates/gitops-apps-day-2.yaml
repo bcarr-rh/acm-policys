@@ -1,12 +1,10 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: argo-apps-day-2
+  name: {{ .Release.Name}}-argo-apps-day-2
   namespace: openshift-gitops
   labels:
     velero.io/exclude-from-backup: "true"
-  annotations:
-    helm.sh/hook-weight: "3"
 spec:
   goTemplate: true
   goTemplateOptions: ["missingkey=error"]
@@ -18,7 +16,7 @@ spec:
       - path: 'apps/day-2/*'
   template:
     metadata:
-      name: '{{"{{"}} .path.basename {{"}}"}}'
+      name: '{{ .Release.Name}}-{{"{{"}} .path.basename {{"}}"}}'
       labels:
         app: argo-apps-day-2
         velero.io/exclude-from-backup: "true"
@@ -69,9 +67,8 @@ spec:
         - /metadata/annotations
         - /metadata/labels
       syncPolicy:
-        preserveResourcesOnDeletion: true
         automated:
-          prune: false
+          prune: true
           selfHeal: true
         syncOptions:
         - RespectIgnoreDifferences=true

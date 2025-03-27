@@ -4,8 +4,21 @@
 
 gitops:
   namespace: openshift-gitops-operator
+  group: openshift-gitops-operator
   source: redhat-operators
   channel: latest
   sourceNamespace: openshift-marketplace
   installPlanApproval: Automatic
   name: openshift-gitops-operator
+
+hubClusterSets:
+  hub:
+    labels:
+      test1: 'test'
+managedClusterSets:
+  sandbox:
+    labels:
+      test3: 'test'
+  managed:
+    labels:
+      test4: 'test'

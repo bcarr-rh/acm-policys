@@ -1,12 +1,10 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: argo-apps-day-1
+  name: "{{ .Release.Name}}-argo-apps-day-1"
   namespace: openshift-gitops
   labels:
     velero.io/exclude-from-backup: "true"
-  annotations:
-    helm.sh/hook-weight: "3"
 spec:
   goTemplate: true
   goTemplateOptions: ["missingkey=error"]
@@ -18,9 +16,9 @@ spec:
       - path: 'apps/day-1/*'
   template:
     metadata:
-      name: '{{"{{"}} .path.basename {{"}}"}}'
+      name: '{{ .Release.Name}}-{{"{{"}} .path.basename {{"}}"}}'
       labels:
-        app: argo-apps-day-1
+        app: "{{ .Release.Name}}-argo-apps-day-1"
         velero.io/exclude-from-backup: "true"
     spec:
       project: default
@@ -69,13 +67,12 @@ spec:
         - /metadata/annotations
         - /metadata/labels
       syncPolicy:
-        preserveResourcesOnDeletion: false
         automated:
           prune: true
           selfHeal: true
         syncOptions:
         - RespectIgnoreDifferences=true
-        - Validate=false 
+        - Validate=false
       destination:
         server: https://kubernetes.default.svc
         namespace: openshift-gitops
