@@ -32,117 +32,108 @@ spec:
           remediationAction: enforce
           severity: high
           object-templates-raw: |
-          # Standalone Nooba ODF install
-          {{ "{{" }}hub- if eq "standalone" (index .ManagedClusterLabels "autoshift.io/odf-multi-cloud-gateway" | default "") hub{{ "}}" }}
-          - complianceType: musthave
-              objectDefinition:
-                apiVersion: ocs.openshift.io/v1
-                kind: StorageCluster
-                metadata:
-                  name: ocs-storagecluster
-                  namespace: {{ .Values.odf.namespace }}
-                spec:
-                  arbiter: {}
-                  encryption:
-                    kms: {}
-                  externalStorage: {}
-                  managedResources:
-                    cephObjectStoreUsers: {}
-                    cephCluster: {}
-                    cephBlockPools: {}
-                    cephNonResilientPools: {}
-                    cephObjectStores: {}
-                    cephFilesystems: {}
-                    cephRBDMirror: {}
-                    cephToolbox: {}
-                    cephDashboard: {}
-                    cephConfig: {}
-                  mirroring: {}
-                  multiCloudGateway:
-                    reconcileStrategy: standalone
-          # Full ODF install
-          {{ "{{" }}hub- else hub{{ "}}" }}
             - complianceType: musthave
-              objectDefinition:
-                apiVersion: ocs.openshift.io/v1
-                kind: StorageCluster
-                metadata:
-                  name: ocs-storagecluster
-                  namespace: {{ .Values.odf.namespace }}
-                spec:
-                  storageDeviceSets:
-                    - config: {}
-                      resources: {}
-                      placement: {}
-                      name: ocs-deviceset
-                      dataPVCTemplate:
-                        metadata: {}
-                        spec:
-                          accessModes:
-                            - ReadWriteOnce
-                          resources:
-                            requests:
-                              storage: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/odf-ocs-storage-size" | default "{{ .Values.odf.ocsStorageSize}}" hub{{ "}}" }}'
-                          {{ "{{" }}hub- if ne (index .ManagedClusterLabels "autoshift.io/local-storage" | default "") "" hub{{ "}}" }}
-                          storageClassName: nvme-storageclass
-                          {{ "{{" }}hub- else hub{{ "}}" }}
-                          storageClassName: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/odf-ocs-storage-class-name" | default "{{ .Values.odf.ocsStorageClassName }}" hub{{ "}}" }}'
-                          {{ "{{" }}hub- end hub{{ "}}" }}
-                          volumeMode: Block
-                      count: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/odf-ocs-storage-count" | default "{{ .Values.odf.ocsStorageCount }}" | toInt hub{{ "}}" }}'
-                      replica: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/odf-ocs-storage-replicas" | default "{{ .Values.odf.ocsStorageReplicas }}" | toInt hub{{ "}}" }}'
-                      portable: true
-                      preparePlacement: {}
-                  encryption:
-                    clusterWide: true
-                    enable: true
-                    keyRotation:
-                      schedule: '@weekly'
-                    kms: {}
-                  mirroring: {}
-                  managedResources:
-                    cephObjectStoreUsers: {}
-                    cephCluster: {}
-                    cephBlockPools:
-                      defaultStorageClass: true
-                    cephNonResilientPools:
-                      count: 1
-                      resources: {}
-                      volumeClaimTemplate:
-                        metadata: {}
-                        spec:
-                          resources: {}
-                        status: {}
-                    cephObjectStores: {}
-                    cephFilesystems:
-                      dataPoolSpec:
-                        application: ''
-                        erasureCoded:
-                          codingChunks: 0
-                          dataChunks: 0
-                        mirroring: {}
-                        quotas: {}
-                        replicated:
-                          size: 0
-                        statusCheck:
-                          mirror: {}
-                    cephRBDMirror:
-                      daemonCount: 1
-                    cephToolbox: {}
-                    cephDashboard: {}
-                    cephConfig: {}
-                  arbiter: {}
-                  multiCloudGateway:
-                    reconcileStrategy: manage
-                  network:
-                    connections:
-                      encryption:
-                        enabled: true
-                    multiClusterService: {}
-                  nodeTopologies: {}
-                  externalStorage: {}
-                  resourceProfile: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/odf-resource-profile" | default "{{ .Values.odf.resourceProfile }}" hub{{ "}}" }}'
-            {{ "{{" }}hub- end hub{{ "}}" }}
+                objectDefinition:
+                  apiVersion: ocs.openshift.io/v1
+                  kind: StorageCluster
+                  metadata:
+                    name: ocs-storagecluster
+                    namespace: {{ .Values.odf.namespace }}
+                  {{ "{{hub-" }} if (eq "standalone" (index .ManagedClusterLabels "autoshift.io/odf-multi-cloud-gateway" | default "")) {{ "hub}}" }}
+                  spec:
+                    arbiter: {}
+                    encryption:
+                      kms: {}
+                    externalStorage: {}
+                    managedResources:
+                      cephObjectStoreUsers: {}
+                      cephCluster: {}
+                      cephBlockPools: {}
+                      cephNonResilientPools: {}
+                      cephObjectStores: {}
+                      cephFilesystems: {}
+                      cephRBDMirror: {}
+                      cephToolbox: {}
+                      cephDashboard: {}
+                      cephConfig: {}
+                    mirroring: {}
+                    multiCloudGateway:
+                      reconcileStrategy: standalone
+                  {{ "{{" }}hub- else hub{{ "}}" }}
+                  spec:
+                    storageDeviceSets:
+                      - config: {}
+                        resources: {}
+                        placement: {}
+                        name: ocs-deviceset
+                        dataPVCTemplate:
+                          metadata: {}
+                          spec:
+                            accessModes:
+                              - ReadWriteOnce
+                            resources:
+                              requests:
+                                storage: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/odf-ocs-storage-size" | default "{{ .Values.odf.ocsStorageSize}}" hub{{ "}}" }}'
+                            {{ "{{" }}hub- if ne (index .ManagedClusterLabels "autoshift.io/local-storage" | default "") "" hub{{ "}}" }}
+                            storageClassName: nvme-storageclass
+                            {{ "{{" }}hub- else hub{{ "}}" }}
+                            storageClassName: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/odf-ocs-storage-class-name" | default "{{ .Values.odf.ocsStorageClassName }}" hub{{ "}}" }}'
+                            {{ "{{" }}hub- end hub{{ "}}" }}
+                            volumeMode: Block
+                        count: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/odf-ocs-storage-count" | default "{{ .Values.odf.ocsStorageCount }}" | toInt hub{{ "}}" }}'
+                        replica: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/odf-ocs-storage-replicas" | default "{{ .Values.odf.ocsStorageReplicas }}" | toInt hub{{ "}}" }}'
+                        portable: true
+                        preparePlacement: {}
+                    encryption:
+                      clusterWide: true
+                      enable: true
+                      keyRotation:
+                        schedule: '@weekly'
+                      kms: {}
+                    mirroring: {}
+                    managedResources:
+                      cephObjectStoreUsers: {}
+                      cephCluster: {}
+                      cephBlockPools:
+                        defaultStorageClass: true
+                      cephNonResilientPools:
+                        count: 1
+                        resources: {}
+                        volumeClaimTemplate:
+                          metadata: {}
+                          spec:
+                            resources: {}
+                          status: {}
+                      cephObjectStores: {}
+                      cephFilesystems:
+                        dataPoolSpec:
+                          application: ''
+                          erasureCoded:
+                            codingChunks: 0
+                            dataChunks: 0
+                          mirroring: {}
+                          quotas: {}
+                          replicated:
+                            size: 0
+                          statusCheck:
+                            mirror: {}
+                      cephRBDMirror:
+                        daemonCount: 1
+                      cephToolbox: {}
+                      cephDashboard: {}
+                      cephConfig: {}
+                    arbiter: {}
+                    multiCloudGateway:
+                      reconcileStrategy: manage
+                    network:
+                      connections:
+                        encryption:
+                          enabled: true
+                      multiClusterService: {}
+                    nodeTopologies: {}
+                    externalStorage: {}
+                    resourceProfile: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/odf-resource-profile" | default "{{ .Values.odf.resourceProfile }}" hub{{ "}}" }}'
+                  {{ "{{" }}hub- end hub{{ "}}" }}
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
