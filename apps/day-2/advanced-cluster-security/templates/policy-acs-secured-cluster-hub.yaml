@@ -66,8 +66,7 @@ spec:
                   name: stackrox-secured-cluster-services
                 status:
                   conditions:
-                    - reason: UpgradeSuccessful
-                      status: 'True'
+                    - status: 'True'
                       type: Deployed
                     - status: 'True'
                       type: Initialized
