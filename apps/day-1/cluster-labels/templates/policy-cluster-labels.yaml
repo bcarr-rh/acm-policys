@@ -53,7 +53,7 @@ spec:
                   {{ "{{-" }} $clusterConfigMapData := (index $clusterConfigMap "data") | default dict {{ "}}" }} 
                   {{ "{{-" }} $clusterConfigMapValues := (index $clusterConfigMapData "values") | default dict {{ "}}" }}  
                   {{ "{{-" }} $clusterLabels := (index ($clusterConfigMapValues | fromJson | default dict) "labels") | default dict {{ "}}" }} 
-                {{ "{{/*" }} // End of label extraction {{ "/*}}" }}
+                {{ "{{/*" }} // End of label extraction {{ "*/}}" }}
                 {{ "{{-" }} $configMapLabels := merge $clusterLabels $clusterSetLabels {{ "}}" }}
                 {{ "{{-" }} $labels := merge $clusterLabels $clusterSetLabels $existingClusterLabels {{ "}}" }} 
                 {{ "{{-" }} range $label, $labelValue := $labels {{ "}}" }}
