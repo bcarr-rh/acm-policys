@@ -32,6 +32,36 @@ spec:
           remediationAction: enforce
           severity: high
           object-templates-raw: |
+          # Standalone Nooba ODF install
+          {{ "{{" }}hub- if eq "standalone" (index .ManagedClusterLabels "autoshift.io/odf-multi-cloud-gateway" | default "") hub{{ "}}" }}
+          - complianceType: musthave
+              objectDefinition:
+                apiVersion: ocs.openshift.io/v1
+                kind: StorageCluster
+                metadata:
+                  name: ocs-storagecluster
+                  namespace: {{ .Values.odf.namespace }}
+                spec:
+                  arbiter: {}
+                  encryption:
+                    kms: {}
+                  externalStorage: {}
+                  managedResources:
+                    cephObjectStoreUsers: {}
+                    cephCluster: {}
+                    cephBlockPools: {}
+                    cephNonResilientPools: {}
+                    cephObjectStores: {}
+                    cephFilesystems: {}
+                    cephRBDMirror: {}
+                    cephToolbox: {}
+                    cephDashboard: {}
+                    cephConfig: {}
+                  mirroring: {}
+                  multiCloudGateway:
+                    reconcileStrategy: standalone
+          # Full ODF install
+          {{ "{{" }}hub- else hub{{ "}}" }}
             - complianceType: musthave
               objectDefinition:
                 apiVersion: ocs.openshift.io/v1
@@ -112,6 +142,7 @@ spec:
                   nodeTopologies: {}
                   externalStorage: {}
                   resourceProfile: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/odf-resource-profile" | default "{{ .Values.odf.resourceProfile }}" hub{{ "}}" }}'
+            {{ "{{" }}hub- end hub{{ "}}" }}
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
@@ -158,11 +189,6 @@ spec:
     - requiredClusterSelector:
         labelSelector:
           matchExpressions:
-            - key: 'autoshift.io/odf-multi-cloud-gateway'
-              operator: NotIn
-              values:
-              - 'standalone'
-              - 'Standalone'
             - key: 'autoshift.io/odf'
               operator: In
               values:
