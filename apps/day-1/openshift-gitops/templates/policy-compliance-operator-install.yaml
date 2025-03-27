@@ -41,8 +41,6 @@ spec:
           operatorGroup:
             name: {{ .Values.gitops.namespace }}
             namespace: {{ .Values.gitops.namespace }}
-            targetNamespaces:
-              - {{ .Values.gitops.namespace }}
           subscription:
             namespace: {{ .Values.gitops.namespace }}
             channel: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/gitops-channel" | default "{{ .Values.gitops.channel }}" hub{{ "}}" }}'
