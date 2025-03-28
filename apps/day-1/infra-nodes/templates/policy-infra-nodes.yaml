@@ -1,5 +1,6 @@
 {{ $policyName := "policy-infra-nodes" }}
 {{ $configPolicyName :=  "create-infra-nodes" }}
+{{ $labelPrefix := .Values.infraNodes.labelPrefix | default "autoshift.io/" }}
 {{ $placementName := printf "placement-%s" $policyName }}
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
@@ -38,7 +39,7 @@ spec:
                     namespace: openshift-machine-api
                   spec:
                     deletePolicy: Oldest
-                    replicas: {{ "{{" }} .ManagedClusterLabels.infra-nodes {{ "}}" }}
+                    replicas: {{ "{{hub" }} index .ManagedClusterLabels "{{ printf "%s%s" $labelPrefix "infra-nodes" }}" {{ "hub}}" }}
                     selector:
                       matchLabels:
                         machine.openshift.io/cluster-api-cluster: {{ "{{" }} $infrastructure_id {{ "}}" }}
@@ -57,21 +58,23 @@ spec:
                         taints:
                           - key: node-role.kubernetes.io/{{ "{{" }} $machineset_role {{ "}}" }}
                             effect: NoSchedule
+                          - key: node-role.kubernetes.io/{{ "{{" }} $machineset_role {{ "}}" }}
+                            effect: NoExecute
                         providerSpec:
                         {{ "{{-" }} if eq $worker_ms.spec.template.spec.providerSpec.value.kind "VSphereMachineProviderSpec" {{ "}}" }}
                           value:
-                            numCoresPerSocket: {{ "{{" }} .ManagedClusterLabels.infra-nodes-numcores-per-socket | default $worker_ms.spec.template.spec.providerSpec.value.numCoresPerSocket {{ "}}" }}
+                            numCoresPerSocket: {{ "{{" }} {{ "{{hub" }} (index .ManagedClusterLabels "{{ printf  "%s%s" $labelPrefix "infra-nodes-numcores-per-socket" }}") | default "" {{ "hub}}" }} | default $worker_ms.spec.template.spec.providerSpec.value.numCoresPerSocket  {{ "}}" }}
                             diskGiB: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.diskGiB {{ "}}" }}
                             snapshot: ''
                             userDataSecret:
                               name: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.userDataSecret.name {{ "}}" }}
-                            memoryMiB: {{ "{{" }} .ManagedClusterLabels.infra-nodes-memory-mib | default $worker_ms.spec.template.spec.providerSpec.value.memoryMiB {{ "}}" }}
+                            memoryMiB: {{ "{{" }} {{ "{{hub" }} (index .ManagedClusterLabels "{{ printf "%s%s"  $labelPrefix "infra-nodes-memory-mib" }}") {{ "hub}}" }} | default $worker_ms.spec.template.spec.providerSpec.value.memoryMiB  {{ "}}" }}
                             credentialsSecret:
                               name: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.credentialsSecret.name {{ "}}" }}
                             network:
                               devices:
                                 - networkName: {{ "{{" }} (index ($worker_ms.spec.template.spec.providerSpec.value.network.devices) 0).networkName {{ "}}" }}
-                            numCPUs: {{ "{{" }} .ManagedClusterLabels.infra-nodes-numcpu | default $worker_ms.spec.template.spec.providerSpec.value.numCPUs {{ "}}" }}
+                            numCPUs: {{ "{{" }} {{ "{{hub" }} (index .ManagedClusterLabels "{{ printf "%s%s"  $labelPrefix "infra-nodes-numcpu" }}") {{ "hub}}" }} | default $worker_ms.spec.template.spec.providerSpec.value.numCPUs {{ "}}" }}
                             kind: VSphereMachineProviderSpec
                             workspace:
                               datacenter: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.workspace.datacenter {{ "}}" }}
@@ -158,7 +161,7 @@ spec:
                     name: {{ "{{" }} $infrastructure_id {{ "}}" }}-{{ "{{" }} $machineset_role {{ "}}" }}-{{ "{{" }} $zone {{ "}}" }}
                     namespace: openshift-machine-api
                   spec:
-                    replicas: {{ "{{" }} .ManagedClusterLabels.infra-nodes {{ "}}" }}
+                    replicas: {{ "{{hub" }} index .ManagedClusterLabels "{{ printf "%s%s" $labelPrefix "infra-nodes" }}" {{ "hub}}" }}
               {{ "{{-" }} end {{ "}}" }}
 ---
 apiVersion: cluster.open-cluster-management.io/v1beta1
@@ -175,7 +178,7 @@ spec:
     - requiredClusterSelector:
         labelSelector:
           matchExpressions:
-            - key: {{ printf $labelPrefix "infra-nodes" }}
+            - key: {{ printf "%s%s" $labelPrefix "infra-nodes" }}
               operator: Exists
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable

@@ -1,6 +1,7 @@
 {{ $policyName := "policy-remove-infra-image-registry" }}
 {{ $configPolicyName := "remove-infra-image-registry" }}
 {{ $placementName := printf "placement-%s" $policyName }}
+{{ $labelPrefix := .Values.infraNodes.labelPrefix | default "autoshift.io/" }}
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
@@ -20,19 +21,23 @@ spec:
         metadata:
           name: {{ $configPolicyName }}
         spec:
-          object-templates:
-            - complianceType: musthave
-              objectDefinition:
-                apiVersion: imageregistry.operator.openshift.io/v1
-                kind: Config
-                metadata:
-                  name: cluster
-                spec:
-                  nodeSelector: 
-                    node-role.kubernetes.io/infra: ""
-          pruneObjectBehavior: {{ .Values.infraNodes.imageRegistry.pruneObjectBehavior | default "None" }}
-          remediationAction: inform
-          severity: high
+          object-templates-raw: | 
+            [
+            {{ "{{-" }} $RegistryConfig := lookup "imageregistry.operator.openshift.io/v1" "Config" "" "cluster"  {{ "}}" }}
+              {{ "{{-" }} if  not (empty $RegistryConfig)  {{ "}}" }}
+                {{ "{{-" }} $spec := $RegistryConfig.spec {{ "}}" }} 
+                {{ "{{-" }} $newSpec := unset $spec "nodeSelector" {{ "}}" }}
+                {{ "{{-" }} $RegistryConfigNoStatus := unset $RegistryConfig "status"  {{ "}}" }}
+                {{ "{{-" }} $objectDefinition := set $RegistryConfigNoStatus "spec" $newSpec {{ "-}}" }}
+                  {
+                    "complianceType": "mustonlyhave",
+                    "pruneObjectBehavior": "{{ .Values.infraNodes.imageRegistry.pruneObjectBehavior | default "None" }}",
+                    "remediationAction": "enforce",
+                    "severity": "high",
+                    "objectDefinition": {{ "{{" }} $objectDefinition | toRawJson {{ "}}" }} 
+                  }
+              {{ "{{-" }} end {{ "}}" }} 
+            ]
 ---
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
@@ -48,7 +53,7 @@ spec:
     - requiredClusterSelector:
         labelSelector:
           matchExpressions:
-            - key: {{ printf $labelPrefix "infra-nodes" }}
+            - key: {{ printf "%s%s" $labelPrefix "infra-nodes" }}
               operator: DoesNotExist
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable

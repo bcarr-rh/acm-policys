@@ -1,6 +1,7 @@
 {{ $policyName := "policy-remove-infra-gitops" }}
 {{ $configPolicyName := "remove-infra-gitops" }}
 {{ $placementName := printf "placement-%s" $policyName }}
+{{ $labelPrefix := .Values.infraNodes.labelPrefix | default "autoshift.io/" }}
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
@@ -20,19 +21,24 @@ spec:
         metadata:
           name: {{ $configPolicyName }}
         spec:
-          object-templates:
-            - complianceType: musthave
-              objectDefinition:
-                apiVersion: pipelines.openshift.io/v1alpha1
-                kind: GitopsService
-                metadata:
-                  name: cluster
-                  namespace: {{ .Values.infraNodes.gitops.namespace }}
-                spec:
-                  runOnInfra: true
-                  tolerations: {}
-          remediationAction: inform
           severity: high
+          remediationAction: enforce
+          object-templates-raw: | 
+            [
+            {{ "{{-" }} $ArgoCD := (lookup "{{ .Values.infraNodes.gitops.apiVersion }}" "{{ .Values.infraNodes.gitops.kind }}" "{{ .Values.infraNodes.gitops.namespace }}" "{{ .Values.infraNodes.gitops.metadata.name }}") | default dict  {{ "}}" }}
+              {{ "{{-" }} if  not (empty $ArgoCD)  {{ "}}" }}
+                {{ "{{-" }} $spec := $ArgoCD.spec {{ "}}" }} 
+                {{ "{{-" }} $newSpecNoTolerations := unset $spec "tolerations" {{ "}}" }}
+                {{ "{{-" }} $newSpec := set $newSpecNoTolerations "runOnInfra" false {{ "}}" }}
+                {{ "{{-" }} $ArgoCDNoStatus := unset $ArgoCD "status"  {{ "}}" }}
+                {{ "{{-" }} $objectDefinition := set $ArgoCDNoStatus "spec" $newSpec {{ "}}" }}
+                  {
+                    "complianceType": "mustonlyhave",
+                    "objectDefinition": {{ "{{" }} $objectDefinition | toRawJson {{ "}}" }} 
+                  }
+              {{ "{{-" }} end {{ "}}" }} 
+            ]
+             
 ---
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
@@ -48,7 +54,7 @@ spec:
     - requiredClusterSelector:
         labelSelector:
           matchExpressions:
-            - key: {{ printf $labelPrefix "infra-nodes" }}
+            - key: {{ printf "%s%s" $labelPrefix "infra-nodes" }}
               operator: DoesNotExist
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
