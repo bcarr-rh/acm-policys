@@ -50,7 +50,7 @@ spec:
             sourceNamespace: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/logging-source-namespace" | default "{{ .Values.logging.sourceNamespace }}" hub{{ "}}" }}'
             channel: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/logging-channel" | default "{{ .Values.logging.channel }}" hub{{ "}}" }}'
           # Getting Label and then capitalizing first letter
-          upgradeApproval: '{{ "{{hub" }} $upgrade_approval := index .ManagedClusterLabels"autoshift.io/logging-install-plan-approval" | default "{{ .Values.logging..installPlanApproval }}" {{ "-hub}}" }} {{ "{{hub" }} print (substr 0 1 $upgrade_approval | upper) (substr 1 (len $upgrade_approval) $upgrade_approval) {{ "-hub}}" }}'
+          upgradeApproval: '{{ "{{hub" }} $upgrade_approval := index .ManagedClusterLabels "autoshift.io/logging-install-plan-approval" | default "{{ .Values.logging..installPlanApproval }}" {{ "-hub}}" }} {{ "{{hub" }} print (substr 0 1 $upgrade_approval | upper) (substr 1 (len $upgrade_approval) $upgrade_approval) {{ "-hub}}" }}'
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
