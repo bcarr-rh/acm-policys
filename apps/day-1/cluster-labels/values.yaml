@@ -1,6 +1,7 @@
 # Default values for cluster-labels.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
+# Labels can be set from Application Set
 ---
 selfManaged: false
 acmversion: "2.12"
@@ -10,39 +11,38 @@ autoshiftLabelPrefix: "autoshift.io/"
 hubClusterSets:
   hub:
     labels: 
-      infra-nodes-numcpu: '8'
-      infra-nodes-memory-mib:  '24576'
-      infra-nodes-numcores-per-socket:  '4'
-      infra-nodes:  '6'
-      worker-nodes-numcpu:  '8'
-      worker-nodes-memory-mib:  '32768'
-      worker-nodes-numcores-per-socket:  '4'
-      worker-nodes:  '3'
-      test-worked: 'false'
+      # infra-nodes-numcpu: '8'
+      # infra-nodes-memory-mib:  '24576'
+      # infra-nodes-numcores-per-socket:  '4'
+      # infra-nodes:  '6'
+      # worker-nodes-numcpu:  '8'
+      # worker-nodes-memory-mib:  '32768'
+      # worker-nodes-numcores-per-socket:  '4'
+      # worker-nodes:  '3'
+      # test-worked: 'false'
 managedClusterSets:
   managed:
     labels: 
-      infra-nodes-numcpu: '8'
-      infra-nodes-memory-mib:  '24576'
-      infra-nodes-numcores-per-socket:  '4'
-      infra-nodes:  '6'
-      worker-nodes-numcpu:  '8'
-      worker-nodes-memory-mib:  '32768'
-      worker-nodes-numcores-per-socket:  '4'
-      worker-nodes:  '3'
+      # infra-nodes-numcpu: '8'
+      # infra-nodes-memory-mib:  '24576'
+      # infra-nodes-numcores-per-socket:  '4'
+      # infra-nodes:  '6'
+      # worker-nodes-numcpu:  '8'
+      # worker-nodes-memory-mib:  '32768'
+      # worker-nodes-numcores-per-socket:  '4'
+      # worker-nodes:  '3'
 clusters:
   nonprod:
     labels:
-      infra-nodes-numcpu: '8'
-      infra-nodes-memory-mib:  '24576'
-      infra-nodes-numcores-per-socket:  '4'
-      infra-nodes:  '4'
-      worker-nodes-numcpu:  '8'
-      worker-nodes-memory-mib:  '32768'
-      worker-nodes-numcores-per-socket:  '4'
-      worker-nodes:  '3'
+      # infra-nodes-numcpu: '8'
+      # infra-nodes-memory-mib:  '24576'
+      # infra-nodes-numcores-per-socket:  '4'
+      # infra-nodes:  '6'
+      # worker-nodes-numcpu:  '8'
+      # worker-nodes-memory-mib:  '32768'
+      # worker-nodes-numcores-per-socket:  '4'
+      # worker-nodes:  '3'
   local-cluster: 
     labels: 
-      test-worked: 'true'
-      second-label: ''
-      infra-nodes: '3'
+      # test-worked: 'true'
+      # second-label: ''

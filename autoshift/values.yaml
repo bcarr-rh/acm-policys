@@ -27,6 +27,21 @@ hubClusterSets:
       storage-nodes-memory-mib: ''
       storage-nodes-numcores-per-socket: ''
       storage-nodes-zones: ''
+      ### OpenShift Data Foundation
+      odf: 'true'
+      odf-multi-cloud-gateway: standalone
+      odf-nooba-pvpool: ''
+      odf-nooba-store-size: ''
+      odf-nooba-store-num-volumes: ''
+      odf-ocs-storage-class-name: gp3-csi
+      odf-ocs-storage-size: ''
+      odf-ocs-storage-count: ''
+      odf-ocs-storage-replicas: ''
+      odf-resource-profile: balanced
+      odf-channel: stable-4.17
+      odf-install-plan-approval: Automatic
+      odf-source: redhat-operators
+      odf-source-namespace: openshift-marketplace
       ### Advanced Cluster Security
       acs: 'true'
       acs-channel: stable
@@ -92,6 +107,21 @@ managedClusterSets:
       storage-nodes-memory-mib: ''
       storage-nodes-numcores-per-socket: ''
       storage-nodes-zones: ''
+      ### OpenShift Data Foundation
+      odf: 'true'
+      odf-multi-cloud-gateway: standalone
+      odf-nooba-pvpool: ''
+      odf-nooba-store-size: ''
+      odf-nooba-store-num-volumes: ''
+      odf-ocs-storage-class-name: gp3-csi
+      odf-ocs-storage-size: ''
+      odf-ocs-storage-count: ''
+      odf-ocs-storage-replicas: ''
+      odf-resource-profile: balanced
+      odf-channel: stable-4.17
+      odf-install-plan-approval: Automatic
+      odf-source: redhat-operators
+      odf-source-namespace: openshift-marketplace
       ### Advanced Cluster Security
       acs: 'true'
       acs-channel: stable
@@ -106,7 +136,7 @@ managedClusterSets:
       dev-spaces-source-namespace: openshift-marketplace
       ### Developer OpenShift Gitops
       gitops-dev: 'true'
-      gitops-dev-teams: 'A,B'
+      gitops-dev-teams: 'A'
       ### Loki
       loki: 'true' 
       loki-channel: stable-6.2

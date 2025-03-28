@@ -19,7 +19,7 @@ spec:
       namespace: open-cluster-policies
       apiVersion: policy.open-cluster-management.io/v1
       compliance: Compliant
-      kind: Policy    
+      kind: Policy
   remediationAction: enforce
   disabled: false
   policy-templates:

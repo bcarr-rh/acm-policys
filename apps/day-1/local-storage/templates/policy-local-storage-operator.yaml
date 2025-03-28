@@ -52,7 +52,8 @@ spec:
             name: {{ .Values.localStorage.name }}
             source: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/local-storage-source" | default "{{ .Values.localStorage.source }}" hub{{ "}}" }}'
             sourceNamespace: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/local-storage-source-namespace" | default "{{ .Values.localStorage.sourceNamespace }}" hub{{ "}}" }}'
-          upgradeApproval: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/local-storage-install-plan-approval" | default "{{ .Values.localStorage.installPlanApproval }}" hub{{ "}}" }}'
+          # Getting Label and then capitalizing first letter
+          upgradeApproval: '{{ "{{hub" }} $upgrade_approval := index .ManagedClusterLabels "autoshift.io/local-storage-install-plan-approval" | default "{{ .Values.localStorage.installPlanApproval }}" {{ "-hub}}" }} {{ "{{hub" }} print (substr 0 1 $upgrade_approval | upper) (substr 1 (len $upgrade_approval) $upgrade_approval) {{ "-hub}}" }}'
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy

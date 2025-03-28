@@ -14,7 +14,6 @@ metadata:
     policy.open-cluster-management.io/categories: CA Security Assessment and Authorization
     policy.open-cluster-management.io/controls: CA-2 Security Assessments, CA-7 Continuous Monitoring
 spec:
-  remediationAction: enforce
   disabled: false
   policy-templates:
     - objectDefinition:
@@ -23,7 +22,7 @@ spec:
         metadata:
           name: comp-operator-ns
         spec:
-          remediationAction: inform # will be overridden by remediationAction in parent policy
+          remediationAction: enforce
           severity: high
           object-templates:
             - complianceType: musthave
@@ -52,7 +51,8 @@ spec:
             name: {{ .Values.compliance.name }}
             source: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/compliance-source" | default "{{ .Values.compliance.source }}" hub{{ "}}" }}'
             sourceNamespace: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/compliance-source-namespace" | default "{{ .Values.compliance.sourceNamespace }}" hub{{ "}}" }}'
-          upgradeApproval: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/compliance-install-plan-approval" | default "{{ .Values.compliance.installPlanApproval }}" hub{{ "}}" }}'
+          # Getting Label and then capitalizing first letter
+          upgradeApproval: '{{ "{{hub" }} $upgrade_approval := index .ManagedClusterLabels "autoshift.io/compliance-install-plan-approval" | default "{{ .Values.compliance.installPlanApproval }}" {{ "-hub}}" }} {{ "{{hub" }} print (substr 0 1 $upgrade_approval | upper) (substr 1 (len $upgrade_approval) $upgrade_approval) {{ "-hub}}" }}'
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
