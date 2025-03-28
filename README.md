@@ -17,14 +17,17 @@ Update openshift-gitops/values.yaml with desired source mirror registry for disc
 
 Install OpenShift Gitops
 ```
-helm install openshift-gitops openshift-gitops 
-```
-or
-```
 helm template openshift-gitops | oc apply -f -
 ```
 
 Note: If OpenShift GitOps is already installed manually on cluster this will create two Operator Groups for OpenShift GitOps. Removing one will fix the issue.
+
+Install Advanced Cluster Management
+```
+helm template advanced-cluster-management | oc apply -f -
+```
+
+Both ACM and GitOps will be controlled by autoshift after it is installed for version upgrading
 
 Update autoshift/values.yaml with desired feature flags and repo url
 
