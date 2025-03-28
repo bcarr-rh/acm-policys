@@ -12,7 +12,6 @@ metadata:
     policy.open-cluster-management.io/categories: CM Configuration Management
     policy.open-cluster-management.io/controls: CM-2 Baseline Configuration
 spec:
-  remediationAction: enforce
   disabled: false
   dependencies:
     - name: policy-acs-operator-install
