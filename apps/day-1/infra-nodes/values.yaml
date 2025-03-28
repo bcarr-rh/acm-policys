@@ -17,9 +17,13 @@ infraNodes:
     migrate: true
     remediationAction: enforce
   gitops: 
-    migrate: false
+    migrate: true
     remediationAction: enforce
     namespace: openshift-gitops
+    apiVersion: pipelines.openshift.io/v1alpha1
+    kind: GitopsService
+    metadata:
+      name: cluster
   zones:
     - us-east-2b
   externalIngress:
@@ -29,7 +33,7 @@ infraNodes:
     install: 
       - "policy-infra-nodes"
     remove: 
-      - policy-remove-infra-gitiops 
+      - policy-remove-infra-gitops 
       - policy-remove-infra-image-registry
       - policy-remove-infra-ingress
       - policy-remove-infra-monitoring 

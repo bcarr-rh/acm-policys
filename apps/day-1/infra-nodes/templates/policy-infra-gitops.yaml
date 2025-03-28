@@ -1,6 +1,7 @@
 {{ $policyName := "policy-infra-gitops" }}
 {{ $configPolicyName := "create-infra-gitops" }}
 {{ $placementName := printf "placement-%s" $policyName }}
+{{ $labelPrefix := .Values.infraNodes.labelPrefix | default "autoshift.io/" }}
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
@@ -31,10 +32,10 @@ spec:
           object-templates:
             - complianceType: musthave
               objectDefinition:
-                apiVersion: pipelines.openshift.io/v1alpha1
-                kind: GitopsService
+                apiVersion: {{ .Values.infraNodes.gitops.apiVersion }}
+                kind: {{ .Values.infraNodes.gitops.kind }}
                 metadata:
-                  name: cluster
+                  name: {{ .Values.infraNodes.gitops.metadata.name }}
                   namespace: {{ .Values.infraNodes.gitops.namespace }}
                 spec:
                   runOnInfra: true
@@ -60,7 +61,7 @@ spec:
     - requiredClusterSelector:
         labelSelector:
           matchExpressions:
-            - key: {{ printf $labelPrefix "infra-nodes" }}
+            - key: {{ printf "%s%s" $labelPrefix "infra-nodes" }}
               operator: Exists
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
