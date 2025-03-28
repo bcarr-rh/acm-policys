@@ -51,7 +51,8 @@ spec:
             source: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/odf-source" | default "{{ .Values.odf.source }}" hub{{ "}}" }}'
             sourceNamespace: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/odf-source-namespace" | default "{{ .Values.odf.sourceNamespace }}" hub{{ "}}" }}'
             channel: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/odf-channel" | default "{{ .Values.odf.channel }}" hub{{ "}}" }}'
-          upgradeApproval: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/odf-install-plan-approval" | default "{{ .Values.odf.installPlanApproval }}" hub{{ "}}" }}'
+          {{ "{{-" }} $upgrade_approval := {{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/odf-install-plan-approval" | default "{{ .Values.odf.installPlanApproval }}" hub{{ "}}" }} {{ "}}" }}
+          upgradeApproval: {{ "{{" }} print (slicestr $upgrade_approval 0 1 | upper) (slicestr $upgrade_approval 1) {{ "}}" }}
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
