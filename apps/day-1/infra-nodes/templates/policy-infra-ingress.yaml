@@ -69,6 +69,8 @@ spec:
           matchExpressions:
             - key: {{ printf "%s%s" $labelPrefix "infra-nodes" }}
               operator: Exists
+            - key: "{{ printf "%s%s" $labelPrefix "infra-nodes-ingress-migrate" }}"
+              value: true
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists

@@ -1,0 +1,147 @@
+
+{{ $policyName := "policy-remove-infra-gitops" }}
+{{ $configPolicyName := "remove-infra-gitops" }}
+{{ $placementName := printf "placement-%s" $policyName }}
+{{ $labelPrefix := .Values.infraNodes.labelPrefix | default "autoshift.io/" }}
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: {{ $policyName }}
+  namespace: open-cluster-policies
+  annotations:
+    policy.open-cluster-management.io/categories: CM Configuration Management
+    policy.open-cluster-management.io/controls: CM-2 Baseline Configuration
+    policy.open-cluster-management.io/standards: NIST SP 800-53
+spec:
+  disabled: {{ not .Values.infraNodes.gitops.migrate }}
+  remediationAction: {{ .Values.infraNodes.gitops.remediationAction | default "enforce" }}
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: {{ $configPolicyName }}
+        spec:
+          severity: high
+          remediationAction: enforce
+          object-templates:
+              objectDefinition:
+                apiVersion: v1
+                kind: ConfigMap
+                metadata:
+                  name: {{ $configMapName }}
+                  namespace: openshift-monitoring
+                data:
+                  config.yaml: |+
+                    alertmanagerMain:
+                      nodeSelector: {}
+                      tolerations: []
+                    prometheusK8s:
+                      nodeSelector: {}
+                      tolerations: []
+                    prometheusOperator:
+                      nodeSelector: {}
+                      tolerations: []
+                    k8sPrometheusAdapter:
+                      nodeSelector: {}
+                      tolerations: []
+                    kubeStateMetrics:
+                      nodeSelector: {}
+                      tolerations: []
+                    telemeterClient:
+                      nodeSelector: {}
+                      tolerations: []
+                    openshiftStateMetrics:
+                      nodeSelector: {}
+                      tolerations: []
+                    thanosQuerier:
+                      nodeSelector: {}
+                      tolerations: []
+                    monitoringPlugin:
+                      nodeSelector: {}
+                      tolerations: []
+          pruneObjectBehavior: {{ .Values.infraNodes.monitoring.pruneObjectBehavior | default "None" }}
+          remediationAction: inform
+          severity: high
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: {{ $configPolicyName }}
+        spec:
+          severity: high
+          remediationAction: enforce
+          object-templates-raw: | 
+            [
+#meta
+{},
+                  {{- $gitOpsEnabled := {{hub index .ManagedClusterLabels "autoshift.io/infra-nodes-gitops-enabled" | default "false" hub}} }}
+                  {{- $gitOpsMigragte := {{hub index .ManagedClusterLabels "autoshift.io/infra-nodes-gitops-migrate" | default "false" hub}} }}
+                  {{- $infraNodes := {{hub index .ManagedClusterLabels "autoshift.io/infra-nodes" | default "false" hub}} }}
+                  {{- if and (eq $gitOpsEnabled "true") (or (eq $gitOpsMigrate "false") (ne $infraNodes "false" )) }}
+                    {{-  $ArgoCD := (lookup "{{ .Values.infraNodes.gitops.apiVersion }}" "{{ .Values.infraNodes.gitops.kind }}" "{{ .Values.infraNodes.gitops.namespace }}" "{{ .Values.infraNodes.gitops.metadata.name }}") | default dict  }}
+                    {{- if  not (empty $ArgoCD)  }}
+                      {{- $spec := $ArgoCD.spec }} 
+                      {{- $newSpecNoTolerations := unset $spec "tolerations" }}
+                      {{- $newSpec := set $newSpecNoTolerations "runOnInfra" false }}
+                      {{- $ArgoCDNoStatus := unset $ArgoCD "status"  }}
+                      {{- $objectDefinition := set $ArgoCDNoStatus "spec" $newSpec }}
+                          "complianceType": "mustonlyhave",
+                          "objectDefinition": "{{" $objectDefinition | toRawJson "}}" 
+                    {{- end }} 
+                  {{- end }} 
+{},
+                  {{- $imageRegistryEnabled := {{hub index .ManagedClusterLabels "autoshift.io/infra-nodes-image-registry-enabled" | default "false" hub}} }}
+                  {{- $imageRegistryMigragte := {{hub index .ManagedClusterLabels "autoshift.io/infra-nodes-image-registry-migrate" | default "false" hub}} }}
+                  {{- $infraNodes := {{hub index .ManagedClusterLabels "autoshift.io/infra-nodes" | default "false" hub}} }}
+                  {{- if and (eq $imageRegistryEnabled "true") (or (eq $imageRegistryMigrate "false") (ne $infraNodes "false" )) }}
+                    {{- $RegistryConfig := lookup "imageregistry.operator.openshift.io/v1" "Config" "" "cluster"  }}
+                    {{- if  not (empty $RegistryConfig)  }}
+                      {{- $spec := $RegistryConfig.spec }} 
+                      {{- $newSpec := unset $spec "nodeSelector" }}
+                      {{- $RegistryConfigNoStatus := unset $RegistryConfig "status"  }}
+                      {{- $objectDefinition := set $RegistryConfigNoStatus "spec" $newSpec -}}
+                          "complianceType": "mustonlyhave",
+                          "pruneObjectBehavior": "{{ .Values.infraNodes.imageRegistry.pruneObjectBehavior | default "None" }}",
+                          "remediationAction": "enforce",
+                          "severity": "high",
+                          "objectDefinition": {{ $objectDefinition | toRawJson }} 
+                    {{- end }} 
+                  {{- end }} 
+{},
+                  {{- $ingressEnabled := {{hub index .ManagedClusterLabels "autoshift.io/infra-nodes-ingress-enabled" | default "false" hub}} }}
+                  {{- $ingressMigragte := {{hub index .ManagedClusterLabels "autoshift.io/infra-nodes-ingress-migrate" | default "false" hub}} }}
+                  {{- $infraNodes := {{hub index .ManagedClusterLabels "autoshift.io/infra-nodes" | default "false" hub}} }}
+                  {{- if and (eq $ingressEnabled "true") (or (eq $ingressMigrate "false") (ne $infraNodes "false" )) }}
+                    {{- $IngressController := lookup "operator.openshift.io/v1" "IngressController" "openshift-ingress-operator" "default"  }}
+                    {{- if  not (empty $IngressController)  }}
+                      {{- $spec := $IngressController.spec }} 
+                      {{- $nodePlacement := dict "nodeSelector" (dict) "tolerations" (list) }}
+                      {{- $newSpec := set $spec "nodePlacement" $nodePlacement }}
+                      {{- $IngressControllerNoStatus := unset $IngressController "status"  }}
+                      {{- $objectDefinition := set $IngressControllerNoStatus "spec" $newSpec }}
+                          "complianceType": "mustonlyhave",
+                          "pruneObjectBehavior": "{{ .Values.infraNodes.imageRegistry.pruneObjectBehavior | default "None" }}",
+                          "remediationAction": "enforce",
+                          "severity": "high",
+                          "objectDefinition": {{ $objectDefinition | toRawJson }} 
+                    {{- end }} 
+                  {{- end }} 
+{},
+                  {{- $monitoringEnabled := {{hub index .ManagedClusterLabels "autoshift.io/infra-nodes-monitoring-enabled" | default "false" hub}} }}
+                  {{- $monitoringMigragte := {{hub index .ManagedClusterLabels "autoshift.io/infra-nodes-monitoring-migrate" | default "false" hub}} }}
+                  {{- $infraNodes := {{hub index .ManagedClusterLabels "autoshift.io/infra-nodes" | default "false" hub}} }}
+                  {{- if and (eq $monitoringEnabled "true") (or (eq $monitoringMigrate "true") (ne $infraNodes "false" )) }}
+                    {{- $monitoringConfig := lookup "v1" "ConfigMap" "openshift-monitorying" "cluster-infra-monitoring"  }}
+                    {{- if  not (empty $monitoringConfig)  }}
+                      {{- $monitorConfigNoStatus := unset $monitoringConfig "status"  }}
+                      {{- $nodePlacement := dict "nodeSelector" (dict) "tolerations" (list) }}
+                      {{- $newSpec := set $spec "nodePlacement" $nodePlacement }}
+                      {{- $objectDefinition := set $IngressControllerNoStatus "spec" $newSpec }}
+                          "complianceType": "mustonlyhave",
+                          "pruneObjectBehavior": "{{ .Values.infraNodes.imageRegistry.pruneObjectBehavior | default "None" }}",
+                          "remediationAction": "enforce",
+                          "severity": "high",
+                          "objectDefinition": {{ $objectDefinition | toRawJson }} 
+                    {{- end }} 
+                  {{- end }} 

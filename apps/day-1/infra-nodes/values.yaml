@@ -16,6 +16,34 @@ infraNodes:
   monitoring: 
     migrate: true
     remediationAction: enforce
+    removeConfig.yaml: |+
+      alertmanagerMain:
+        nodeSelector: {}
+        tolerations: []
+      prometheusK8s:
+        nodeSelector: {}
+        tolerations: []
+      prometheusOperator:
+        nodeSelector: {}
+        tolerations: []
+      k8sPrometheusAdapter:
+        nodeSelector: {}
+        tolerations: []
+      kubeStateMetrics:
+        nodeSelector: {}
+        tolerations: []
+      telemeterClient:
+        nodeSelector: {}
+        tolerations: []
+      openshiftStateMetrics:
+        nodeSelector: {}
+        tolerations: []
+      thanosQuerier:
+        nodeSelector: {}
+        tolerations: []
+      monitoringPlugin:
+        nodeSelector: {}
+        tolerations: []
   gitops: 
     migrate: true
     remediationAction: enforce
