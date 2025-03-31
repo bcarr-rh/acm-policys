@@ -17,7 +17,7 @@ managedClusterSets:
 
 ### Labels Trusted Artifact Signer
 # tas<bool>: If not set Developer Hub will not be managed
-# tas-channel<String>: default latest
+# tas-channel<String>: default stable
 # tas-install-plan-approval<String>: default Automatic
 # tas-source<String>: default redhat-operators
 # tas-source-namespace<String>: default openshift-marketplace

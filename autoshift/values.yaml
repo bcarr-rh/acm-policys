@@ -66,6 +66,12 @@ hubClusterSets:
       pipelines-install-plan-approval: Automatic
       pipelines-source: redhat-operators
       pipelines-source-namespace: openshift-marketplace
+      ### Trusted Artifact Signer
+      tas: 'true'
+      tas-channel:  stable
+      tas-install-plan-approval: Automatic
+      tas-source: redhat-operators
+      tas-source-namespace: openshift-marketplace
       ### Developer OpenShift Gitops
       gitops-dev: 'true'
       ### Loki
@@ -140,23 +146,29 @@ managedClusterSets:
       acs-source: redhat-operators
       acs-source-namespace: openshift-marketplace
       ### Developer Spaces
-      dev-spaces: 'true'
-      dev-spaces-channel: stable
-      dev-spaces-install-plan-approval:  Automatic
+      dev-spaces: 'false'
+      dev-spaces-channel: '' #stable
+      dev-spaces-install-plan-approval:  '' #Automatic
       dev-spaces-source: redhat-operators
       dev-spaces-source-namespace: openshift-marketplace
       ### Developer Hub
-      dev-hub: 'true'
-      dev-hub-channel: fast
-      dev-hub-install-plan-approval: Automatic
-      dev-hub-source: redhat-operators
-      dev-hub-source-namespace: openshift-marketplace
+      dev-hub: 'false'
+      dev-hub-channel: '' #fast
+      dev-hub-install-plan-approval: '' #Automatic
+      dev-hub-source: '' #redhat-operators
+      dev-hub-source-namespace: '' #openshift-marketplace
       ### OpenShift Pipelines
-      pipelines: 'true'
-      pipelines-channel: latest
-      pipelines-install-plan-approval: Automatic
-      pipelines-source: redhat-operators
-      pipelines-source-namespace: openshift-marketplace
+      pipelines: 'false'
+      pipelines-channel: '' #latest
+      pipelines-install-plan-approval: '' #Automatic
+      pipelines-source: '' #redhat-operators
+      pipelines-source-namespace: '' #openshift-marketplace
+      ### Trusted Artifact Signer
+      tas: 'false'
+      tas-channel:  '' #latest
+      tas-install-plan-approval: '' #Automatic
+      tas-source: '' #redhat-operators
+      tas-source-namespace: '' #openshift-marketplace
       ### Developer OpenShift Gitops
       gitops-dev: 'true'
       gitops-dev-team-dev: 'true'
