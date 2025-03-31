@@ -105,15 +105,48 @@ dev-spaces-source<String>: default redhat-operators
 
 dev-spaces-source-namespace<String>: default openshift-marketplace
 
+### Developer Hub
+dev-hub<bool>: If not set Developer Hub will not be managed
+
+dev-hub-channel<String>: default fast
+
+dev-hub-install-plan-approval<String>: default Automatic
+
+dev-hub-source<String>: default redhat-operators
+
+dev-hub-source-namespace<String>: default openshift-marketplace
+
+### OpenShift Pipelines
+pipelines<bool>: If not set OpenShift Pipelines will not be managed
+
+pipelines-channel<String>: default latest
+
+pipelines-install-plan-approval<String>: default Automatic
+
+pipelines-source<String>: default redhat-operators
+
+pipelines-source-namespace<String>: default openshift-marketplace
+
+### Trusted Artifact Signer
+tas<bool>: If not set Trusted Artifact Signer will not be managed
+
+tas-channel<String>: default latest
+
+tas-install-plan-approval<String>: default Automatic
+
+tas-source<String>: default redhat-operators
+
+tas-source-namespace<String>: default openshift-marketplace
+
 ### Developer OpenShift Gitops
 gitops-dev<bool>: If not set Developer OpenShift Gitops intances will not be managed
 
-gitops-dev-teams<list<String>>: List of teams that will need their own OpenShift Gitops in the Hub cluster
+gitops-dev-team-{INSERT_TEAM_NAME}<String>: Team that can deploy onto cluster from dev team gitops. Must match a team in the gitops-dev helm chart values file.
 
 ### Loki
 loki<bool>: If not set Loki will not be managed. Dependent on ODF Multi Object Gateway
 
-loki-channel<String>: default stable-6.1
+loki-channel<String>: default stable-6.2
 
 loki-install-plan-approval<String>: default Automatic
 
@@ -130,7 +163,7 @@ loki-lokistack-name<String>: default logging-lokistack
 ### OpenShift Logging
 logging<bool>: If not set OpenShift Logging will not be managed, Dependent on Loki and COO
 
-logging-channel<String>: default stable-6.1
+logging-channel<String>: default stable-6.2
 
 logging-install-plan-approval<String>: default Automatic
 

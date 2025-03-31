@@ -5,7 +5,7 @@ teams:
   dev:
     gitops_rbac_policies:
     - 'g, openshift-systems, role:admin'
-    - 'g, openshift-application-architects, role:admin'
+    - 'g, openshift-dev-leads, role:admin'
     - 'g, openshift-developers, role:readonly'
     # OPTIONAL
     controller:

@@ -6,6 +6,18 @@ rhtasOperator:
   installPlanApproval: Automatic
   source: redhat-operators
   sourceNamespace: openshift-marketplace
-  clusterSets:
-    - hub
-    - managed
+hubClusterSets:
+  hub:
+    labels:
+      test1: 'test'
+managedClusterSets:
+  managed:
+    labels:
+      test4: 'test'
+
+### Labels Trusted Artifact Signer
+# tas<bool>: If not set Developer Hub will not be managed
+# tas-channel<String>: default latest
+# tas-install-plan-approval<String>: default Automatic
+# tas-source<String>: default redhat-operators
+# tas-source-namespace<String>: default openshift-marketplace

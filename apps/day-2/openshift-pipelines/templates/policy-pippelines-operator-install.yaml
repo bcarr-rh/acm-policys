@@ -24,7 +24,7 @@ spec:
                 apiVersion: v1
                 kind: Namespace
                 metadata:
-                  name: openshift-operators
+                  name: {{ .Values.pipelines.namespace }}
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1beta1
         kind: OperatorPolicy
@@ -35,15 +35,16 @@ spec:
           severity: high
           complianceType: musthave
           operatorGroup:
-            name: global-operators
-            namespace: openshift-operators
+            name: global-operators # Default OG Created by OpenShift
+            namespace: {{ .Values.pipelines.namespace }}
           subscription:
+            namespace: {{ .Values.pipelines.namespace }}
+            channel: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/pipelines-channel" | default "{{ .Values.pipelines.channel }}" hub{{ "}}" }}'
             name: {{ .Values.pipelines.name }}
-            namespace: openshift-operators
-            source: {{ .Values.pipelines.source }}
-            sourceNamespace: {{ .Values.pipelines.sourceNamespace }}
-            channel: {{ .Values.pipelines.channel }}
-          upgradeApproval: {{ .Values.pipelines.installPlanApproval }}
+            source: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/pipelines-source" | default "{{ .Values.pipelines.source }}" hub{{ "}}" }}'
+            sourceNamespace: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/pipelines-source-namespace" | default "{{ .Values.pipelines.sourceNamespace }}" hub{{ "}}" }}'
+          # Getting Label and then capitalizing first letter
+          upgradeApproval: '{{ "{{hub" }} $upgrade_approval := index .ManagedClusterLabels "autoshift.io/pipelines-install-plan-approval" | default "{{ .Values.pipelines.installPlanApproval }}" {{ "-hub}}" }} {{ "{{hub" }} print (substr 0 1 $upgrade_approval | upper) (substr 1 (len $upgrade_approval) $upgrade_approval) {{ "-hub}}" }}'
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
@@ -58,7 +59,7 @@ spec:
                 apiVersion: operators.coreos.com/v1alpha1
                 kind: ClusterServiceVersion
                 metadata:
-                  namespace: openshift-operators
+                  namespace: {{ .Values.pipelines.namespace }}
                 spec:
                   displayName: 'Red Hat OpenShift Pipelines'     
                 status:
@@ -71,14 +72,21 @@ metadata:
   namespace: open-cluster-policies
 spec:
   clusterSets:
-  {{- range .Values.pipelines.clusterSets }}
-    - {{ . }}
+  {{- range $clusterSet, $value := .Values.managedClusterSets }}
+    - {{ $clusterSet }}
   {{- end }}
-  tolerations:
-    - key: cluster.open-cluster-management.io/unreachable
-      operator: Exists
-    - key: cluster.open-cluster-management.io/unavailable
-      operator: Exists
+  {{- range $clusterSet, $value := .Values.hubClusterSets }}
+    - {{ $clusterSet }}
+  {{- end }}
+  predicates:
+    - requiredClusterSelector:
+        labelSelector:
+          matchExpressions:
+            - key: 'autoshift.io/pipelines'
+              operator: In
+              values:
+              - 'true'
+              - 'True'
 ---
 apiVersion: policy.open-cluster-management.io/v1
 kind: PlacementBinding

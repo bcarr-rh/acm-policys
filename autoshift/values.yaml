@@ -54,9 +54,20 @@ hubClusterSets:
       dev-spaces-install-plan-approval:  Automatic
       dev-spaces-source: redhat-operators
       dev-spaces-source-namespace: openshift-marketplace
+      ### Developer Hub
+      dev-hub: 'true'
+      dev-hub-channel: fast
+      dev-hub-install-plan-approval: Automatic
+      dev-hub-source: redhat-operators
+      dev-hub-source-namespace: openshift-marketplace
+      ### OpenShift Pipelines
+      pipelines: 'true'
+      pipelines-channel: latest
+      pipelines-install-plan-approval: Automatic
+      pipelines-source: redhat-operators
+      pipelines-source-namespace: openshift-marketplace
       ### Developer OpenShift Gitops
       gitops-dev: 'true'
-      gitops-dev-teams: 'A,B'
       ### Loki
       loki: 'true' 
       loki-channel: stable-6.2
@@ -134,9 +145,21 @@ managedClusterSets:
       dev-spaces-install-plan-approval:  Automatic
       dev-spaces-source: redhat-operators
       dev-spaces-source-namespace: openshift-marketplace
+      ### Developer Hub
+      dev-hub: 'true'
+      dev-hub-channel: fast
+      dev-hub-install-plan-approval: Automatic
+      dev-hub-source: redhat-operators
+      dev-hub-source-namespace: openshift-marketplace
+      ### OpenShift Pipelines
+      pipelines: 'true'
+      pipelines-channel: latest
+      pipelines-install-plan-approval: Automatic
+      pipelines-source: redhat-operators
+      pipelines-source-namespace: openshift-marketplace
       ### Developer OpenShift Gitops
       gitops-dev: 'true'
-      gitops-dev-teams: 'A'
+      gitops-dev-team-dev: 'true'
       ### Loki
       loki: 'true' 
       loki-channel: stable-6.2

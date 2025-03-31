@@ -1,9 +1,7 @@
 # This policy verifies the installation of the official & supported version of
 # the Developer Hub Operator on the managed clusters.
 #
-# If set to "enforce" it'll install the operator.
-#
-# Note that OpenShift 4.6 is required.
+# Note that OpenShift 4.17 is required.
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
@@ -41,15 +39,16 @@ spec:
           severity: high
           complianceType: musthave
           operatorGroup:
-            name: rhdh-operator-bcsvc
+            name: {{ .Values.developerHub.namespace }}
             namespace: {{ .Values.developerHub.namespace }}
           subscription:
-            name: {{ .Values.developerHub.name }}
             namespace: {{ .Values.developerHub.namespace }}
-            source: {{ .Values.developerHub.source }}
-            sourceNamespace: {{ .Values.developerHub.sourceNamespace }}
-            channel: {{ .Values.developerHub.channel }}
-          upgradeApproval: {{ .Values.developerHub.installPlanApproval }}
+            channel: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/dev-hub-channel" | default "{{ .Values.developerHub.channel }}" hub{{ "}}" }}'
+            name: {{ .Values.developerHub.name }}
+            source: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/dev-hub-source" | default "{{ .Values.developerHub.source }}" hub{{ "}}" }}'
+            sourceNamespace: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/dev-hub-source-namespace" | default "{{ .Values.developerHub.sourceNamespace }}" hub{{ "}}" }}'
+          # Getting Label and then capitalizing first letter
+          upgradeApproval: '{{ "{{hub" }} $upgrade_approval := index .ManagedClusterLabels "autoshift.io/dev-hub-install-plan-approval" | default "{{ .Values.developerHub.installPlanApproval }}" {{ "-hub}}" }} {{ "{{hub" }} print (substr 0 1 $upgrade_approval | upper) (substr 1 (len $upgrade_approval) $upgrade_approval) {{ "-hub}}" }}'
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
@@ -77,9 +76,21 @@ metadata:
   namespace: open-cluster-policies
 spec:
   clusterSets:
-  {{- range .Values.developerHub.clusterSets }}
-    - {{ . }}
+  {{- range $clusterSet, $value := .Values.managedClusterSets }}
+    - {{ $clusterSet }}
   {{- end }}
+  {{- range $clusterSet, $value := .Values.hubClusterSets }}
+    - {{ $clusterSet }}
+  {{- end }}
+  predicates:
+    - requiredClusterSelector:
+        labelSelector:
+          matchExpressions:
+            - key: 'autoshift.io/dev-hub'
+              operator: In
+              values:
+              - 'true'
+              - 'True'
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists
