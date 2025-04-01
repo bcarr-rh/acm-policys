@@ -38,12 +38,13 @@ spec:
             name: {{ .Values.devspaces.namespace }}
             namespace: {{ .Values.devspaces.namespace }}
           subscription:
-            name: {{ .Values.devspaces.name }}
             namespace: {{ .Values.devspaces.namespace }}
-            source: {{ .Values.devspaces.source }}
-            sourceNamespace: {{ .Values.devspaces.sourceNamespace }}
-            channel: {{ .Values.devspaces.channel }}
-          upgradeApproval: {{ .Values.devspaces.installPlanApproval }}
+            channel: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/dev-spaces-channel" | default "{{ .Values.devspaces.channel }}" hub{{ "}}" }}'
+            name: {{ .Values.devspaces.name }}
+            source: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/dev-spaces-source" | default "{{ .Values.devspaces.source }}" hub{{ "}}" }}'
+            sourceNamespace: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/dev-spaces-source-namespace" | default "{{ .Values.devspaces.sourceNamespace }}" hub{{ "}}" }}'
+          # Getting Label and then capitalizing first letter
+          upgradeApproval: '{{ "{{hub" }} $upgrade_approval := index .ManagedClusterLabels "autoshift.io/dev-spaces-install-plan-approval" | default "{{ .Values.devspaces.installPlanApproval }}" {{ "-hub}}" }} {{ "{{hub" }} print (substr 0 1 $upgrade_approval | upper) (substr 1 (len $upgrade_approval) $upgrade_approval) {{ "-hub}}" }}'
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
@@ -71,9 +72,21 @@ metadata:
   namespace: open-cluster-policies
 spec:
   clusterSets:
-  {{- range .Values.devspaces.clusterSets }}
-    - {{ . }}
+  clusterSets:
+  {{- range $clusterSet, $value := .Values.managedClusterSets }}
+    - {{ $clusterSet }}
   {{- end }}
+  {{- range $clusterSet, $value := .Values.hubClusterSets }}
+    - {{ $clusterSet }}
+  {{- end }}
+  predicates:
+    - requiredClusterSelector:
+        labelSelector:
+          matchExpressions:
+            - key: 'autoshift.io/dev-spaces'
+              operator: In
+              values:
+              - 'true'
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists

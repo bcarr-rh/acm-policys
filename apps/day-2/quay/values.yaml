@@ -4,10 +4,22 @@
 quayOperator:
     name: quay-operator
     namespace: quay-operator
-    channel: stable-3.9
+    channel: stable-3.13
     installPlanApproval: Automatic
     source: redhat-operators
     sourceNamespace: openshift-marketplace
-    clusterSets:
-      - hub
-      - managed
+hubClusterSets:
+  hub:
+    labels:
+      test1: 'test'
+managedClusterSets:
+  managed:
+    labels:
+      test4: 'test'
+
+### Labels Quay
+# quay<bool>: If not set Quay will not be managed
+# quay-channel<String>: default stable-3.13
+# quay-install-plan-approval<String>: default Automatic
+# quay-source<String>: default redhat-operators
+# quay-source-namespace<String>: default openshift-marketplace

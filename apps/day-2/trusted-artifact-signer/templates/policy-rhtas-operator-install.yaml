@@ -24,7 +24,7 @@ spec:
                 apiVersion: v1
                 kind: Namespace
                 metadata:
-                  name: openshift-operators
+                  name: {{ .Values.rhtasOperator.namespace }}
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1beta1
         kind: OperatorPolicy
@@ -35,15 +35,16 @@ spec:
           severity: high
           complianceType: musthave
           operatorGroup:
-            name: global-operators
-            namespace: openshift-operators
+            name: global-operators # Default OG Created by OpenShift
+            namespace: {{ .Values.rhtasOperator.namespace }}
           subscription:
+            namespace: {{ .Values.rhtasOperator.namespace }}
+            channel: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/tas-channel" | default "{{ .Values.rhtasOperator.channel }}" hub{{ "}}" }}'
             name: {{ .Values.rhtasOperator.name }}
-            namespace: openshift-operators
-            source: {{ .Values.rhtasOperator.source }}
-            sourceNamespace: {{ .Values.rhtasOperator.sourceNamespace }}
-            channel: {{ .Values.rhtasOperator.channel }}
-          upgradeApproval: {{ .Values.rhtasOperator.installPlanApproval }}
+            source: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/tas-source" | default "{{ .Values.rhtasOperator.source }}" hub{{ "}}" }}'
+            sourceNamespace: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/tas-source-namespace" | default "{{ .Values.rhtasOperator.sourceNamespace }}" hub{{ "}}" }}'
+          # Getting Label and then capitalizing first letter
+          upgradeApproval: '{{ "{{hub" }} $upgrade_approval := index .ManagedClusterLabels "autoshift.io/tas-install-plan-approval" | default "{{ .Values.rhtasOperator.installPlanApproval }}" {{ "-hub}}" }} {{ "{{hub" }} print (substr 0 1 $upgrade_approval | upper) (substr 1 (len $upgrade_approval) $upgrade_approval) {{ "-hub}}" }}'
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
@@ -58,7 +59,7 @@ spec:
                 apiVersion: operators.coreos.com/v1alpha1
                 kind: ClusterServiceVersion
                 metadata:
-                  namespace: openshift-operators
+                  namespace: {{ .Values.rhtasOperator.namespace }}
                 spec:
                   displayName: 'Red Hat Trusted Artifact Signer'
                 status:
@@ -71,9 +72,20 @@ metadata:
   namespace: open-cluster-policies
 spec:
   clusterSets:
-  {{- range .Values.rhtasOperator.clusterSets }}
-    - {{ . }}
+  {{- range $clusterSet, $value := .Values.managedClusterSets }}
+    - {{ $clusterSet }}
   {{- end }}
+  {{- range $clusterSet, $value := .Values.hubClusterSets }}
+    - {{ $clusterSet }}
+  {{- end }}
+  predicates:
+    - requiredClusterSelector:
+        labelSelector:
+          matchExpressions:
+            - key: 'autoshift.io/tas'
+              operator: In
+              values:
+              - 'true'
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists

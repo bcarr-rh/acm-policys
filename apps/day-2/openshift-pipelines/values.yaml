@@ -4,11 +4,22 @@
 pipelines:
     name: openshift-pipelines-operator-rh
     namespace: openshift-operators
-    channel: pipelines-1.17
+    channel: latest
     installPlanApproval: Automatic
     source: redhat-operators
     sourceNamespace: openshift-marketplace
-    clusterSets:
-      - hub
-      - managed
+hubClusterSets:
+  hub:
+    labels:
+      test1: 'test'
+managedClusterSets:
+  managed:
+    labels:
+      test4: 'test'
 
+### Labels OpenShift Pipelines
+# pipelines<bool>: If not set Developer Hub will not be managed
+# pipelines-channel<String>: default latest
+# pipelines-install-plan-approval<String>: default Automatic
+# pipelines-source<String>: default redhat-operators
+# pipelines-source-namespace<String>: default openshift-marketplace

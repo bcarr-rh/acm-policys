@@ -228,7 +228,6 @@ spec:
               operator: In
               values:
               - 'true'
-              - 'True'
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists
