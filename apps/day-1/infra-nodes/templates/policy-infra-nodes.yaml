@@ -70,7 +70,7 @@ spec:
                         - key: node-role.kubernetes.io/{{ "{{" }} $machineset_role {{ "}}" }}
                           effect: NoExecute
                       providerSpec:
-                      {{ "{{-" }} if eq $worker_ms.spec.template.spec.providerSpec.value.kind "VSphereMachineProviderSpec" {{ "}}" }}
+                        {{ "{{-" }} if eq $worker_ms.spec.template.spec.providerSpec.value.kind "VSphereMachineProviderSpec" {{ "}}" }}
                         value:
                           numCoresPerSocket: {{ "{{" }} {{ "{{hub" }} (index .ManagedClusterLabels "{{ printf  "%s%s" $labelPrefix "infra-nodes-numcores-per-socket" }}") | default "" {{ "hub}}" }} | default $worker_ms.spec.template.spec.providerSpec.value.numCoresPerSocket  {{ "}}" }}
                           diskGiB: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.diskGiB {{ "}}" }}
