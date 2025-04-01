@@ -32,7 +32,6 @@ spec:
                 {{ "{{-" }} end {{ "}}" }} 
               {{ "{{-" }} end {{ "}}" }} 
               {{ "{{-" }} $machineset_role := "infra" {{ "}}" }}
-              {{ "{{-" }} $zones := list{{ range (toStrings .Values.infraNodes.zones) }} "{{ . }}"{{ end }} {{ "}}" }}
               {{ "{{-" }} $infrastructure_id := (lookup "config.openshift.io/v1" "Infrastructure" "" "cluster").status.infrastructureName {{ "}}" }}
               {{ "{{-" }} $worker_ms := index $workers "worker" {{ "}}" }}
               {{ "{{-" }} $machineset_role := "infra" {{ "}}" }}
@@ -173,7 +172,7 @@ spec:
                     name: {{ "{{" }} $infrastructure_id {{ "}}" }}-{{ "{{" }} $machineset_role {{ "}}" }}-{{ "{{" }} $zone {{ "}}" }}
                     namespace: openshift-machine-api
                   spec:
-                    replicas: '{{ "{{" }}hub (index .ManagedClusterLabels "{{ printf "%s%s" $labelPrefix "infra-nodes" }}") hub{{ "}}" }}'
+                    replicas: '{{ "{{hub" }} (index .ManagedClusterLabels "{{ printf "%s%s" $labelPrefix "infra-nodes" }}") {{ "hub}}" }}'
               {{ "{{-" }} end {{ "}}" }}
 ---
 apiVersion: cluster.open-cluster-management.io/v1beta1
@@ -211,3 +210,24 @@ subjects:
   - name: {{ $policyName }}
     apiGroup: policy.open-cluster-management.io
     kind: Policy
+
+
+{{/* 
+              {{- $ms :=   (index (lookup "machine.openshift.io/v1beta1" "MachineSet" "openshift-machine-api" "") "items" | default list) }} 
+              {{- $workers := dict }} 
+              {{- range $index, $item := $ms }} 
+                {{- $labels := index $item "metadata" "labels" }} 
+                {{- if  eq (index $labels "machine.openshift.io/cluster-api-machine-role") "worker" }}  
+                  {{- $_ := set $workers "worker" $item }} 
+                  {{- break }} 
+                {{- end }} 
+              {{- end }} 
+              {{- $machineset_role := "infra" }}
+              {{- $infrastructure_id := (lookup "config.openshift.io/v1" "Infrastructure" "" "cluster").status.infrastructureName }}
+              {{- $worker_ms := index $workers "worker" }}
+              {{- $machineset_role := "infra" }}
+              {{- $zones := list {{ range (toStrings .Values.infraNodes.zones) }} "{{ . }}"{{ end }} }}
+              {{- $infrastructure_id := (lookup "config.openshift.io/v1" "Infrastructure" "" "cluster").status.infrastructureName }}
+              {{- range $zone := $zones }}
+              {{- end }} 
+*/}}
