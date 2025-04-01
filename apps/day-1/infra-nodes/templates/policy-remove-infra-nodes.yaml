@@ -31,15 +31,16 @@ spec:
         spec:
           object-templates-raw: |
               {{ "{{-" }} define "findWorkerMS" {{ "}}" }}
-              {{ "{{-" }} $list := (index (lookup "machine.openshift.io/v1beta1" "MachineSet" "openshift-machine-api" "") "items") | default list {{ "}}" }} 
-              {{ "{{-" }} if ne (empty $list) {{ "}}" }} 
-              {{ "{{-" }} range $index, $item := $list {{ "}}" }} 
-                {{ "{{-" }} $labels := index $item "metadata" "labels" {{ "}}" }} 
-                {{ "{{-" }} if (index $labels "machine.openshift.io/cluster-api-machine-role") "worker"  {{ "}}" }}  
-                  {{ "{{-" }} toRawJson $item {{ "}}" }} 
-                  {{ "{{-" }} break {{ "}}" }} 
+                {{ "{{-" }} $list := (index (lookup "machine.openshift.io/v1beta1" "MachineSet" "openshift-machine-api" "") "items") | default list {{ "}}" }} 
+                {{ "{{-" }} if ne (empty $list) {{ "}}" }} 
+                  {{ "{{-" }} range $index, $item := $list {{ "}}" }} 
+                    {{ "{{-" }} $labels := index $item "metadata" "labels" {{ "}}" }} 
+                    {{ "{{-" }} if (index $labels "machine.openshift.io/cluster-api-machine-role") "worker"  {{ "}}" }}  
+                      {{ "{{-" }} toRawJson $item {{ "}}" }} 
+                      {{ "{{-" }} break {{ "}}" }} 
+                    {{ "{{-" }} end {{ "}}" }} 
+                  {{ "{{-" }} end {{ "}}" }} 
                 {{ "{{-" }} end {{ "}}" }} 
-              {{ "{{-" }} end {{ "}}" }} 
               {{ "{{-" }} end {{ "}}" }} 
               {{ "{{-" }} $worker_ms := (template "findWorkerMS" "") | default "" | fromJson)  {{ "}}" }}
               {{ "{{-" }} /* Specify the parameters needed to create the MachineSet  */ {{ "-}}" }}
