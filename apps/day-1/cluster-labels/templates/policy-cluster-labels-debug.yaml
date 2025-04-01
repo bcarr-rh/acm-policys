@@ -32,7 +32,7 @@ spec:
                   name: cluster-set-{{ $clusterSetKey }}-lookup-debug
                   namespace: open-cluster-policies
                 data:
-                  MachineSets: |
+                  machineSets: |
                     {{ "{{-" }} index (lookup "machine.openshift.io/v1beta1" "MachineSet" "openshift-machine-api" "") "items" | default list | toRawJson {{ "}}" }} 
 
 ---
