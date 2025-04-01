@@ -25,11 +25,11 @@ spec:
             {{ "{{-" }} $ms :=   (index (lookup "machine.openshift.io/v1beta1" "MachineSet" "openshift-machine-api" "") "items" | default list) {{ "}}" }} 
             {{ "{{-" }} $workers := dict {{ "}}" }} 
             {{ "{{-" }} range $index, $item := $ms {{ "}}" }} 
-              {{ "{{-" }} $labels := index $item "metadata" "labels" {{ "}}" }} 
-              {{ "{{-" }} if  eq (index $labels "machine.openshift.io/cluster-api-machine-role") "worker" {{ "}}" }}  
-                {{ "{{-" }} $_ := set $workers "worker" $item {{ "}}" }} 
-                {{ "{{-" }} break {{ "}}" }} 
-              {{ "{{-" }} end {{ "}}" }} 
+            {{ "{{-" }} $labels := index $item "metadata" "labels" {{ "}}" }} 
+            {{ "{{-" }} if  eq (index $labels "machine.openshift.io/cluster-api-machine-role") "worker" {{ "}}" }}  
+            {{ "{{-" }} $_ := set $workers "worker" $item {{ "}}" }} 
+            {{ "{{-" }} break {{ "}}" }} 
+            {{ "{{-" }} end {{ "}}" }} 
             {{ "{{-" }} end {{ "}}" }} 
             {{ "{{-" }} $machineset_role := "infra" {{ "}}" }}
             {{ "{{-" }} $infrastructure_id := (lookup "config.openshift.io/v1" "Infrastructure" "" "cluster").status.infrastructureName {{ "}}" }}
