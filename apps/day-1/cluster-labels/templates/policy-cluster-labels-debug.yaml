@@ -35,7 +35,6 @@ spec:
                   machineSets: |
                     {{ "{{" }} $ms := (index (lookup "machine.openshift.io/v1beta1" "MachineSet" "openshift-machine-api" "") "items") | default list {{ "}}" }}             
                     {{ "{{" }} $workers := "hello" {{ "}}" }} 
-                    {{ "{{" }} $workers | toRawJson {{ "}}" }}
 
 
 ---
