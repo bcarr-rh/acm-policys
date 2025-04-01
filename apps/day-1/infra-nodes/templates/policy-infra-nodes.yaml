@@ -33,8 +33,8 @@ spec:
             {{ "{{-" }} end {{ "}}" }}
             {{ "{{-" }} $machineset_role := "infra" {{ "}}" }}
             {{ "{{-" }} $infrastructure_id := (lookup "config.openshift.io/v1" "Infrastructure" "" "cluster").status.infrastructureName {{ "}}" }}
-            {{ "{{-" }} $worker_ms := (index $workers "worker" | default "") {{ "}}" }}
-            {{ "{{-" }} if eq $worker_ms "" {{ "}}" }}
+            {{ "{{-" }} $worker_ms := (index $workers "worker" | default dict) {{ "}}" }}
+            {{ "{{-" }} if (empty $worker_ms) {{ "}}" }}
               {{ "{{-" }} print "THIS IS AN ERROR MESSAGE BECAUSE THE WORKER_MS WAS NOT SET" {{ "}}" }}
             {{ "{{-" }} end {{ "}}" }}
             {{ "{{-" }} $machineset_role := "infra" {{ "}}" }}
