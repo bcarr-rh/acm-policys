@@ -21,6 +21,21 @@ spec:
           name: {{ $configPolicyName }}
         spec:
           object-templates-raw: |
+              {{ "{{-" }} $ms :=   (index (lookup "machine.openshift.io/v1beta1" "MachineSet" "openshift-machine-api" "") "items" | default list) {{ "}}" }} 
+              {{ "{{-" }} $workers := dict {{ "}}" }} 
+              {{ "{{-" }} range $index, $item := $ms {{ "}}" }} 
+                {{ "{{-" }} $labels := index $item "metadata" "labels" {{ "}}" }} 
+                {{ "{{-" }} if  eq (index $labels "machine.openshift.io/cluster-api-machine-role") "worker" {{ "}}" }}  
+                  {{ "{{-" }} $_ := set $workers "worker" $item {{ "}}" }} 
+                  {{ "{{-" }} break {{ "}}" }} 
+                {{ "{{-" }} end {{ "}}" }} 
+              {{ "{{-" }} end {{ "}}" }} 
+              {{ "{{-" }} /* Specify the parameters needed to create the MachineSet  */ {{ "-}}" }}
+              {{ "{{-" }} $machineset_role := "infra" {{ "}}" }}
+              {{ "{{-" }} $zones := list{{ range (toStrings .Values.infraNodes.zones) }} "{{ . }}"{{ end }} {{ "}}" }}
+              {{ "{{-" }} $infrastructure_id := (lookup "config.openshift.io/v1" "Infrastructure" "" "cluster").status.infrastructureName {{ "}}" }}
+              {{ "{{-" }} $worker_ms := index $workers "worker" {{ "}}" }}
+
               {{ "{{-" }} /* Specify the parameters needed to create the MachineSet  */ {{ "-}}" }}
               {{ "{{-" }} $machineset_role := "infra" {{ "}}" }}
               {{ "{{-" }} $zones := list{{ range (toStrings .Values.infraNodes.zones) }} "{{ . }}"{{ end }} {{ "}}" }}
