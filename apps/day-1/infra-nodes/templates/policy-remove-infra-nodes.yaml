@@ -32,6 +32,7 @@ spec:
           object-templates-raw: |
               {{ "{{-" }} $ctx := dict {{ "}}" }}
               {{ "{{-" }} define "findWorkerMS" {{ "}}" }}
+                {{ "{{-" }} $ctx := index . 0 {{ "}}" }}
                 {{ "{{-" }} $list := (index (lookup "machine.openshift.io/v1beta1" "MachineSet" "openshift-machine-api" "") "items" | default list) {{ "}}" }} 
                 {{ "{{-" }} if not (empty $list) {{ "}}" }} 
                   {{ "{{-" }} range $index, $item := $list {{ "}}" }} 
@@ -43,8 +44,8 @@ spec:
                     {{ "{{-" }} end {{ "}}" }} 
                   {{ "{{-" }} end {{ "}}" }} 
                 {{ "{{-" }} end {{ "}}" }} 
-              {{ "{{-" }} end {{ "}}" }} 
-              {{ "{{-" }} template "findWorkerMS" $ctx {{ "}}" }} 
+              {{ "{{-" }} end {{ "}}" } 
+              {{ "{{-" }} template "findWorkerMS" (list $ctx) {{ "}}" }} 
               {{ "{{-" }} $worker_ms := (index $ctx "worker_ms_global") | default "" | fromJson   {{ "}}" }}
               {{ "{{-" }} /* Specify the parameters needed to create the MachineSet  */ {{ "-}}" }}
               {{ "{{-" }} $machineset_role := "infra" {{ "}}" }}
