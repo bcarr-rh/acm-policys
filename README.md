@@ -17,14 +17,14 @@ Update openshift-gitops/values.yaml with desired source mirror registry for disc
 
 Install OpenShift Gitops
 ```
-helm template openshift-gitops | oc apply -f -
+helm template openshift-gitops -f apps/day-1/openshift-gitops/values.yaml | oc apply -f -
 ```
 
 Note: If OpenShift GitOps is already installed manually on cluster this will create two Operator Groups for OpenShift GitOps. Removing one will fix the issue.
 
 Install Advanced Cluster Management
 ```
-helm template advanced-cluster-management | oc apply -f -
+helm template advanced-cluster-management -f apps/day-1/advanced-cluster-management/values.yaml | oc apply -f -
 ```
 
 Both ACM and GitOps will be controlled by autoshift after it is installed for version upgrading
@@ -39,7 +39,7 @@ helm install autoshift autoshift
 ```
 or
 ```
-helm template autoshift | oc apply -f -
+helm template autoshift autoshift | oc apply -f -
 ```
 
 Given the labels and cluster sets provided in the values file, ACM cluster sets will be created along with ACM. Manually select which cluster will belong to each cluster set, or when provisioning a new cluster from ACM you can select the desired cluster set from ACM at time of creation.

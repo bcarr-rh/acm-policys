@@ -1,0 +1,81 @@
+---
+apiVersion: argoproj.io/v1beta1
+kind: ArgoCD
+metadata:
+  name: openshift-gitops
+  namespace: {{ .Values.gitops.namespace }}
+  annotations:
+    helm.sh/hook-weight: "4"
+spec:
+  server:
+    resources:
+      limits:
+        cpu: {{ ((.Values.gitops.server).limits).cpu | default "500m" }}
+        memory: {{ ((.Values.gitops.server).limits).memory | default "256Mi" }}
+      requests:
+        cpu: {{ ((.Values.gitops.server).requests).cpu | default "125m" }}
+        memory: {{ ((.Values.gitops.server).requests).memory | default "128Mi" }}
+    route:
+      enabled: true
+  monitoring:
+    enabled: false
+  sso:
+    dex:
+      resources:
+        limits:
+          cpu: {{ ((.Values.gitops.dex).limits).cpu | default "500m" }}
+          memory: {{ ((.Values.gitops.dex).limits).memory | default "256Mi" }}
+        requests:
+          cpu: {{ ((.Values.gitops.dex).requests).cpu | default "125m" }}
+          memory: {{ ((.Values.gitops.dex).requests).memory | default "128Mi" }}
+      openShiftOAuth: true
+    provider: dex
+  rbac:
+    defaultPolicy: ''
+    policy: |
+      g, system:cluster-admins, role:admin
+    {{- range .Values.gitops.rbac_policies}}
+      {{ . }}
+    {{- end }}
+    scopes: '[groups]'
+  repo:
+    resources:
+      limits:
+        cpu: {{ ((.Values.gitops.repo).limits).cpu | default "1000m" }}
+        memory: {{ ((.Values.gitops.repo).limits).memory | default "1024Mi" }}
+      requests:
+        cpu: {{ ((.Values.gitops.repo).requests).cpu | default "250m" }}
+        memory: {{ ((.Values.gitops.repo).requests).memory | default "256Mi" }}
+  ha:
+    resources:
+      limits:
+        cpu: {{ ((.Values.gitops.ha).limits).cpu | default "500m" }}
+        memory: {{ ((.Values.gitops.ha).limits).memory | default "256Mi" }}
+      requests:
+        cpu: {{ ((.Values.gitops.ha).requests).cpu | default "125m" }}
+        memory: {{ ((.Values.gitops.ha).requests).memory | default "128Mi" }}
+    enabled: {{ (.Values.gitops.ha).enabled | default "false" }}
+  redis:
+    resources:
+      limits:
+        cpu: {{ ((.Values.gitops.redis).limits).cpu | default "500m" }}
+        memory: {{ ((.Values.gitops.redis).limits).memory | default "256Mi" }}
+      requests:
+        cpu: {{ ((.Values.gitops.redis).requests).cpu | default "125m" }}
+        memory: {{ ((.Values.gitops.redis).requests).memory | default "128Mi" }}
+  controller:
+    resources:
+      limits:
+        cpu: {{ ((.Values.gitops.controller).limits).cpu | default "2000m" }}
+        memory: {{ ((.Values.gitops.controller).limits).memory | default "2048Mi" }}
+      requests:
+        cpu: {{ ((.Values.gitops.controller).requests).cpu | default "250m" }}
+        memory: {{ ((.Values.gitops.controller).requests).memory | default "1024Mi" }}
+  applicationSet:
+    resources:
+      limits:
+        cpu: {{ ((.Values.gitops.applicationSet).limits).cpu | default "2" }}
+        memory: {{ ((.Values.gitops.applicationSet).limits).memory | default "1Gi" }}
+      requests:
+        cpu: {{ ((.Values.gitops.applicationSet).requests).cpu | default "250m" }}
+        memory: {{ ((.Values.gitops.applicationSet).requests).memory | default "512Mi" }}
