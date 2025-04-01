@@ -36,7 +36,7 @@ spec:
                 {{ "{{-" }} if not (empty $list) {{ "}}" }} 
                   {{ "{{-" }} range $index, $item := $list {{ "}}" }} 
                     {{ "{{-" }} $labels := index $item "metadata" "labels" {{ "}}" }} 
-                    {{ "{{-" }} if (index $labels "machine.openshift.io/cluster-api-machine-role") "worker"  {{ "}}" }}  
+                    {{ "{{-" }} if  ne (index $labels "machine.openshift.io/cluster-api-machine-role" "worker")  {{ "}}" }}  
                       {{ "{{-" }} $jsonValue := toRawJson $item {{ "}}" }} 
                       {{ "{{-" }} $ := set $ "worker_ms_global" $jsonValue {{ "}}" }} 
                       {{ "{{-" }} break {{ "}}" }} 
