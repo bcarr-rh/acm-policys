@@ -30,24 +30,7 @@ spec:
           name: {{ $configPolicyName }}
         spec:
           object-templates-raw: |
-              {{ "{{-" }} $ctx := dict {{ "}}" }}
-              {{ "{{-" }} define "findWorkerMS" {{ "}}" }}
-                {{ "{{-" }} $ctx := index . 0 {{ "}}" }}
-                {{ "{{-" }} $list := (index (lookup "machine.openshift.io/v1beta1" "MachineSet" "openshift-machine-api" "") "items" | default list) {{ "}}" }} 
-                {{ "{{-" }} if not (empty $list) {{ "}}" }} 
-                  {{ "{{-" }} range $index, $item := $list {{ "}}" }} 
-                    {{ "{{-" }} $labels := index $item "metadata" "labels" {{ "}}" }} 
-                    {{ "{{-" }} if  eq (index $labels "machine.openshift.io/cluster-api-machine-role") "worker" {{ "}}" }}  
-                      {{ "{{-" }} $jsonValue := toRawJson $item {{ "}}" }} 
-                      {{ "{{-" }} $ := set $ctx "worker_ms_global" $jsonValue {{ "}}" }} 
-                      {{ "{{-" }} break {{ "}}" }} 
-                    {{ "{{-" }} end {{ "}}" }} 
-                  {{ "{{-" }} end {{ "}}" }} 
-                {{ "{{-" }} end {{ "}}" }} 
-              {{ "{{-" }} end {{ "}}" }} 
-              {{ "{{-" }} template "findWorkerMS" (list $ctx) {{ "}}" }} 
-              {{ "{{-" }} $worker_ms := (index $ctx "worker_ms_global") | default "" | fromJson   {{ "}}" }}
-              {{ "{{-" }} /* Specify the parameters needed to create the MachineSet  */ {{ "-}}" }}
+              {{ "{{-" }} /* Specify the parameters needed to delete the MachineSet  */ {{ "-}}" }}
               {{ "{{-" }} $machineset_role := "infra" {{ "}}" }}
               {{ "{{-" }} $zones := list{{ range (toStrings .Values.infraNodes.zones) }} "{{ . }}"{{ end }} {{ "}}" }}
               {{ "{{-" }} $infrastructure_id := (lookup "config.openshift.io/v1" "Infrastructure" "" "cluster").status.infrastructureName {{ "}}" }}
