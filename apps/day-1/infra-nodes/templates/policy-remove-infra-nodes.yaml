@@ -44,7 +44,7 @@ spec:
                     {{ "{{-" }} end {{ "}}" }} 
                   {{ "{{-" }} end {{ "}}" }} 
                 {{ "{{-" }} end {{ "}}" }} 
-              {{ "{{-" }} end {{ "}}" } 
+              {{ "{{-" }} end {{ "}}" }} 
               {{ "{{-" }} template "findWorkerMS" (list $ctx) {{ "}}" }} 
               {{ "{{-" }} $worker_ms := (index $ctx "worker_ms_global") | default "" | fromJson   {{ "}}" }}
               {{ "{{-" }} /* Specify the parameters needed to create the MachineSet  */ {{ "-}}" }}
