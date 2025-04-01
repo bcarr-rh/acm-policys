@@ -141,7 +141,7 @@ tas-source-namespace<String>: default openshift-marketplace
 ### Quay
 quay<bool>: If not set Quay will not be managed
 
-quay-channel<String>: default stable-3.9
+quay-channel<String>: default stable-3.13
 
 quay-install-plan-approval<String>: default Automatic
 
