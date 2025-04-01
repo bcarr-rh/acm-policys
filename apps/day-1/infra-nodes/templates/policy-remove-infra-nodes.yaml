@@ -30,19 +30,22 @@ spec:
           name: {{ $configPolicyName }}
         spec:
           object-templates-raw: |
+              {{ "{{-" }} $worker_ms_global := "" {{ "}}" }}
               {{ "{{-" }} define "findWorkerMS" {{ "}}" }}
                 {{ "{{-" }} $list := (index (lookup "machine.openshift.io/v1beta1" "MachineSet" "openshift-machine-api" "") "items") | default list {{ "}}" }} 
                 {{ "{{-" }} if ne (empty $list) {{ "}}" }} 
                   {{ "{{-" }} range $index, $item := $list {{ "}}" }} 
                     {{ "{{-" }} $labels := index $item "metadata" "labels" {{ "}}" }} 
                     {{ "{{-" }} if (index $labels "machine.openshift.io/cluster-api-machine-role") "worker"  {{ "}}" }}  
-                      {{ "{{-" }} toRawJson $item {{ "}}" }} 
+                      {{ "{{-" }} $jsonValue := toRawJson $item {{ "}}" }} 
+                      {{ "{{-" }} $ := set $ "worker_ms_global" $jsonValue {{ "}}" }} 
                       {{ "{{-" }} break {{ "}}" }} 
                     {{ "{{-" }} end {{ "}}" }} 
                   {{ "{{-" }} end {{ "}}" }} 
                 {{ "{{-" }} end {{ "}}" }} 
               {{ "{{-" }} end {{ "}}" }} 
-              {{ "{{-" }} $worker_ms := (template "findWorkerMS" "") | default "" | fromJson)  {{ "}}" }}
+              {{ "{{-" }} template "findWorkerMS" . {{ "}}" }} 
+              {{ "{{-" }} $worker_ms := $.worker_ms  {{ "}}" }}
               {{ "{{-" }} /* Specify the parameters needed to create the MachineSet  */ {{ "-}}" }}
               {{ "{{-" }} $machineset_role := "infra" {{ "}}" }}
               {{ "{{-" }} $zones := list{{ range (toStrings .Values.infraNodes.zones) }} "{{ . }}"{{ end }} {{ "}}" }}
