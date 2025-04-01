@@ -33,13 +33,13 @@ spec:
                   namespace: open-cluster-policies
                 data:
                   machineSets: |
-                    {{ "{{" }} $ms := (index (lookup "machine.openshift.io/v1beta1" "MachineSet" "openshift-machine-api" "") "items") | default list {{ "}}" }}             
                     {{ "{{" }} $workers := "hello" {{ "}}" }} 
 
 
 ---
 {{/*
 
+                    {{ "{{" }} $ms := (index (lookup "machine.openshift.io/v1beta1" "MachineSet" "openshift-machine-api" "") "items") | default list {{ "}}" }}             
                     {{ "{{" }} range $index, $item := $ms {{ "}}" }} 
                       {{ "{{" }} $labels := index $item "spec" "template" "metadata" "labels" {{ "}}" }} 
                       {{ "{{" }} if  eq (index $labels "machine.openshift.io/cluster-api-machine-role") "worker" {{ "}}" }}  
