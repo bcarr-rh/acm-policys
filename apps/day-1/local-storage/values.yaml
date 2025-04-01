@@ -8,14 +8,14 @@ localStorage:
   source: redhat-operators
   sourceNamespace: openshift-marketplace
   channel: stable
-hubClusterSets:
-  hub:
-    labels:
-      test1: 'test'
-managedClusterSets:
-  managed:
-    labels:
-      test4: 'test'
+# hubClusterSets:
+#   hub:
+#     labels:
+#       test1: 'test'
+# managedClusterSets:
+#   managed:
+#     labels:
+#       test4: 'test'
 
 
 # Labels

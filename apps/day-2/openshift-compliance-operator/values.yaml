@@ -9,14 +9,14 @@ compliance:
     sourceNamespace: openshift-marketplace
     nameSub: compliance-operator
     channel: stable
-hubClusterSets:
-  hub:
-    labels:
-      test1: 'test'
-managedClusterSets:
-  managed:
-    labels:
-      test4: 'test'
+# hubClusterSets:
+#   hub:
+#     labels:
+#       test1: 'test'
+# managedClusterSets:
+#   managed:
+#     labels:
+#       test4: 'test'
 
 # Labels
 # compliance<bool>: If not set Compliance Operator will not be managed. Helm chart config map must be set with profiles and remediations

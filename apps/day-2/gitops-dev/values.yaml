@@ -54,11 +54,11 @@ teams:
   test:
     gitops_rbac_policies:
     - 'g, openshift-systems, role:admin'
-hubClusterSets:
-  hub:
-    labels:
-      test1: 'test'
-managedClusterSets:
-  managed:
-    labels:
-      test4: 'test'
+# hubClusterSets:
+#   hub:
+#     labels:
+#       test1: 'test'
+# managedClusterSets:
+#   managed:
+#     labels:
+#       test4: 'test'

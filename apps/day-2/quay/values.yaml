@@ -8,14 +8,14 @@ quayOperator:
     installPlanApproval: Automatic
     source: redhat-operators
     sourceNamespace: openshift-marketplace
-hubClusterSets:
-  hub:
-    labels:
-      test1: 'test'
-managedClusterSets:
-  managed:
-    labels:
-      test4: 'test'
+# hubClusterSets:
+#   hub:
+#     labels:
+#       test1: 'test'
+# managedClusterSets:
+#   managed:
+#     labels:
+#       test4: 'test'
 
 ### Labels Quay
 # quay<bool>: If not set Quay will not be managed

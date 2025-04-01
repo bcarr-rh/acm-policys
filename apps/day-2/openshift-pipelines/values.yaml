@@ -8,14 +8,14 @@ pipelines:
     installPlanApproval: Automatic
     source: redhat-operators
     sourceNamespace: openshift-marketplace
-hubClusterSets:
-  hub:
-    labels:
-      test1: 'test'
-managedClusterSets:
-  managed:
-    labels:
-      test4: 'test'
+# hubClusterSets:
+#   hub:
+#     labels:
+#       test1: 'test'
+# managedClusterSets:
+#   managed:
+#     labels:
+#       test4: 'test'
 
 ### Labels OpenShift Pipelines
 # pipelines<bool>: If not set Developer Hub will not be managed

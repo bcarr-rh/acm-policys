@@ -13,14 +13,14 @@ acm:
   enable_backup: false
   policy_namespace: open-cluster-policies
   gitops_namespace: openshift-gitops
-hubClusterSets:
-  hub:
-    labels:
-      test1: 'test'
-managedClusterSets:
-  sandbox:
-    labels:
-      test3: 'test'
-  managed:
-    labels:
-      test4: 'test'
+# hubClusterSets:
+#   hub:
+#     labels:
+#       test1: 'test'
+# managedClusterSets:
+#   sandbox:
+#     labels:
+#       test3: 'test'
+#   managed:
+#     labels:
+#       test4: 'test'

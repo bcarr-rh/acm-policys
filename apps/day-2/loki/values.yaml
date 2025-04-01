@@ -25,14 +25,14 @@ coo:
     installPlanApproval: Automatic
     source: redhat-operators
     sourceNamespace: openshift-marketplace
-hubClusterSets:
-  hub:
-    labels:
-      test1: 'test'
-managedClusterSets:
-  managed:
-    labels:
-      test4: 'test'
+# hubClusterSets:
+#   hub:
+#     labels:
+#       test1: 'test'
+# managedClusterSets:
+#   managed:
+#     labels:
+#       test4: 'test'
 
 # Labels 
 # loki<bool>: If not set Loki will not be managed. Dependent on ODF Multi Object Gateway
