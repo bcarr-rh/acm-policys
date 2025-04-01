@@ -33,7 +33,7 @@ spec:
                   namespace: open-cluster-policies
                 data:
                   MachineSets: |
-                    {{ "{{-" }} (index (lookup "machine.openshift.io/v1beta1" "MachineSet" "openshift-machine-api" "") "items" | default list) | toRawJson {{ "}}" }} 
+                    {{ "{{-" }} (index (lookup "machine.openshift.io/v1beta1" "MachineSet" "openshift-machine-api" "") "items" | default list | toRawJson {{ "}}" }} 
 
 ---
 {{/* (index ((index (lookup "v1" "ConfigMap" "open-cluster-policies" (printf "cluster-set.%s"  $clusterSet)) "data" "values") | fromJson) "labels") | default dict */}}
