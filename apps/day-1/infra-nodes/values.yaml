@@ -53,7 +53,7 @@ infraNodes:
     metadata:
       name: cluster
   zones:
-    - us-east-2b
+    - us-east-2a
   externalIngress:
     clusterSets:
       - managed  
