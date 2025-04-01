@@ -57,6 +57,7 @@ spec:
                       machine.openshift.io/cluster-api-cluster: {{ "{{" }} $infrastructure_id {{ "}}" }}
                     name: {{ "{{" }} $infrastructure_id {{ "}}" }}-{{ "{{" }} $machineset_role {{ "}}" }}-{{ "{{" }} $zone {{ "}}" }}
                     namespace: openshift-machine-api
+              {{ "{{-" }} end {{ "}}" }} 
           pruneObjectBehavior: {{ .Values.infraNodes.pruneObjectBehavior | default "DeleteAll" }}
           remediationAction: {{ .Values.infraNodes.remediationAction | default "enforce" }}
           severity: high
