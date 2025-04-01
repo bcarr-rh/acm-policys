@@ -14,6 +14,7 @@ hubClusterSets:
       infra-nodes-memory-mib:  '24576'
       infra-nodes-numcores-per-socket:  '4'
       infra-nodes:  '6'
+
       worker-nodes-numcpu:  '8'
       worker-nodes-memory-mib:  '32768'
       worker-nodes-numcores-per-socket:  '4'
@@ -43,6 +44,10 @@ clusters:
       worker-nodes:  '3'
   local-cluster: 
     labels: 
-      test-worked: 'true'
-      second-label: ''
-      infra-nodes: '3'
+      test-worked: 
+        value: true 
+      second-label: 
+        value: ''
+      infra-nodes: 
+        value: '3' 
+        preserve: true 

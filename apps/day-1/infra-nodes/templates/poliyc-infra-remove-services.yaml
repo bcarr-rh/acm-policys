@@ -1,8 +1,11 @@
 
-{{ $policyName := "policy-remove-infra-gitops" }}
-{{ $configPolicyName := "remove-infra-gitops" }}
+{{ $policyName := "policy-remove-infra-services" }}
 {{ $placementName := printf "placement-%s" $policyName }}
 {{ $labelPrefix := .Values.infraNodes.labelPrefix | default "autoshift.io/" }}
+{{ $removeGitOpsPolicyName := "remove-infra-gitops" }}
+{{ $removeImageRegistryPolicyName := "remove-infra-image-registry" }}
+{{ $removeIngressPolicyName := "remove-infra-ingress" }}
+{{ $removeMonitoringPolicyName := "remove-infra-monitoring" }}
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
@@ -20,7 +23,7 @@ spec:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: {{ $configPolicyName }}
+          name: {{ $removeMonitoringPolicyName }}
         spec:
           severity: high
           remediationAction: enforce
@@ -67,14 +70,14 @@ spec:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: {{ $configPolicyName }}
+          name: {{ $removeGitOpsPolicyName }}
         spec:
           severity: high
           remediationAction: enforce
           object-templates-raw: | 
+          #meta
             [
-#meta
-{},
+              {
                   {{- $gitOpsEnabled := {{hub index .ManagedClusterLabels "autoshift.io/infra-nodes-gitops-enabled" | default "false" hub}} }}
                   {{- $gitOpsMigragte := {{hub index .ManagedClusterLabels "autoshift.io/infra-nodes-gitops-migrate" | default "false" hub}} }}
                   {{- $infraNodes := {{hub index .ManagedClusterLabels "autoshift.io/infra-nodes" | default "false" hub}} }}
@@ -90,7 +93,21 @@ spec:
                           "objectDefinition": "{{" $objectDefinition | toRawJson "}}" 
                     {{- end }} 
                   {{- end }} 
-{},
+                }
+              ]
+              #meta
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: {{ $removeImageRegistryPolicyName }}
+        spec:
+          severity: high
+          remediationAction: enforce
+          object-templates-raw: | 
+          #meta
+            [
+              {
                   {{- $imageRegistryEnabled := {{hub index .ManagedClusterLabels "autoshift.io/infra-nodes-image-registry-enabled" | default "false" hub}} }}
                   {{- $imageRegistryMigragte := {{hub index .ManagedClusterLabels "autoshift.io/infra-nodes-image-registry-migrate" | default "false" hub}} }}
                   {{- $infraNodes := {{hub index .ManagedClusterLabels "autoshift.io/infra-nodes" | default "false" hub}} }}
@@ -108,7 +125,21 @@ spec:
                           "objectDefinition": {{ $objectDefinition | toRawJson }} 
                     {{- end }} 
                   {{- end }} 
-{},
+              }
+            ]
+            #meta
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: {{ $removeIngressPolicyName }}
+        spec:
+          severity: high
+          remediationAction: enforce
+          object-templates-raw: | 
+          #meta
+            [
+              {
                   {{- $ingressEnabled := {{hub index .ManagedClusterLabels "autoshift.io/infra-nodes-ingress-enabled" | default "false" hub}} }}
                   {{- $ingressMigragte := {{hub index .ManagedClusterLabels "autoshift.io/infra-nodes-ingress-migrate" | default "false" hub}} }}
                   {{- $infraNodes := {{hub index .ManagedClusterLabels "autoshift.io/infra-nodes" | default "false" hub}} }}
@@ -127,21 +158,7 @@ spec:
                           "objectDefinition": {{ $objectDefinition | toRawJson }} 
                     {{- end }} 
                   {{- end }} 
-{},
-                  {{- $monitoringEnabled := {{hub index .ManagedClusterLabels "autoshift.io/infra-nodes-monitoring-enabled" | default "false" hub}} }}
-                  {{- $monitoringMigragte := {{hub index .ManagedClusterLabels "autoshift.io/infra-nodes-monitoring-migrate" | default "false" hub}} }}
-                  {{- $infraNodes := {{hub index .ManagedClusterLabels "autoshift.io/infra-nodes" | default "false" hub}} }}
-                  {{- if and (eq $monitoringEnabled "true") (or (eq $monitoringMigrate "true") (ne $infraNodes "false" )) }}
-                    {{- $monitoringConfig := lookup "v1" "ConfigMap" "openshift-monitorying" "cluster-infra-monitoring"  }}
-                    {{- if  not (empty $monitoringConfig)  }}
-                      {{- $monitorConfigNoStatus := unset $monitoringConfig "status"  }}
-                      {{- $nodePlacement := dict "nodeSelector" (dict) "tolerations" (list) }}
-                      {{- $newSpec := set $spec "nodePlacement" $nodePlacement }}
-                      {{- $objectDefinition := set $IngressControllerNoStatus "spec" $newSpec }}
-                          "complianceType": "mustonlyhave",
-                          "pruneObjectBehavior": "{{ .Values.infraNodes.imageRegistry.pruneObjectBehavior | default "None" }}",
-                          "remediationAction": "enforce",
-                          "severity": "high",
-                          "objectDefinition": {{ $objectDefinition | toRawJson }} 
-                    {{- end }} 
-                  {{- end }} 
+              }
+            ]
+
+          #meta
