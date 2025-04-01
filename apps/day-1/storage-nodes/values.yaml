@@ -8,4 +8,4 @@ storageNodes:
   zones:
     - us-east-2c
 # Defaults to worker node instance type for first machine set if finds
-# instanceType: i4i.8xlarge
+instanceType: i4i.8xlarge
