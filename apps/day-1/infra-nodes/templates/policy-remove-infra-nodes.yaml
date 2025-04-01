@@ -44,7 +44,7 @@ spec:
                   {{ "{{-" }} end {{ "}}" }} 
                 {{ "{{-" }} end {{ "}}" }} 
               {{ "{{-" }} end {{ "}}" }} 
-              {{ "{{-" }} template "findWorkerMS" . {{ "}}" }} 
+              {{ "{{-" }} template "findWorkerMS" $ctx {{ "}}" }} 
               {{ "{{-" }} $worker_ms := (index $ctx "worker_ms_global") | default "" | fromJson   {{ "}}" }}
               {{ "{{-" }} /* Specify the parameters needed to create the MachineSet  */ {{ "-}}" }}
               {{ "{{-" }} $machineset_role := "infra" {{ "}}" }}
