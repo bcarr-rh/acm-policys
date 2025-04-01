@@ -35,6 +35,12 @@ spec:
                   machineSets: |
                     {{ "{{" }} $ms := (index (lookup "machine.openshift.io/v1beta1" "MachineSet" "openshift-machine-api" "") "items") | default list {{ "}}" }}             
                     {{ "{{" }} $workers := dict {{ "}}" }} 
+                    {{ "{{" }} $workers | toRawJson {{ "}}" }}
+
+
+---
+{{/*
+
                     {{ "{{" }} range $index, $item := $ms {{ "}}" }} 
                       {{ "{{" }} $labels := index $item "spec" "template" "metadata" "labels" {{ "}}" }} 
                       {{ "{{" }} if  eq (index $labels "machine.openshift.io/cluster-api-machine-role") "worker" {{ "}}" }}  
@@ -42,11 +48,9 @@ spec:
                         {{ "{{-" }} break {{ "}}" }} 
                       {{ "{{" }} end {{ "}}" }} 
                     {{ "{{" }} end {{ "}}" }} 
-                    {{ "{{" }} $workers | toRawJson {{ "}}" }}
 
+ (index ((index (lookup "v1" "ConfigMap" "open-cluster-policies" (printf "cluster-set.%s"  $clusterSet)) "data" "values") | fromJson) "labels") | default dict */}}
 
----
-{{/* (index ((index (lookup "v1" "ConfigMap" "open-cluster-policies" (printf "cluster-set.%s"  $clusterSet)) "data" "values") | fromJson) "labels") | default dict */}}
                     {{/*{{ "{{-" }} (lookup "cluster.open-cluster-management.io/v1" "Manage*/}}
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
