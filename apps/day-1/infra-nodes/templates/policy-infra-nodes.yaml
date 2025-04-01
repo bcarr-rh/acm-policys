@@ -36,7 +36,7 @@ spec:
             {{ "{{-" }} $worker_ms := (index $workers "worker" | default "") {{ "}}" }}
             {{ "{{-" }} if eq $worker_ms "" {{ "}}" }}
               {{ "{{-" }} print "THIS IS AN ERROR MESSAGE BECAUSE THE WORKER_MS WAS NOT SET" {{ "}}" }}
-            {{ "{{-" }} end {{ "}}" }} 
+            {{ "{{-" }} end {{ "}}" }}
             {{ "{{-" }} $machineset_role := "infra" {{ "}}" }}
             {{ "{{-" }} $zones := list {{ range (toStrings .Values.infraNodes.zones) }} "{{ . }}"{{ end }} {{ "}}" }}
             {{ "{{-" }} $infrastructure_id := (lookup "config.openshift.io/v1" "Infrastructure" "" "cluster").status.infrastructureName {{ "}}" }}
