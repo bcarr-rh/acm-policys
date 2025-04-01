@@ -44,10 +44,6 @@ clusters:
       worker-nodes:  '3'
   local-cluster: 
     labels: 
-      test-worked: 
-        value: true 
-      second-label: 
-        value: ''
-      infra-nodes: 
-        value: '3' 
-        preserve: true 
+      test-worked: ''
+      second-label:  ''
+      infra-nodes: '3'
