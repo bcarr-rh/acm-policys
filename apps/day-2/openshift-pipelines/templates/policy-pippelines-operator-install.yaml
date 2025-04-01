@@ -86,7 +86,6 @@ spec:
               operator: In
               values:
               - 'true'
-              - 'True'
 ---
 apiVersion: policy.open-cluster-management.io/v1
 kind: PlacementBinding

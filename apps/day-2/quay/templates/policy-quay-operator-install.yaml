@@ -24,7 +24,7 @@ spec:
                 apiVersion: v1
                 kind: Namespace
                 metadata:
-                  name: quay-operator
+                  name: {{ .Values.quayOperator.namespace }}
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1beta1
         kind: OperatorPolicy
@@ -38,12 +38,13 @@ spec:
             name: {{ .Values.quayOperator.namespace }}
             namespace: {{ .Values.quayOperator.namespace }}
           subscription:
-            name: {{ .Values.quayOperator.name }}
             namespace: {{ .Values.quayOperator.namespace }}
-            source: {{ .Values.quayOperator.source }}
-            sourceNamespace: {{ .Values.quayOperator.sourceNamespace }}
-            channel: {{ .Values.quayOperator.channel }}
-          upgradeApproval: {{ .Values.quayOperator.installPlanApproval }}
+            channel: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/quay-channel" | default "{{ .Values.quayOperator.channel }}" hub{{ "}}" }}'
+            name: {{ .Values.quayOperator.name }}
+            source: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/quay-source" | default "{{ .Values.quayOperator.source }}" hub{{ "}}" }}'
+            sourceNamespace: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/quay-source-namespace" | default "{{ .Values.quayOperator.sourceNamespace }}" hub{{ "}}" }}'
+          # Getting Label and then capitalizing first letter
+          upgradeApproval: '{{ "{{hub" }} $upgrade_approval := index .ManagedClusterLabels "autoshift.io/quay-install-plan-approval" | default "{{ .Values.quayOperator.installPlanApproval }}" {{ "-hub}}" }} {{ "{{hub" }} print (substr 0 1 $upgrade_approval | upper) (substr 1 (len $upgrade_approval) $upgrade_approval) {{ "-hub}}" }}'
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
@@ -71,9 +72,21 @@ metadata:
   namespace: open-cluster-policies
 spec:
   clusterSets:
-  {{- range .Values.quayOperator.clusterSets }}
-    - {{ . }}
+  clusterSets:
+  {{- range $clusterSet, $value := .Values.managedClusterSets }}
+    - {{ $clusterSet }}
   {{- end }}
+  {{- range $clusterSet, $value := .Values.hubClusterSets }}
+    - {{ $clusterSet }}
+  {{- end }}
+  predicates:
+    - requiredClusterSelector:
+        labelSelector:
+          matchExpressions:
+            - key: 'autoshift.io/quay'
+              operator: In
+              values:
+              - 'true'
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists

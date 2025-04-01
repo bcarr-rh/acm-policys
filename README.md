@@ -138,6 +138,17 @@ tas-source<String>: default redhat-operators
 
 tas-source-namespace<String>: default openshift-marketplace
 
+### Quay
+quay<bool>: If not set Quay will not be managed
+
+quay-channel<String>: default stable-3.9
+
+quay-install-plan-approval<String>: default Automatic
+
+quay-source<String>: default redhat-operators
+
+quay-source-namespace<String>: default openshift-marketplace
+
 ### Developer OpenShift Gitops
 gitops-dev<bool>: If not set Developer OpenShift Gitops intances will not be managed
 

@@ -72,6 +72,12 @@ hubClusterSets:
       tas-install-plan-approval: Automatic
       tas-source: redhat-operators
       tas-source-namespace: openshift-marketplace
+      ### Quay
+      quay: 'true'
+      quay-channel: stable-3.13
+      quay-install-plan-approval: Automatic
+      quay-source: redhat-operators
+      quay-source-namespace: openshift-marketplace
       ### Developer OpenShift Gitops
       gitops-dev: 'true'
       ### Loki
@@ -169,6 +175,12 @@ managedClusterSets:
       tas-install-plan-approval: '' #Automatic
       tas-source: '' #redhat-operators
       tas-source-namespace: '' #openshift-marketplace
+      ### Quay
+      quay: 'false'
+      quay-channel: '' # stable-3.13
+      quay-install-plan-approval: '' # Automatic
+      quay-source: '' # redhat-operators
+      quay-source-namespace: '' # openshift-marketplace
       ### Developer OpenShift Gitops
       gitops-dev: 'true'
       gitops-dev-team-dev: 'true'
