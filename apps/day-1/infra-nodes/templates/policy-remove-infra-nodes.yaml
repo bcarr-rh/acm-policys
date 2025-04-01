@@ -45,7 +45,7 @@ spec:
                 {{ "{{-" }} end {{ "}}" }} 
               {{ "{{-" }} end {{ "}}" }} 
               {{ "{{-" }} template "findWorkerMS" . {{ "}}" }} 
-              {{ "{{-" }} $worker_ms := $.worker_ms_global  {{ "}}" }}
+              {{ "{{-" }} $worker_ms := .worker_ms_global  {{ "}}" }}
               {{ "{{-" }} /* Specify the parameters needed to create the MachineSet  */ {{ "-}}" }}
               {{ "{{-" }} $machineset_role := "infra" {{ "}}" }}
               {{ "{{-" }} $zones := list{{ range (toStrings .Values.infraNodes.zones) }} "{{ . }}"{{ end }} {{ "}}" }}
