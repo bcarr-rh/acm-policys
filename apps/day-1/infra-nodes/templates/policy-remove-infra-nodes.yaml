@@ -41,7 +41,7 @@ spec:
                 {{ "{{-" }} end {{ "}}" }} 
               {{ "{{-" }} end {{ "}}" }} 
               {{ "{{-" }} end {{ "}}" }} 
-              {{ "{{-" }} $worker_ms := (include "findWorkerMS" "") default "" | fromJson)  {{ "}}" }}
+              {{ "{{-" }} $worker_ms := (template "findWorkerMS" "") | default "" | fromJson)  {{ "}}" }}
               {{ "{{-" }} /* Specify the parameters needed to create the MachineSet  */ {{ "-}}" }}
               {{ "{{-" }} $machineset_role := "infra" {{ "}}" }}
               {{ "{{-" }} $zones := list{{ range (toStrings .Values.infraNodes.zones) }} "{{ . }}"{{ end }} {{ "}}" }}
