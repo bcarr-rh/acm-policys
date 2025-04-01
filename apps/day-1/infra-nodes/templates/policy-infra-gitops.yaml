@@ -1,4 +1,4 @@
-{{ $policyName := "policy-infra-gitops" }}
+{{ $policyName := "{{ .Release.Name}}-policy-infra-gitops" | trunc 63 | trimSuffix "-" }}
 {{ $configPolicyName := "create-infra-gitops" }}
 {{ $placementName := printf "placement-%s" $policyName }}
 {{ $labelPrefix := .Values.infraNodes.labelPrefix | default "autoshift.io/" }}
