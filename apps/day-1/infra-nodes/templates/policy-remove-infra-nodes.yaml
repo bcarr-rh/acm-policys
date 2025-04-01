@@ -33,7 +33,7 @@ spec:
               {{ "{{-" }} $worker_ms_global := "" {{ "}}" }}
               {{ "{{-" }} define "findWorkerMS" {{ "}}" }}
                 {{ "{{-" }} $list := (index (lookup "machine.openshift.io/v1beta1" "MachineSet" "openshift-machine-api" "") "items") | default list {{ "}}" }} 
-                {{ "{{-" }} if ne (empty $list) {{ "}}" }} 
+                {{ "{{-" }} if not (empty $list) {{ "}}" }} 
                   {{ "{{-" }} range $index, $item := $list {{ "}}" }} 
                     {{ "{{-" }} $labels := index $item "metadata" "labels" {{ "}}" }} 
                     {{ "{{-" }} if (index $labels "machine.openshift.io/cluster-api-machine-role") "worker"  {{ "}}" }}  
