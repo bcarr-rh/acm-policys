@@ -84,7 +84,7 @@ spec:
                 {{ "{{-" }} $gitOpsMigragte := {{ "{{hub" }} index .ManagedClusterLabels "autoshift.io/infra-nodes-gitops-migrate" | default "false" {{ "hub}}" }} {{ "}}" }}
                 {{ "{{-" }} $infraNodesEnabled := {{ "{{hub" }} index .ManagedClusterLabels "autoshift.io/infra-nodes" | default "false" {{ "hub}}" }} {{ "}}" }}
                 {{ "{{-" }} if (or (eq $gitOpsMigrate "false") (eq $infraNodesEnabled "false" )) {{ "}}" }}
-                  {{ "{{-" }}  $ArgoCD := (lookup "{{ .Values.infraNodesEnabled.gitops.apiVersion }}" "{{ .Values.infraNodesEnabled.gitops.kind }}" "{{ .Values.infraNodesEnabled.gitops.namespace }}" "{{ .Values.infraNodesEnabled.gitops.metadata.name }}") | default dict  {{ "}}" }}
+                  {{ "{{-" }}  $ArgoCD := (lookup "{{ .Values.infraNodes.gitops.apiVersion }}" "{{ .Values.infraNodes.gitops.kind }}" "{{ .Values.infraNodes.gitops.namespace }}" "{{ .Values.infraNodes.gitops.metadata.name }}") | default dict  {{ "}}" }}
                   {{ "{{-" }} if  not (empty $ArgoCD)  {{ "}}" }}
                     {{ "{{-" }} $spec := $ArgoCD.spec {{ "}}" }} 
                     {{ "{{-" }} $newSpecNoTolerations := unset $spec "tolerations" {{ "}}" }}
@@ -118,7 +118,7 @@ spec:
                     {{ "{{-" }} $RegistryConfigNoStatus := unset $RegistryConfig "status"  {{ "}}" }}
                     {{ "{{-" }} $objectDefinition := set $RegistryConfigNoStatus "spec" $newSpec {{ "-}}" }}
                     "complianceType": "mustonlyhave",
-                    "pruneObjectBehavior": "{{ .Values.infraNodesEnabled.imageRegistry.pruneObjectBehavior | default "None" }}",
+                    "pruneObjectBehavior": "{{ .Values.infraNodes.imageRegistry.pruneObjectBehavior | default "None" }}",
                     "remediationAction": "enforce",
                     "severity": "high",
                     "objectDefinition": {{ "{{" }} $objectDefinition | toRawJson {{ "}}" }}
@@ -148,7 +148,7 @@ spec:
                     {{ "{{-" }} $IngressControllerNoStatus := unset $IngressController "status"  {{ "}}" }}
                     {{ "{{-" }} $objectDefinition := set $IngressControllerNoStatus "spec" $newSpec {{ "}}" }}
                     "complianceType": "mustonlyhave",
-                    "pruneObjectBehavior": "{{ .Values.infraNodesEnabled.imageRegistry.pruneObjectBehavior | default "None" }}",
+                    "pruneObjectBehavior": "{{ .Values.infraNodes.imageRegistry.pruneObjectBehavior | default "None" }}",
                     "remediationAction": "enforce",
                     "severity": "high",
                     "objectDefinition": {{ "{{" }} $objectDefinition | toRawJson {{ "}}" }}
