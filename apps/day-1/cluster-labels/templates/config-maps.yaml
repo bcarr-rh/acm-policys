@@ -14,7 +14,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata: 
   name: "{{ printf "managed-cluster.%s" $cluster }}"
-  namespace: "{{ .Values.policy_namespace }}" 
+  namespace: {{ $.Values.policy_namespace }}
 data: 
   values: '{{ $data | toJson }}'
   labels: '{{ $prefixedClusterLabels | toJson }}'
@@ -35,7 +35,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata: 
   name: {{ printf "cluster-set.%s" $clusterSet }}
-  namespace: "{{ .Values.policy_namespace }}" 
+  namespace: {{ $.Values.policy_namespace }}
 data:
   values: '{{ $data | toJson }}'
   labels: '{{ $prefixedClusterSetLabels | toJson }}'

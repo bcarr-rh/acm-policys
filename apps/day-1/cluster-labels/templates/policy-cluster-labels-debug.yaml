@@ -8,7 +8,7 @@ apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
   name: {{ $policyName }}
-  namespace: {{ .Values.policy_namespace }}
+  namespace: {{ $.Values.policy_namespace }}
   annotations:
     policy.open-cluster-management.io/categories: CM Configuration Management
     policy.open-cluster-management.io/controls: CM-2 Baseline Configuration
@@ -30,7 +30,7 @@ spec:
                 kind: ConfigMap
                 metadata:
                   name: cluster-set-{{ $clusterSetKey }}-lookup-debug
-                  namespace: {{ .Values.policy_namespace }}
+                  namespace: {{ $.Values.policy_namespace }}
                 data:
                   lookupResult: |
                     {{ "{{" }} index ((lookup "cluster.open-cluster-management.io/v1" "ManagedCluster" "beepboop" "thisdoesnotexist") | default dict) "test" | default dict {{ "}}" }}
@@ -41,7 +41,7 @@ apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
 metadata:
   name: {{ $placementName }}
-  namespace: {{ .Values.policy_namespace }}
+  namespace: {{ $.Values.policy_namespace }}
 spec:
   clusterSets:
   {{ range $cluster, $value := $.Values.hubClusterSets }}
@@ -57,7 +57,7 @@ apiVersion: policy.open-cluster-management.io/v1
 kind: PlacementBinding
 metadata:
   name: {{ $placementName}}
-  namespace: {{ .Values.policy_namespace }}
+  namespace: {{ $.Values.policy_namespace }}
 placementRef:
   name: {{ $placementName}}
   apiGroup: cluster.open-cluster-management.io
