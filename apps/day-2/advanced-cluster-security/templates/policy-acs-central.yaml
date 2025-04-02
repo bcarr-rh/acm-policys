@@ -1,10 +1,11 @@
 # This policy installs the Advanced Cluster Security Operator on the ACM hub
 # cluster and it create the Central Server.
+{{- $policyName := print "policy" .Release.Name "-mch-install" | trunc 53 | trimSuffix "-" }}
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
   name: policy-acs-central
-  namespace: open-cluster-policies
+  namespace: {{ .Values.policy_namespace }}
   annotations:
     argocd.argoproj.io/sync-options: Prune=false,SkipDryRunOnMissingResource=true
     argocd.argoproj.io/compare-options: IgnoreExtraneous
@@ -15,7 +16,7 @@ spec:
   disabled: false
   dependencies:
     - name: policy-acs-operator-install
-      namespace: open-cluster-policies
+      namespace: {{ .Values.policy_namespace }}
       apiVersion: policy.open-cluster-management.io/v1
       compliance: Compliant
       kind: Policy
@@ -24,7 +25,7 @@ spec:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: acs-central
+          name: {{ .Release.Name }}-acs-central
         spec:
           remediationAction: enforce
           severity: high
@@ -63,7 +64,7 @@ spec:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: acs-central-test
+          name: {{ .Release.Name }}-acs-central-test
         spec:
           remediationAction: inform
           severity: high
@@ -88,7 +89,7 @@ apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
 metadata:
   name: policy-acs-central-placement
-  namespace: open-cluster-policies
+  namespace: {{ .Values.policy_namespace }}
 spec:
   clusterSets:
   {{- range $clusterSet, $value := .Values.hubClusterSets }}
@@ -112,7 +113,7 @@ apiVersion: policy.open-cluster-management.io/v1
 kind: PlacementBinding
 metadata:
   name: policy-acs-central-placement
-  namespace: open-cluster-policies
+  namespace: {{ .Values.policy_namespace }}
 placementRef:
   name: policy-acs-central-placement
   apiGroup: cluster.open-cluster-management.io

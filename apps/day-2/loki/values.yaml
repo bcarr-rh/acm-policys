@@ -1,6 +1,7 @@
 # Default values for loki.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
+policy_namespace: open-cluster-policies
 loki:
     name: loki-operator
     namespace: openshift-operators-redhat

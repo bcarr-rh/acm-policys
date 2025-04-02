@@ -6,7 +6,7 @@ apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
   name: {{ $policyName }}
-  namespace: open-cluster-policies
+  namespace: {{ .Values.policy_namespace }}
   annotations:
     policy.open-cluster-management.io/categories: CM Configuration Management
     policy.open-cluster-management.io/controls: CM-2 Baseline Configuration
@@ -168,7 +168,7 @@ apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
 metadata:
   name: {{ $placementName }}
-  namespace: open-cluster-policies
+  namespace: {{ .Values.policy_namespace }}
 spec:
   clusterSets:
   {{- range .Values.infraNodes.clusterSets }}
@@ -190,7 +190,7 @@ apiVersion: policy.open-cluster-management.io/v1
 kind: PlacementBinding
 metadata:
   name: {{ $placementName }}
-  namespace: open-cluster-policies
+  namespace: {{ .Values.policy_namespace }}
 placementRef:
   name: {{ $placementName }}
   apiGroup: cluster.open-cluster-management.io

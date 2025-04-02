@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: "{{ .Release.Name}}-argo-apps-day-1"
+  name: "{{ .Release.Name }}-argo-apps-day-1"
   namespace: openshift-gitops
   labels:
     velero.io/exclude-from-backup: "true"
@@ -16,9 +16,9 @@ spec:
       - path: 'apps/day-1/*'
   template:
     metadata:
-      name: '{{ .Release.Name}}-{{"{{"}} .path.basename {{"}}"}}'
+      name: '{{ .Release.Name }}-{{"{{"}} .path.basename {{"}}"}}'
       labels:
-        app: "{{ .Release.Name}}-argo-apps-day-1"
+        app: "{{ .Release.Name }}-argo-apps-day-1"
         velero.io/exclude-from-backup: "true"
     spec:
       project: default
@@ -30,6 +30,7 @@ spec:
           valueFiles:
           - values.yaml
           valuesObject:
+            policy_namespace: open-cluster-policies-{{ .Release.Name }}
             {{- if .Values.hubClusterSets }}
             hubClusterSets:
             {{-  range $cluster, $clustervalue := .Values.hubClusterSets }}
@@ -72,7 +73,7 @@ spec:
           selfHeal: true
         syncOptions:
         - RespectIgnoreDifferences=true
-        - Validate=false
+        - CreateNamespace=true
       destination:
         server: https://kubernetes.default.svc
-        namespace: openshift-gitops
+        namespace: open-cluster-policies-{{ .Release.Name }}

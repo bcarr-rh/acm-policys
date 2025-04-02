@@ -1,6 +1,7 @@
 # Default values for pipelines.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
+policy_namespace: open-cluster-policies
 pipelines:
     name: openshift-pipelines-operator-rh
     namespace: openshift-operators

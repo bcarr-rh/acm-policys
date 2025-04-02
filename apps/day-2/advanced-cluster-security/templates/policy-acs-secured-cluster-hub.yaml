@@ -2,7 +2,7 @@ apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
   name: policy-acs-secured-cluster-hub
-  namespace: open-cluster-policies
+  namespace: {{ .Values.policy_namespace }}
   annotations:
     argocd.argoproj.io/sync-options: Prune=false,SkipDryRunOnMissingResource=true
     argocd.argoproj.io/compare-options: IgnoreExtraneous
@@ -13,7 +13,7 @@ spec:
   disabled: false
   dependencies:
     - name: policy-acs-init-bundle
-      namespace: open-cluster-policies
+      namespace: {{ .Values.policy_namespace }}
       apiVersion: policy.open-cluster-management.io/v1
       compliance: Compliant
       kind: Policy
@@ -81,7 +81,7 @@ apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
 metadata:
   name: policy-acs-secured-cluster-hub-placement
-  namespace: open-cluster-policies
+  namespace: {{ .Values.policy_namespace }}
 spec:
   clusterSets:
   {{- range $clusterSet, $value := .Values.hubClusterSets }}
@@ -105,7 +105,7 @@ apiVersion: policy.open-cluster-management.io/v1
 kind: PlacementBinding
 metadata:
   name: policy-acs-secured-cluster-hub-placement
-  namespace: open-cluster-policies
+  namespace: {{ .Values.policy_namespace }}
 placementRef:
   name: policy-acs-secured-cluster-hub-placement
   apiGroup: cluster.open-cluster-management.io

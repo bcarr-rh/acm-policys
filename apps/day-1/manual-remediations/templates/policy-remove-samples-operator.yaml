@@ -2,7 +2,7 @@ apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
   name: policy-remove-samples-operator
-  namespace: open-cluster-policies
+  namespace: {{ .Values.policy_namespace }}
   annotations:
     policy.open-cluster-management.io/categories: CM Configuration Management
     policy.open-cluster-management.io/controls: CM-2 Baseline Configuration
@@ -25,8 +25,6 @@ spec:
                 metadata:
                   name: cluster
                 spec:
-                  architectures:
-                  - x86_64
                   managementState: Removed
           pruneObjectBehavior: None
           remediationAction: inform
@@ -36,12 +34,23 @@ apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
 metadata:
   name: placement-policy-remove-samples-operator
-  namespace: open-cluster-policies
+  namespace: {{ .Values.policy_namespace }}
 spec:
   clusterSets:
-  {{- range .Values.remediations.clusterSets }}
-    - {{ . }}
+  {{- range $clusterSet, $value := .Values.managedClusterSets }}
+    - {{ $clusterSet }}
   {{- end }}
+  {{- range $clusterSet, $value := .Values.hubClusterSets }}
+    - {{ $clusterSet }}
+  {{- end }}
+  predicates:
+    - requiredClusterSelector:
+        labelSelector:
+          matchExpressions:
+            - key: 'autoshift.io/manual-remediations'
+              operator: in
+              values:
+              - 'true'
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists
@@ -52,7 +61,7 @@ apiVersion: policy.open-cluster-management.io/v1
 kind: PlacementBinding
 metadata:
   name: placement-policy-remove-samples-operator
-  namespace: open-cluster-policies
+  namespace: {{ .Values.policy_namespace }}
 placementRef:
   name: placement-policy-remove-samples-operator
   apiGroup: cluster.open-cluster-management.io

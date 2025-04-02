@@ -6,7 +6,7 @@ apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
   name: policy-logging-install
-  namespace: open-cluster-policies
+  namespace: {{ .Values.policy_namespace }}
   annotations:
     policy.open-cluster-management.io/standards: NIST SP 800-53
     policy.open-cluster-management.io/categories: CA Security Assessment and Authorization
@@ -14,12 +14,12 @@ metadata:
 spec:
   dependencies:
     - name: policy-logging-operator-install
-      namespace: open-cluster-policies
+      namespace: {{ .Values.policy_namespace }}
       apiVersion: policy.open-cluster-management.io/v1
       compliance: Compliant
       kind: Policy
     - name: policy-loki-stack-install
-      namespace: open-cluster-policies
+      namespace: {{ .Values.policy_namespace }}
       apiVersion: policy.open-cluster-management.io/v1
       compliance: Compliant
       kind: Policy    
@@ -135,7 +135,7 @@ apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
 metadata:
   name: placement-policy-logging-install
-  namespace: open-cluster-policies
+  namespace: {{ .Values.policy_namespace }}
 spec:
   clusterSets:
   {{- range $clusterSet, $value := $.Values.managedClusterSets }}
@@ -162,7 +162,7 @@ apiVersion: policy.open-cluster-management.io/v1
 kind: PlacementBinding
 metadata:
   name: placement-policy-logging-install
-  namespace: open-cluster-policies
+  namespace: {{ .Values.policy_namespace }}
 placementRef:
   name: placement-policy-logging-install
   apiGroup: cluster.open-cluster-management.io

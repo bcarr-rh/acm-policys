@@ -2,12 +2,12 @@
 # the Advanced Cluster Operator on the hub cluster.
 #
 # Note that OpenShift 4.18 is required.
-{{- $policyName := print .Release.Name "-policy-acm-mch-install" | trunc 53 | trimSuffix "-" }}
+{{- $policyName :=  "policy-acm-mch-install" }}
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
   name: {{ $policyName }}
-  namespace: open-cluster-policies
+  namespace: {{ .Values.policy_namespace }}
   annotations:
     policy.open-cluster-management.io/standards: NIST SP 800-53
     policy.open-cluster-management.io/categories: CM Configuration Management
@@ -19,7 +19,7 @@ spec:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: {{ .Release.Name }}-acm-mch-install
+          name: acm-mch-install
         spec:
           remediationAction: enforce
           severity: high
@@ -41,7 +41,7 @@ apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
 metadata:
   name: placement-{{ $policyName }}
-  namespace: open-cluster-policies
+  namespace: {{ .Values.policy_namespace }}
 spec:
   clusterSets:
   {{- range $clusterSet, $value := $.Values.hubClusterSets }}
@@ -57,7 +57,7 @@ apiVersion: policy.open-cluster-management.io/v1
 kind: PlacementBinding
 metadata:
   name: placement-{{ $policyName }}
-  namespace: open-cluster-policies
+  namespace: {{ .Values.policy_namespace }}
 placementRef:
   name: placement-{{ $policyName }}
   apiGroup: cluster.open-cluster-management.io
