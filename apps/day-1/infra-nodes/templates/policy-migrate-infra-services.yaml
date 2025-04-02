@@ -4,6 +4,7 @@
 {{ $removeGitOpsPolicyName := "remove-infra-gitops" }}
 {{ $removeImageRegistryPolicyName := "remove-infra-image-registry" }}
 {{ $removeIngressPolicyName := "remove-infra-ingress" }}
+{{ $configMapName := "cluster-monitoring-config" }}
 {{ $removeMonitoringPolicyName := "remove-infra-monitoring" }}
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
