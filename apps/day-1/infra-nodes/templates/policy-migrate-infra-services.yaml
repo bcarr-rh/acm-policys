@@ -1,0 +1,188 @@
+{{ $policyName := "policy-remove-infra-services" }}
+{{ $placementName := printf "placement-%s" $policyName }}
+{{ $labelPrefix := .Values.infraNodes.labelPrefix | default "autoshift.io/" }}
+{{ $removeGitOpsPolicyName := "remove-infra-gitops" }}
+{{ $removeImageRegistryPolicyName := "remove-infra-image-registry" }}
+{{ $removeIngressPolicyName := "remove-infra-ingress" }}
+{{ $removeMonitoringPolicyName := "remove-infra-monitoring" }}
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: {{ $policyName }}
+  namespace: open-cluster-policies
+  annotations:
+    policy.open-cluster-management.io/categories: CM Configuration Management
+    policy.open-cluster-management.io/controls: CM-2 Baseline Configuration
+    policy.open-cluster-management.io/standards: NIST SP 800-53
+spec:
+  disabled: {{ not .Values.infraNodes.gitops.migrate }}
+  remediationAction: {{ .Values.infraNodes.gitops.remediationAction | default "enforce" }}
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: {{ $removeMonitoringPolicyName }}
+        spec:
+          pruneObjectBehavior: {{ .Values.infraNodes.monitoring.pruneObjectBehavior | default "None" }}
+          remediationAction: inform
+          severity: high
+          remediationAction: enforce
+          object-templates-raw: |
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: v1
+                kind: ConfigMap
+                metadata:
+                  name: {{ $configMapName }}
+                  namespace: openshift-monitoring
+                data:
+                {{ "{{-" }} $monitoringMigragte := {{ "{{hub" }} index .ManagedClusterLabels "autoshift.io/infra-nodes-monitoring-migrate" | default "false" {{ "hub}}" }} {{ "}}" }}
+                {{ "{{-" }} $infraNodes := {{ "{{hub" }} index .ManagedClusterLabels "autoshift.io/infra-nodes" | default "false" {{ "hub}}" }} {{ "}}" }}
+                {{ "{{-" }} if (or (eq $monitoringMigrate "false") (ne $infraNodes "false" )) {{ "}}" }}
+                  config.yaml: |+
+                    alertmanagerMain:
+                      nodeSelector: {}
+                      tolerations: []
+                    prometheusK8s:
+                      nodeSelector: {}
+                      tolerations: []
+                    prometheusOperator:
+                      nodeSelector: {}
+                      tolerations: []
+                    k8sPrometheusAdapter:
+                      nodeSelector: {}
+                      tolerations: []
+                    kubeStateMetrics:
+                      nodeSelector: {}
+                      tolerations: []
+                    telemeterClient:
+                      nodeSelector: {}
+                      tolerations: []
+                    openshiftStateMetrics:
+                      nodeSelector: {}
+                      tolerations: []
+                    thanosQuerier:
+                      nodeSelector: {}
+                      tolerations: []
+                    monitoringPlugin:
+                      nodeSelector: {}
+                      tolerations: []
+                {{ "{{-" }} end {{ "}}" }}
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: {{ $removeGitOpsPolicyName }}
+        spec:
+          severity: high
+          remediationAction: enforce
+          object-templates-raw: | 
+            [
+              {
+                {{ "{{-" }} $gitOpsMigragte := {{ "{{hub" }} index .ManagedClusterLabels "autoshift.io/infra-nodes-gitops-migrate" | default "false" {{ "hub}}" }} {{ "}}" }}
+                {{ "{{-" }} $infraNodesEnabled := {{ "{{hub" }} index .ManagedClusterLabels "autoshift.io/infra-nodes" | default "false" {{ "hub}}" }} {{ "}}" }}
+                {{ "{{-" }} if (or (eq $gitOpsMigrate "false") (eq $infraNodesEnabled "false" )) {{ "}}" }}
+                  {{ "{{-" }}  $ArgoCD := (lookup "{{ .Values.infraNodesEnabled.gitops.apiVersion }}" "{{ .Values.infraNodesEnabled.gitops.kind }}" "{{ .Values.infraNodesEnabled.gitops.namespace }}" "{{ .Values.infraNodesEnabled.gitops.metadata.name }}") | default dict  {{ "}}" }}
+                  {{ "{{-" }} if  not (empty $ArgoCD)  {{ "}}" }}
+                    {{ "{{-" }} $spec := $ArgoCD.spec {{ "}}" }} 
+                    {{ "{{-" }} $newSpecNoTolerations := unset $spec "tolerations" {{ "}}" }}
+                    {{ "{{-" }} $newSpec := set $newSpecNoTolerations "runOnInfra" false {{ "}}" }}
+                    {{ "{{-" }} $ArgoCDNoStatus := unset $ArgoCD "status"  {{ "}}" }}
+                    {{ "{{-" }} $objectDefinition := set $ArgoCDNoStatus "spec" $newSpec {{ "}}" }}
+                    "complianceType": "mustonlyhave",
+                    "objectDefinition": {{ "{{" }} $objectDefinition | toRawJson {{ "}}" }}
+                  {{ "{{-" }} end {{ "}}" }} 
+                {{ "{{-" }} end {{ "}}" }} 
+                }
+              ]
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: {{ $removeImageRegistryPolicyName }}
+        spec:
+          severity: high
+          remediationAction: enforce
+          object-templates-raw: | 
+            [
+              {
+                {{ "{{-" }} $imageRegistryMigragte := {{ "{{hub" }} index .ManagedClusterLabels "autoshift.io/infra-nodes-image-registry-migrate" | default "false" {{ "hub}}" }} {{ "}}" }}
+                {{ "{{-" }} $infraNodesEnabled := {{ "{{hub" }} index .ManagedClusterLabels "autoshift.io/infra-nodes" | default "false" {{ "hub}}" }} {{ "}}" }}
+                {{ "{{-" }} if (or (eq $imageRegistryMigrate "false") (eq $infraNodesEnabled "false" )) {{ "}}" }}
+                  {{ "{{-" }} $RegistryConfig := lookup "imageregistry.operator.openshift.io/v1" "Config" "" "cluster"  {{ "}}" }}
+                  {{ "{{-" }} if  not (empty $RegistryConfig)  {{ "}}" }}
+                    {{ "{{-" }} $spec := $RegistryConfig.spec {{ "}}" }} 
+                    {{ "{{-" }} $newSpec := unset $spec "nodeSelector" {{ "}}" }}
+                    {{ "{{-" }} $RegistryConfigNoStatus := unset $RegistryConfig "status"  {{ "}}" }}
+                    {{ "{{-" }} $objectDefinition := set $RegistryConfigNoStatus "spec" $newSpec {{ "-}}" }}
+                    "complianceType": "mustonlyhave",
+                    "pruneObjectBehavior": "{{ .Values.infraNodesEnabled.imageRegistry.pruneObjectBehavior | default "None" }}",
+                    "remediationAction": "enforce",
+                    "severity": "high",
+                    "objectDefinition": {{ "{{" }} $objectDefinition | toRawJson {{ "}}" }}
+                  {{ "{{-" }} end {{ "}}" }} 
+                {{ "{{-" }} end {{ "}}" }} 
+              }
+            ]
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: {{ $removeIngressPolicyName }}
+        spec:
+          severity: high
+          remediationAction: enforce
+          object-templates-raw: | 
+            [
+              {
+                {{ "{{-" }} $ingressMigrate := {{ "{{hub" }} (index .ManagedClusterLabels "autoshift.io/infra-nodes-ingress-migrate" | default "false") {{ "hub}}" }} {{ "}}" }}
+                {{ "{{-" }} $infraNodesEnabled := {{ "{{hub" }} (index .ManagedClusterLabels "autoshift.io/infra-nodes" | default "false") {{ "hub}}" }} {{ "}}" }}
+                {{ "{{-" }} if (or (eq $ingressMigrate "false") (ne $infraNodesEnabled "false" )) {{ "}}" }}
+                  {{ "{{-" }} $IngressController := lookup "operator.openshift.io/v1" "IngressController" "openshift-ingress-operator" "default"  {{ "}}" }}
+                  {{ "{{-" }} if  not (empty $IngressController)  {{ "}}" }}
+                    {{ "{{-" }} $spec := $IngressController.spec {{ "}}" }} 
+                    {{ "{{-" }} $nodePlacement := dict "nodeSelector" (dict) "tolerations" (list) {{ "}}" }}
+                    {{ "{{-" }} $newSpec := set $spec "nodePlacement" $nodePlacement {{ "}}" }}
+                    {{ "{{-" }} $IngressControllerNoStatus := unset $IngressController "status"  {{ "}}" }}
+                    {{ "{{-" }} $objectDefinition := set $IngressControllerNoStatus "spec" $newSpec {{ "}}" }}
+                    "complianceType": "mustonlyhave",
+                    "pruneObjectBehavior": "{{ .Values.infraNodesEnabled.imageRegistry.pruneObjectBehavior | default "None" }}",
+                    "remediationAction": "enforce",
+                    "severity": "high",
+                    "objectDefinition": {{ "{{" }} $objectDefinition | toRawJson {{ "}}" }}
+                  {{ "{{-" }} end {{ "}}" }} 
+                {{ "{{-" }} end {{ "}}" }} 
+              }
+            ]
+---
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: {{ $placementName }}
+  namespace: open-cluster-policies
+spec:
+  clusterSets:
+  {{- range .Values.infraNodes.clusterSets }}
+    - {{ . }}
+  {{- end }}
+  tolerations:
+    - key: cluster.open-cluster-management.io/unreachable
+      operator: Exists
+    - key: cluster.open-cluster-management.io/unavailable
+      operator: Exists
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: {{ $placementName }}
+  namespace: open-cluster-policies
+placementRef:
+  name: {{ $placementName }}
+  apiGroup: cluster.open-cluster-management.io
+  kind: Placement
+subjects:
+  - name: {{ $policyName}}
+    apiGroup: policy.open-cluster-management.io
+    kind: Policy
+

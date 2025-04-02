@@ -19,7 +19,7 @@ spec:
   - apiVersion: policy.open-cluster-management.io/v1
     compliance: Compliant
     kind: Policy
-    name: {{ . }}
+    name: policy-migrate-infra-services
     namespace: open-cluster-policies
   {{- end }}
   policy-templates:
@@ -85,12 +85,6 @@ spec:
   {{- range .Values.infraNodes.clusterSets }}
     - {{ . }}
   {{- end }}
-  predicates:
-    - requiredClusterSelector:
-        labelSelector:
-          matchExpressions:
-            - key: {{ printf "%s%s" $labelPrefix "infra-nodes" }}
-              operator: DoesNotExist
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists
