@@ -66,6 +66,9 @@ kind: Placement
 metadata:
   name: placement-policy-acm-operator-install
   namespace: {{ .Values.policy_namespace }}
+  annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+    argocd.argoproj.io/sync-wave: "7"
 spec:
   clusterSets:
   {{- range $clusterSet, $value := .Values.hubClusterSets }}
@@ -82,6 +85,9 @@ kind: PlacementBinding
 metadata:
   name: placement-policy-acm-operator-install
   namespace: {{ .Values.policy_namespace }}
+  annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+    argocd.argoproj.io/sync-wave: "7"
 placementRef:
   name: placement-policy-acm-operator-install
   apiGroup: cluster.open-cluster-management.io
