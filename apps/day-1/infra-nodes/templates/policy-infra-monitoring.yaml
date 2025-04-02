@@ -21,7 +21,7 @@ spec:
     compliance: Compliant
     kind: Policy
     name: {{ . }}
-    namespace: {{ .Values.policy_namespace }}
+    namespace: {{ $.Values.policy_namespace }}
     {{- end }}
   policy-templates:
     - objectDefinition:
