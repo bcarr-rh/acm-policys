@@ -4,6 +4,7 @@
 policy_namespace: open-cluster-policies
 gitops:
   namespace: openshift-gitops-operator
+  argoNamespace: openshift-gitops
   group: openshift-gitops-operator
   source: redhat-operators
   channel: latest
@@ -16,10 +17,10 @@ gitops:
   controller:
     limits:
       cpu: 2000m
-      memory: 4096Mi
+      memory: 6Gi
     requests:
       cpu: 250m
-      memory: 4096Mi
+      memory: 6Gi
   ha:
     enabled: false
     limits:
