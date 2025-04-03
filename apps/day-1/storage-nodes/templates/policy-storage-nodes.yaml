@@ -17,11 +17,23 @@ spec:
           name: create-storage-nodes
         spec:
           object-templates-raw: |
+              {{ "{{-" }} define "findWorkerMS" {{ "}}" }}
+                {{ "{{-" }} $list := (index (lookup "machine.openshift.io/v1beta1" "MachineSet" "openshift-machine-api" "") "items") | default list {{ "}}" }} 
+                {{ "{{-" }} if ne (empty $list) {{ "}}" }} 
+                {{ "{{-" }} range $index, $item := $list {{ "}}" }} 
+                  {{ "{{-" }} $labels := index $item "metadata" "labels" {{ "}}" }} 
+                  {{ "{{-" }} if (index $labels "machine.openshift.io/cluster-api-machine-role") "worker"  {{ "}}" }}  
+                    {{ "{{-" }} toRawJson $item {{ "}}" }} 
+                    {{ "{{-" }} break {{ "}}" }} 
+                  {{ "{{-" }} end {{ "}}" }} 
+                {{ "{{-" }} end {{ "}}" }} 
+              {{ "{{-" }} end {{ "}}" }} 
+              {{ "{{-" }} $worker_ms := (include "findWorkerMS" "") default "" | fromJson)  {{ "}}" }}
               {{ "{{-" }} /* Specify the parameters needed to create the MachineSet  */ {{ "-}}" }}
               {{ "{{-" }} $machineset_role := "storage" {{ "}}" }}
               {{ "{{-" }} $zones := list{{ range (toStrings .Values.storageNodes.zones) }} "{{ . }}"{{ end }} {{ "}}" }}
               {{ "{{-" }} $infrastructure_id := (lookup "config.openshift.io/v1" "Infrastructure" "" "cluster").status.infrastructureName {{ "}}" }}
-              {{ "{{-" }} $worker_ms := (index (lookup "machine.openshift.io/v1beta1" "MachineSet" "openshift-machine-api" "").items 0) {{ "}}" }}
+              {{ "{{/*" }} $worker_ms := (index (lookup "machine.openshift.io/v1beta1" "MachineSet" "openshift-machine-api" "").items 0) {{ "*/}}" }}
               {{ "{{-" }} /* Generate the MachineSet for each zone as specified  */ {{ "-}}" }}
               {{ "{{-" }} range $zone := $zones {{ "}}" }}
               - complianceType: musthave

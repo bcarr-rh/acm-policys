@@ -32,11 +32,25 @@ spec:
                   name: cluster-set-{{ $clusterSetKey }}-lookup-debug
                   namespace: open-cluster-policies
                 data:
-                  lookupResult: |
-                    {{ "{{" }} index ((lookup "cluster.open-cluster-management.io/v1" "ManagedCluster" "beepboop" "thisdoesnotexist") | default dict) "test" | default dict {{ "}}" }}
+                  machineSets: |
+                      {{ "{{" }} $workers := "hello" {{ "}}" }}
+                      {{ "{{" }} $ms := (index (lookup "machine.openshift.io/v1beta1" "MachineSet" "openshift-machine-api" "") "items") | default list {{ "}}" }}
+
+
 ---
-{{/* (index ((index (lookup "v1" "ConfigMap" "open-cluster-policies" (printf "cluster-set.%s"  $clusterSet)) "data" "values") | fromJson) "labels") | default dict */}}
-                    {{/*{{ "{{-" }} (lookup "cluster.open-cluster-management.io/v1" "ManagedCluster" "" "") | toRawJson {{ "}}" }} */}}
+{{/*
+
+                    {{ "{{" }} range $index, $item := $ms {{ "}}" }} 
+                      {{ "{{" }} $labels := index $item "spec" "template" "metadata" "labels" {{ "}}" }} 
+                      {{ "{{" }} if  eq (index $labels "machine.openshift.io/cluster-api-machine-role") "worker" {{ "}}" }}  
+                        {{ "{{" }} $_ := set $workers "worker" $item {{ "}}" }} 
+                        {{ "{{-" }} break {{ "}}" }} 
+                      {{ "{{" }} end {{ "}}" }} 
+                    {{ "{{" }} end {{ "}}" }} 
+
+ (index ((index (lookup "v1" "ConfigMap" "open-cluster-policies" (printf "cluster-set.%s"  $clusterSet)) "data" "values") | fromJson) "labels") | default dict */}}
+
+                    {{/*{{ "{{-" }} (lookup "cluster.open-cluster-management.io/v1" "Manage*/}}
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
 metadata:
