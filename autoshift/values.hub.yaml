@@ -5,10 +5,13 @@
 autoshiftGitRepo: https://github.com/auto-shift/autoshiftv2.git
 autoshiftGitBranchTag: main
 
+selfManagedHubSet: hub
+
 # Hub Cluster Sets with Feature Flags. Blank will remove
 hubClusterSets:
   hub:
     labels:
+      self-managed: 'true'
       ### infra-nodes
       infra-nodes: ''
       infra-nodes-numcpu: ''

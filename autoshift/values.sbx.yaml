@@ -4,6 +4,9 @@
 
 autoshiftGitRepo: 'https://github.com/bcarr-rh/acm-policys.git'
 autoshiftGitBranchTag: 'feature/multiple-autoshifts'
+
+selfManagedHubSet: hub
+
 # Spoke Cluster Sets with Feature Flags. Blank will remove
 managedClusterSets:
   sbx:
