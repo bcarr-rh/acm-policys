@@ -26,7 +26,7 @@ spec:
         spec:
           remediationAction: enforce
           severity: high
-          object-templates:
+          object-templates-raw: |
             - complianceType: musthave
               objectDefinition:
                 apiVersion: operator.open-cluster-management.io/v1
