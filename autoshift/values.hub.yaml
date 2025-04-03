@@ -12,6 +12,12 @@ hubClusterSets:
   hub:
     labels:
       self-managed: 'true'
+      ### Advance Cluster Manager
+      acm-channel: release-2.13
+      acm-install-plan-approval: Automatic
+      acm-source: redhat-operators
+      acm-source-namespace: openshift-marketplace
+      acm-availability-config: 'basic'
       ### infra-nodes
       infra-nodes: ''
       infra-nodes-numcpu: ''

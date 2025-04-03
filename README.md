@@ -50,6 +50,21 @@ That's it. Welcome to OpenShift Platform Plus!
 #### values can be set on a per clusterset level to decide what features of autoshift will be applied to each cluster
 ##
 
+### Advanced Cluster Manager
+Hub Clusters Only
+
+self-managed: true or false
+
+acm-channel: default release-2.13
+
+acm-install-plan-approval: default Automatic
+
+acm-source: default redhat-operators
+
+acm-source-namespace: default openshift-marketplace
+
+acm-availability-config: supports basic or high
+
 ### infra-nodes
 infra-nodes<int>: Number of infra nodes min if autoscale. If not set infra nodes are not managed, if blank infra nodes will be deleted
 

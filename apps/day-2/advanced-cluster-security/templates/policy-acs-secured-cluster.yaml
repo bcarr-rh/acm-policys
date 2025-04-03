@@ -1,3 +1,4 @@
+{{- if .Values.managedClusterSets }}
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
@@ -114,3 +115,4 @@ subjects:
   - name: policy-acs-secured-cluster
     apiGroup: policy.open-cluster-management.io
     kind: Policy
+{{- end -}}

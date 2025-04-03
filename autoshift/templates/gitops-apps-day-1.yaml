@@ -30,7 +30,7 @@ spec:
           valueFiles:
           - values.yaml
           valuesObject:
-            policy_namespace: open-cluster-policies-{{ .Release.Name }}
+            policy_namespace: {{ printf "policies-%s" .Release.Name }}
             {{- if .Values.hubClusterSets }}
             hubClusterSets:
             {{-  range $cluster, $clustervalue := .Values.hubClusterSets }}
@@ -76,4 +76,4 @@ spec:
         - CreateNamespace=true
       destination:
         server: https://kubernetes.default.svc
-        namespace: open-cluster-policies-{{ .Release.Name }}
+        namespace: {{ printf "policies-%s" .Release.Name }}

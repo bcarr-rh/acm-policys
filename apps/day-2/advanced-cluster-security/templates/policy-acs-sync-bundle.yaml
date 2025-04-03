@@ -1,3 +1,4 @@
+{{- if .Values.managedClusterSets }}
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
@@ -109,3 +110,4 @@ subjects:
   - name: policy-acs-sync-bundle
     apiGroup: policy.open-cluster-management.io
     kind: Policy
+{{- end -}}
