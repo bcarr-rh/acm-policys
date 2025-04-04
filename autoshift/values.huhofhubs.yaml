@@ -5,7 +5,7 @@
 autoshiftGitRepo: https://github.com/auto-shift/autoshiftv2.git
 autoshiftGitBranchTag: main
 
-selfManagedHubSet: hub
+selfManagedHubSet: hubofhubs
 
 # Hub Cluster Sets with Feature Flags. Blank will remove
 hubClusterSets:
