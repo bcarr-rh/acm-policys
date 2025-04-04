@@ -27,7 +27,7 @@ spec:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: {{ .Release.Name }}-{{ $configPolicyName }}
+          name: {{ $configPolicyName }}
         spec:
           object-templates:
             - complianceType: musthave

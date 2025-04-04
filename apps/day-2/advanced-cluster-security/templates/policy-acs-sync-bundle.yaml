@@ -1,8 +1,8 @@
-{{- if .Values.managedClusterSets }}
+{{- range $clusterSet, $value := .Values.managedClusterSets }}
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
-  name: policy-acs-sync-bundle
+  name: policy-acs-sync-bundle-{{ $clusterSet }}
   namespace: {{ .Values.acs.namespace }}
   annotations:
     argocd.argoproj.io/sync-options: Prune=false,SkipDryRunOnMissingResource=true
@@ -24,7 +24,7 @@ spec:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: acs-sync-bundle
+          name: acs-sync-bundle-{{ $clusterSet }}
         spec:
           remediationAction: inform
           severity: high
@@ -76,13 +76,11 @@ spec:
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
 metadata:
-  name: policy-acs-sync-bundle-placement
+  name: policy-acs-sync-bundle-{{ $clusterSet }}-placement
   namespace: {{ .Values.acs.namespace }}
 spec:
   clusterSets:
-  {{- range $clusterSet, $value := .Values.managedClusterSets }}
     - {{ $clusterSet }}
-  {{- end }}
   predicates:
     - requiredClusterSelector:
         labelSelector:
@@ -100,14 +98,14 @@ spec:
 apiVersion: policy.open-cluster-management.io/v1
 kind: PlacementBinding
 metadata:
-  name: policy-acs-sync-bundle-placement
+  name: policy-acs-sync-bundle-{{ $clusterSet }}-placement
   namespace: {{ .Values.acs.namespace }}
 placementRef:
-  name: policy-acs-sync-bundle-placement
+  name: policy-acs-sync-bundle-{{ $clusterSet }}-placement
   apiGroup: cluster.open-cluster-management.io
   kind: Placement
 subjects:
-  - name: policy-acs-sync-bundle
+  - name: policy-acs-sync-bundle-{{ $clusterSet }}
     apiGroup: policy.open-cluster-management.io
     kind: Policy
 {{- end -}}

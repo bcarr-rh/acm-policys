@@ -25,7 +25,7 @@ spec:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: {{ .Release.Name }}-acs-central
+          name: acs-central
         spec:
           remediationAction: enforce
           severity: high
@@ -64,7 +64,7 @@ spec:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: {{ .Release.Name }}-acs-central-test
+          name: acs-central-test
         spec:
           remediationAction: inform
           severity: high
