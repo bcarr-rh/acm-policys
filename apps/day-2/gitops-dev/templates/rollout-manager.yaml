@@ -1,3 +1,4 @@
+{{- if .Values.hubClusterSets }}
 {{- range $team, $value := .Values.teams }}
 ---
 apiVersion: argoproj.io/v1alpha1
@@ -8,4 +9,5 @@ metadata:
   labels:
     example: basic
 spec: {}
+{{- end }}
 {{- end }}

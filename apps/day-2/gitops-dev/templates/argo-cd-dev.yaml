@@ -1,3 +1,4 @@
+{{- if .Values.hubClusterSets }}
 {{- range $team, $value := .Values.teams }}
 ---
 apiVersion: argoproj.io/v1beta1
@@ -90,4 +91,5 @@ spec:
       - TaskRun
       - PipelineRun        
   disableAdmin: {{ $value.disableAdmin | default "true" }}
+{{- end }}
 {{- end }}
