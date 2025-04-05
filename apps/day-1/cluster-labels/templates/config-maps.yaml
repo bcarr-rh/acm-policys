@@ -16,6 +16,8 @@ kind: ConfigMap
 metadata: 
   name: "{{ printf "managed-cluster.%s" $cluster }}"
   namespace: {{ $configMapNamespace }}
+  labels:
+    autoshift.io/cluster-labels: "true"
 data: 
   values: '{{ $data | toJson }}'
   labels: '{{ $prefixedClusterLabels | toJson }}'
@@ -38,6 +40,7 @@ kind: ConfigMap
 metadata: 
   name: {{ printf "cluster-set.%s" $clusterSet }}
   namespace: {{ $configMapNameSpace }}
+    autoshift.io/cluster-labels: "true"
 data:
   values: '{{ $data | toJson }}'
   labels: '{{ $prefixedClusterSetLabels | toJson }}'
