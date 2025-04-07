@@ -19,6 +19,7 @@ Install OpenShift Gitops
 ```
 helm template openshift-gitops -f apps/day-1/openshift-gitops/values.yaml | oc apply -f -
 ```
+Note: This will need to be run several times, the subscription will create a CRD that is than applied. Once there are no errors running this command continue on to the next step
 
 Note: If OpenShift GitOps is already installed manually on cluster this will create two Operator Groups for OpenShift GitOps. Removing one will fix the issue.
 
@@ -26,6 +27,7 @@ Install Advanced Cluster Management
 ```
 helm template advanced-cluster-management -f apps/day-1/advanced-cluster-management/values.yaml | oc apply -f -
 ```
+Note: This will need to be run several times, the subscription will create a CRD that is than applied. Once there are no errors running this command continue on to the next step
 
 Both ACM and GitOps will be controlled by autoshift after it is installed for version upgrading
 
@@ -35,11 +37,7 @@ Note: If your GitOps does not have access to git url provided you will need to a
 
 Install AutoShiftv2
 ```
-helm install autoshift autoshift
-```
-or
-```
-helm template autoshift autoshift | oc apply -f -
+helm template autoshift autoshift -f autoshift/values.hub.yaml | oc apply -f -
 ```
 
 Given the labels and cluster sets provided in the values file, ACM cluster sets will be created along with ACM. Manually select which cluster will belong to each cluster set, or when provisioning a new cluster from ACM you can select the desired cluster set from ACM at time of creation.
