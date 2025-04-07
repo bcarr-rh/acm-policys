@@ -32,9 +32,6 @@ spec:
                 metadata:
                   name: {{ $clusterSet }}
                   namespace: {{ $.Values.acs.namespace }}
-                  annotations:
-                    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
-                    argocd.argoproj.io/sync-wave: "6"
                 spec:
                   clusterSet: {{ $clusterSet }}
     {{- end }}
@@ -49,14 +46,12 @@ spec:
           severity: high
           object-templates:
             - complianceType: musthave
+              objectDefinition:
                 apiVersion: cluster.open-cluster-management.io/v1beta2
                 kind: ManagedClusterSetBinding
                 metadata:
                   name: {{ $clusterSet }}
                   namespace: {{ $.Values.acs.namespace }}
-                  annotations:
-                    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
-                    argocd.argoproj.io/sync-wave: "6"
                 spec:
                   clusterSet: {{ $clusterSet }}
     {{- end }}

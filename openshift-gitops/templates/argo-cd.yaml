@@ -3,7 +3,7 @@ apiVersion: argoproj.io/v1beta1
 kind: ArgoCD
 metadata:
   name: openshift-gitops
-  namespace: {{ .Values.gitops.namespace }}
+  namespace: {{ .Values.gitops.argoNamespace }}
   annotations:
     helm.sh/hook-weight: "4"
 spec:
