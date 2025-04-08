@@ -55,7 +55,7 @@ spec:
                       {{ "{{-" }} $_ := set $newLabels $label $value {{ "}}" }}
                     {{ "{{-" }} end {{ "}}" }}
                   {{ "{{-" }} end {{ "}}" }}
-                  {{ "{{-" }} $metadata := set $value.metadata "labels" $newLabels {{ "}}" }}
+                  {{ "{{-" }} $metadata := set $cluster.metadata "labels" $newLabels {{ "}}" }}
                   {{ "{{-" }} $objectDefinition := set $cluster "metadta" $metadata {{ "}}" }}
                   {{ "{{-" }} $_ := unset $objectDefintion "status "{{ "}}" }}
                   {
