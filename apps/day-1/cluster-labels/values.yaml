@@ -9,6 +9,10 @@ debug: true
 enabled: true
 autoshiftLabelPrefix: "autoshift.io/"
 hubClusterSets:
+  managed-hubs:
+    selfManaged: 'false'
+    labels:
+      test: "ye" 
   hub:
     labels: 
       infra-nodes-numcpu: '8'
