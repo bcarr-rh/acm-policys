@@ -30,6 +30,7 @@ spec:
           valueFiles:
           - values.yaml
           valuesObject:
+            selfManagedHubSet: {{ .Values.selfManagedHubSet }}
             policy_namespace: {{ printf "policies-%s" .Release.Name }}
             {{- if .Values.hubClusterSets }}
             hubClusterSets:

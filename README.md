@@ -36,6 +36,8 @@ Update autoshift/values.yaml with desired feature flags and repo url
 Note: If your GitOps does not have access to git url provided you will need to add the repo to OpenShift GitOps
 
 Install AutoShiftv2
+
+example using the hub values file
 ```
 helm template autoshift autoshift -f autoshift/values.hub.yaml | oc apply -f -
 ```

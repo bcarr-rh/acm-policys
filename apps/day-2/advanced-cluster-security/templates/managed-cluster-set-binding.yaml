@@ -1,96 +1,24 @@
-# This policy installs the Advanced Cluster Security Operator on the ACM hub
-# cluster and it create the Central Server.
-{{- if .Values.hubClusterSets }}
-apiVersion: policy.open-cluster-management.io/v1
-kind: Policy
+{{- range $clusterSet, $value := .Values.managedClusterSets }}
+---
+apiVersion: cluster.open-cluster-management.io/v1beta2
+kind: ManagedClusterSetBinding
 metadata:
-  name: policy-acs-cluster-set-binding
-  namespace: {{ .Values.policy_namespace }}
+  name: {{ $clusterSet }}
+  namespace: {{ $.Values.acs.namespace }}
   annotations:
-    argocd.argoproj.io/sync-options: Prune=false,SkipDryRunOnMissingResource=true
-    argocd.argoproj.io/compare-options: IgnoreExtraneous
-    policy.open-cluster-management.io/standards: NIST SP 800-53
-    policy.open-cluster-management.io/categories: CM Configuration Management
-    policy.open-cluster-management.io/controls: CM-2 Baseline Configuration
+    argocd.argoproj.io/sync-wave: "2"
 spec:
-  disabled: false
-  policy-templates:
-    {{- range $clusterSet, $value := .Values.managedClusterSets }}
-    - objectDefinition:
-        apiVersion: policy.open-cluster-management.io/v1
-        kind: ConfigurationPolicy
-        metadata:
-          name: {{ $clusterSet }}-cluster-binding
-        spec:
-          remediationAction: enforce
-          severity: high
-          object-templates:
-            - complianceType: musthave
-              objectDefinition:
-                apiVersion: cluster.open-cluster-management.io/v1beta2
-                kind: ManagedClusterSetBinding
-                metadata:
-                  name: {{ $clusterSet }}
-                  namespace: {{ $.Values.acs.namespace }}
-                spec:
-                  clusterSet: {{ $clusterSet }}
-    {{- end }}
-    {{- range $clusterSet, $value := .Values.hubClusterSets }}
-    - objectDefinition:
-        apiVersion: policy.open-cluster-management.io/v1
-        kind: ConfigurationPolicy
-        metadata:
-          name: {{ $clusterSet }}-cluster-binding
-        spec:
-          remediationAction: enforce
-          severity: high
-          object-templates:
-            - complianceType: musthave
-              objectDefinition:
-                apiVersion: cluster.open-cluster-management.io/v1beta2
-                kind: ManagedClusterSetBinding
-                metadata:
-                  name: {{ $clusterSet }}
-                  namespace: {{ $.Values.acs.namespace }}
-                spec:
-                  clusterSet: {{ $clusterSet }}
-    {{- end }}
+  clusterSet: {{ $clusterSet }}
+{{- end }}
+{{- range $clusterSet, $value := .Values.hubClusterSets }}
 ---
-apiVersion: cluster.open-cluster-management.io/v1beta1
-kind: Placement
+apiVersion: cluster.open-cluster-management.io/v1beta2
+kind: ManagedClusterSetBinding
 metadata:
-  name: policy-acs-cluster-set-binding-placement
-  namespace: {{ .Values.policy_namespace }}
+  name: {{ $clusterSet }}
+  namespace: {{ $.Values.acs.namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
 spec:
-  clusterSets:
-  {{- range $clusterSet, $value := .Values.hubClusterSets }}
-    - {{ $clusterSet }}
-  {{- end }}
-  predicates:
-    - requiredClusterSelector:
-        labelSelector:
-          matchExpressions:
-            - key: 'autoshift.io/acs'
-              operator: In
-              values:
-              - 'true'
-  tolerations:
-    - key: cluster.open-cluster-management.io/unreachable
-      operator: Exists
-    - key: cluster.open-cluster-management.io/unavailable
-      operator: Exists
----
-apiVersion: policy.open-cluster-management.io/v1
-kind: PlacementBinding
-metadata:
-  name: policy-acs-cluster-set-binding-placement
-  namespace: {{ .Values.policy_namespace }}
-placementRef:
-  name: policy-acs-cluster-set-binding-placement
-  apiGroup: cluster.open-cluster-management.io
-  kind: Placement
-subjects:
-  - name: policy-acs-cluster-set-binding
-    apiGroup: policy.open-cluster-management.io
-    kind: Policy
-{{- end -}}
+  clusterSet: {{ $clusterSet }}
+{{- end }}

@@ -9,6 +9,7 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-options: Prune=false,SkipDryRunOnMissingResource=true
     argocd.argoproj.io/compare-options: IgnoreExtraneous
+    argocd.argoproj.io/sync-wave: "1"
     policy.open-cluster-management.io/standards: NIST SP 800-53
     policy.open-cluster-management.io/categories: CM Configuration Management
     policy.open-cluster-management.io/controls: CM-2 Baseline Configuration
@@ -90,6 +91,8 @@ kind: Placement
 metadata:
   name: policy-acs-central-placement
   namespace: {{ .Values.policy_namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   clusterSets:
   {{- range $clusterSet, $value := .Values.hubClusterSets }}
@@ -114,6 +117,8 @@ kind: PlacementBinding
 metadata:
   name: policy-acs-central-placement
   namespace: {{ .Values.policy_namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
 placementRef:
   name: policy-acs-central-placement
   apiGroup: cluster.open-cluster-management.io
