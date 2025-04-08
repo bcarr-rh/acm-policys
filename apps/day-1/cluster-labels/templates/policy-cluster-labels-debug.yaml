@@ -41,7 +41,7 @@ spec:
                       {{ "{{" }} if (ne $lastIndex -1) {{ "}}" }}
                         {{ "{{" }} range $index, $cluster := $managedClusters {{ "}}" }}
                           {{ "{{" }} $clusterName := (index $cluster "metadata" "name") {{ "}}" }}
-                          {{ "{{" }} $clusterSet := (index (index $cluster "labels") "cluster.open-cluster-management.io/clusterset") | default "" {{ "}}" }}
+                          {{ "{{" }} $clusterSet := (index (index $cluster "labels" | default dict) "cluster.open-cluster-management.io/clusterset") | default "" {{ "}}" }}
                           {{ "{{" }} $labelSets := (dict) {{ "}}" }}
                           {{ "{{" }} $existingLabels :=  (index $cluster "labels") {{ "}}" }}
                           {{ "{{" }} $existingLabelsNoAutoshift := dict {{ "}}" }}
