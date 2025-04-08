@@ -68,8 +68,7 @@ spec:
                             {
                               "complianceType": "mustonlyhave",
                               "objectDefinition": {{ "{{" }} $objectDefinition | toRawJson  {{ "}}" }}
-                                }{{ "{{-" }} if ne $lastIndex $index {{ "}}" }},{{ "{{-" }} end {{ "}}" }}
-                            }
+                            }{{ "{{-" }} if ne $lastIndex $index {{ "}}" }},{{ "{{-" }} end {{ "}}" }}
                           {{ "{{-" }} end {{ "}}" }}
                         {{ "{{-" }} end {{ "}}" }}
                       {{ "{{-" }} end {{ "}}" }}
