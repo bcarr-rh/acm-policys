@@ -1,8 +1,8 @@
 {{- if (.Values.enabled | default false) }}
 {{- $hubClusterSet := $.Values.hubClusterSet | default "hub" }}
-{{- $policyName := (print "policy-managed-cluster-labels" "-" ($.Values.deploymentName | default "default")) }}
+{{- $policyName := (print "policy-cluster-labels" "-" ($.Values.deploymentName | default "default")) }}
 {{- $placementName := printf "placement-%s" $policyName }}
-{{- $configPolicyName := "managed-hub-cluster-labels"   }}
+{{- $configPolicyName := printf "managed-hub-cluster-labels"  }}
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
@@ -29,27 +29,27 @@ spec:
             [
               {{ "{{-" }} $configMaps := (lookup "v1" "ConfigMap" "" "" "autoshift.io/cluster-labels") | default list {{ "}}" }}
               {{ "{{-" }} $managedClusterLookupResult := (lookup "cluster.open-cluster-management.io/v1" "ManagedCluster" "" "") | default dict {{ "}}" }}
-              {{ "{{-" }} if ne (empty $managedClusterLookupResult){{ "-}}" }}
+              {{ "{{-" }} if ne (empty $managedClusterLookupResult){{ "}}" }}
               {{ "{{-" }} $managedClusters := (index $managedClusterLookupResult "items") | default list {{ "}}" }}
-              {{ "{{-" }} $lastIndex := (sub (len $managedClusters) 1) {{ "-}}" }}
-              {{ "{{-" }} if (ne $lastIndex 0) {{ "-}}" }}
+              {{ "{{-" }} $lastIndex := (sub (len $managedClusters) 1) {{ "}}" }}
+              {{ "{{-" }} if (ne $lastIndex 0) {{ "}}" }}
                 {{ "{{-" }} range $index, $cluster := $managedClusters {{ "}}" }}
-                  {{ "{{-" }} $clusterName := (index $cluster "metadata" "name") {{ "-}}" }}
-                  {{ "{{-" }} $clusterSet := (index (index $cluster "labels") "cluster.open-cluster-management.io/clusterset") | default "" {{ "-}}" }}
+                  {{ "{{-" }} $clusterName := (index $cluster "metadata" "name") {{ "}}" }}
+                  {{ "{{-" }} $clusterSet := (index (index $cluster "labels") "cluster.open-cluster-management.io/clusterset") | default "" {{ "}}" }}
                   {{ "{{-" }} $labelSets := (dict) {{ "}}" }}
-                  {{ "{{-" }} $existingLabels :=  (index $cluster "labels") {{ "-}}" }}
-                  {{ "{{-" }} $existingLabelsNoAutoshift := dict {{ "-}}" }}
-                  {{ "{{-" }} range $label, $value := $existingLabels {{ "-}}" }}
+                  {{ "{{-" }} $existingLabels :=  (index $cluster "labels") {{ "}}" }}
+                  {{ "{{-" }} $existingLabelsNoAutoshift := dict {{ "}}" }}
+                  {{ "{{-" }} range $label, $value := $existingLabels {{ "}}" }}
                     {{ "{{-" }} if not (hasPrefix "autoshift.io/" $label) {{ "}}" }}
                       {{ "{{-" }} $_ :=  set $existingLabelsNoAutoshift $label $value {{ "}}" }}
                     {{ "{{-" }} end {{ "}}" }}
                   {{ "{{-" }} end {{ "}}" }}
-                  {{ "{{-" }} $clusterConfigMap := (lookup "v1" "ConfigMap" "" (print "managed-cluster." $clusterName)) | default dict {{ "-}}" }}
-                  {{ "{{-" }} $clusterSetConfigMap := (lookup "v1" "ConfigMap" "" (print "cluster-set." $clusterSet)) | default dict {{ "-}}" }}
+                  {{ "{{-" }} $clusterConfigMap := (lookup "v1" "ConfigMap" "" (print "managed-cluster." $clusterName)) | default dict {{ "}}" }}
+                  {{ "{{-" }} $clusterSetConfigMap := (lookup "v1" "ConfigMap" "" (print "cluster-set." $clusterSet)) | default dict {{ "}}" }}
                   {{ "{{-" }} $clusterLabels := (index $clusterConfigMap "labels" | default dict){{ "}}" }}
                   {{ "{{-" }} $clusterSetLabels := (index $clusterSetConfigMap "labels" | default dict){{ "}}" }}
-                  {{ "{{-" }} $tempLabels := merge $clusterLabels $clusterSetLabels $existingLabels {{ "-}}" }}
-                  {{ "{{-" }} $newLabels := dict {{ "-}}" }}
+                  {{ "{{-" }} $tempLabels := merge $clusterLabels $clusterSetLabels $existingLabels {{ "}}" }}
+                  {{ "{{-" }} $newLabels := dict {{ "}}" }}
                   {{ "{{-" }} range $label, $value := $tempLabels {{ "}}" }}
                     {{ "{{-" }} if not (and ($label | hasPrefix "{{ $.Values.autoshiftLabelPrefix }}") (eq $value "_")) {{ "}}" }}
                       {{ "{{-" }} $_ := set $newLabels $label $value {{ "}}" }}
@@ -57,7 +57,7 @@ spec:
                   {{ "{{-" }} end {{ "}}" }}
                   {{ "{{-" }} $metadata := set $value.metadata "labels" $newLabels {{ "}}" }}
                   {{ "{{-" }} $objectDefinition := set $cluster "metadta" $metadata {{ "}}" }}
-                  {{ "{{-" }} $_ := unset $objectDefintion "status "{{ "-}}" }}
+                  {{ "{{-" }} $_ := unset $objectDefintion "status "{{ "}}" }}
                   {
                     "complianceType": "mustonlyhave",
                   }
@@ -73,7 +73,7 @@ metadata:
 spec:
   clusterSets:
   {{- range $k, $v := $.Values.hubClusterSets  }}
-    {{-  if eq ($v.labels.selfManaged | default "true")  "false" }}
+    {{-  if eq ($v.labels.self-managed | default "true")  "false" }}
     - {{ $k }}
     {{- end }}
   {{- end }}
@@ -97,4 +97,3 @@ subjects:
     apiGroup: policy.open-cluster-management.io
     kind: Policy
 ---
-{{- end }}
