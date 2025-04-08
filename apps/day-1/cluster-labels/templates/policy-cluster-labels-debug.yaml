@@ -62,6 +62,7 @@ spec:
                                 {{ "{{-" }} $_ := set $newLabels $label $value {{ "}}" }}
                               {{ "{{-" }} end {{ "}}" }}
                             {{ "{{-" }} end {{ "}}" }}
+                            {{ "{{-" }} $newLabels | toRawJson {{ "}}" }}
                             {{ "{{-" }} $metadata := set $cluster.metadata "labels" $newLabels {{ "}}" }}
                             {{ "{{-" }} $objectDefinition := set $cluster "metadata" $metadata {{ "}}" }}
                             {{ "{{-" }} $_ := unset $objectDefinition "status" {{ "}}" }}
