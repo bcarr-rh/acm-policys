@@ -63,7 +63,7 @@ spec:
                               {{ "{{-" }} end {{ "}}" }}
                             {{ "{{-" }} end {{ "}}" }}
                             {{ "{{-" }} $metadata := set $cluster.metadata "labels" $newLabels {{ "}}" }}
-                            {{ "{{-" }} $objectDefinition := set $cluster "metadta" $metadata {{ "}}" }}
+                            {{ "{{-" }} $objectDefinition := set $cluster "metadata" $metadata {{ "}}" }}
                             {{ "{{-" }} $_ := unset $objectDefinition "status" {{ "}}" }}
                             {
                               "complianceType": "mustonlyhave",
