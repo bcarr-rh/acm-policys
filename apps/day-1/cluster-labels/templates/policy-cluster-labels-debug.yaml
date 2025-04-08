@@ -37,6 +37,7 @@ spec:
                     {{ "{{" }} if not (empty $managedClusterLookupResult) {{ "}}" }}
                       {{ "{{" }} $managedClusters := (index $managedClusterLookupResult "items") | default list {{ "}}" }}
                       {{ "{{" }} $managedClusters | toRawJson {{ "}}" }}
+                    {{ "{{" }} end {{ "}}" }} 
 
 
 ---
