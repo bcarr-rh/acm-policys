@@ -32,10 +32,9 @@ spec:
               {{ "{{-" }} $thisClusterSet := "{{ $clusterSetKey }}" {{ "}}" }}
               {{ "{{-" }} $configMapNamespace := "{{ $clusterSetValues.configMapNamespace | default "open-cluster-policies" }}" {{ "}}" }}
               {{ "{{-" }} $clusters := (lookup "cluster.open-cluster-management.io/v1" "ManagedCluster" "" "").items {{ "}}" }}
-              {{ "{{-" }} $lastIndex := sub (len $clusters) 1 {{ "}}" }}
+              {{ "{{-" }} $lastIndex := (sub (len $clusters) 1) {{ "}}" }}
               {{ "{{-" }} range $index, $value := $clusters {{ "}}" }}
                 {{ "{{-" }} $clusterSet := ((index $value.metadata.labels "cluster.open-cluster-management.io/clusterset") | default "") {{ "}}" }}
-                {{ "{{-" }} if or (eq $clusterSet "") (ne $clusterSet $thisClusterSet) {{ "}}" }}
                 {{ "{{-" }} if or (eq $clusterSet "") (ne $clusterSet $thisClusterSet) {{ "}}" }}
                   {{ "{{-" }} continue {{ "}}" }}
                 {{ "{{-" }} end {{ "}}" }}
@@ -83,9 +82,7 @@ metadata:
   namespace: open-cluster-policies
 spec:
   clusterSets:
-  {{- range $k, $v := $.Values.hubClusterSets  }}
-    - {{ $k }}
-  {{- end }}
+  - {{ $.Values.selfManagedHubSet | default "hub" }}
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists
