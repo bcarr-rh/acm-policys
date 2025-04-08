@@ -1,3 +1,5 @@
+# Populate list with:
+# oc get complianceremediations -A -o custom-columns=:.metadata.name --no-headers
 # Removed from ocp4-stig
 # ocp4-stig-project-config-and-template-network-policy
 # ocp4-stig-project-config-and-template-network-policy-1
