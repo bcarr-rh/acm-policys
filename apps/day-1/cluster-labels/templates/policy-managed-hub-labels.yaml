@@ -57,7 +57,7 @@ spec:
                   {{ "{{-" }} end {{ "}}" }}
                   {{ "{{-" }} $metadata := set $cluster.metadata "labels" $newLabels {{ "}}" }}
                   {{ "{{-" }} $objectDefinition := set $cluster "metadta" $metadata {{ "}}" }}
-                  {{ "{{-" }} $_ := unset $objectDefintion "status "{{ "}}" }}
+                  {{ "{{-" }} $_ := unset $objectDefinition "status "{{ "}}" }}
                   {
                     "complianceType": "mustonlyhave",
                   }
