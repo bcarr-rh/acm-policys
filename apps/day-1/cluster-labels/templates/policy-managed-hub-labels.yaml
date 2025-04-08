@@ -32,12 +32,11 @@ spec:
               {{ "{{-" }} if not (empty $managedClusterLookupResult) {{ "}}" }}
                 {{ "{{-" }} $managedClusters := (index $managedClusterLookupResult "items") | default list {{ "}}" }}
                 {{ "{{-" }} $lastIndex := (sub (len $managedClusters) 1) {{ "}}" }}
-                {{ "{{-" }} if (ne $lastIndex 0) {{ "}}" }}
+                {{ "{{-" }} if (ne $lastIndex -1) {{ "}}" }}
                   {{ "{{-" }} range $index, $cluster := $managedClusters {{ "}}" }}
                     {{ "{{-" }} $clusterName := (index $cluster "metadata" "name") {{ "}}" }}
-                    {{ "{{-" }} $clusterSet := (index (index $cluster "labels") "cluster.open-cluster-management.io/clusterset") | default "" {{ "}}" }}
-                    {{ "{{-" }} $labelSets := (dict) {{ "}}" }}
-                    {{ "{{-" }} $existingLabels :=  (index $cluster "labels") {{ "}}" }}
+                    {{ "{{-" }} $clusterSet := (index (index $cluster  "metadata" "labels" | default dict) "cluster.open-cluster-management.io/clusterset") | default "" {{ "}}" }}
+                    {{ "{{-" }} $existingLabels :=  (index $cluster "metadata" "labels") {{ "}}" }}
                     {{ "{{-" }} $existingLabelsNoAutoshift := dict {{ "}}" }}
                     {{ "{{-" }} range $label, $value := $existingLabels {{ "}}" }}
                       {{ "{{-" }} if not (hasPrefix "autoshift.io/" $label) {{ "}}" }}
@@ -48,7 +47,7 @@ spec:
                     {{ "{{-" }} $clusterSetConfigMap := (lookup "v1" "ConfigMap" "" (print "cluster-set." $clusterSet)) | default dict {{ "}}" }}
                     {{ "{{-" }} $clusterLabels := (index $clusterConfigMap "labels" | default dict){{ "}}" }}
                     {{ "{{-" }} $clusterSetLabels := (index $clusterSetConfigMap "labels" | default dict){{ "}}" }}
-                    {{ "{{-" }} $tempLabels := merge $clusterLabels $clusterSetLabels $existingLabels {{ "}}" }}
+                    {{ "{{-" }} $tempLabels := merge $clusterLabels $clusterSetLabels $existingLabelsNoAutoshift {{ "}}" }}
                     {{ "{{-" }} $newLabels := dict {{ "}}" }}
                     {{ "{{-" }} range $label, $value := $tempLabels {{ "}}" }}
                       {{ "{{-" }} if not (and ($label | hasPrefix "{{ $.Values.autoshiftLabelPrefix }}") (eq $value "_")) {{ "}}" }}
@@ -56,13 +55,12 @@ spec:
                       {{ "{{-" }} end {{ "}}" }}
                     {{ "{{-" }} end {{ "}}" }}
                     {{ "{{-" }} $metadata := set $cluster.metadata "labels" $newLabels {{ "}}" }}
-                    {{ "{{-" }} $objectDefinition := set $cluster "metadta" $metadata {{ "}}" }}
-                    {{ "{{-" }} $_ := unset $objectDefinition "status "{{ "}}" }}
+                    {{ "{{-" }} $objectDefinition := set $cluster "metadata" $metadata {{ "}}" }}
+                    {{ "{{-" }} $_ := unset $objectDefinition "status" {{ "}}" }}
                     {
                       "complianceType": "mustonlyhave",
                       "objectDefinition": {{ "{{" }} $objectDefinition | toRawJson  {{ "}}" }}
-                        }{{ "{{-" }} if ne $lastIndex $index {{ "}}" }},{{ "{{-" }} end {{ "}}" }}
-                    }
+                    }{{ "{{-" }} if ne $lastIndex $index {{ "}}" }},{{ "{{-" }} end {{ "}}" }}
                   {{ "{{-" }} end {{ "}}" }}
                 {{ "{{-" }} end {{ "}}" }}
               {{ "{{-" }} end {{ "}}" }}
