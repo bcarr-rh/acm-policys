@@ -73,7 +73,7 @@ metadata:
 spec:
   clusterSets:
   {{- range $k, $v := $.Values.hubClusterSets  }}
-    {{-  if eq ($v.labels.self-managed | default "true")  "false" }}
+    {{-  if eq ($v.labels.selfManaged | default "true")  "false" }}
     - {{ $k }}
     {{- end }}
   {{- end }}
@@ -97,3 +97,4 @@ subjects:
     apiGroup: policy.open-cluster-management.io
     kind: Policy
 ---
+{{- end }}
