@@ -74,7 +74,7 @@ metadata:
 spec:
   clusterSets:
   {{- range $k, $v := $.Values.hubClusterSets  }}
-    {{-  if eq ($v.labels.selfManaged | default "true")  "false" }}
+    {{-  if eq ($v.selfManaged | default "true")  "false" }}
     - {{ $k }}
     {{- end }}
   {{- end }}
