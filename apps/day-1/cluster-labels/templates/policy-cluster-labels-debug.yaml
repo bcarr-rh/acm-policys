@@ -56,6 +56,7 @@ spec:
                             {{ "{{-" }} $clusterLabels := (index $clusterConfigMap "labels" | default dict){{ "}}" }}
                             {{ "{{-" }} $clusterSetLabels := (index $clusterSetConfigMap "labels" | default dict){{ "}}" }}
                             {{ "{{-" }} $tempLabels := merge $clusterLabels $clusterSetLabels $existingLabels {{ "}}" }}
+                            TempLabels: {{ "{{" }} $tempLabels | toRawJson {{ "}}" }}
                             {{ "{{-" }} $newLabels := dict {{ "}}" }}
                             {{ "{{-" }} range $label, $value := $tempLabels {{ "}}" }}
                               {{ "{{-" }} if not (and ($label | hasPrefix "{{ $.Values.autoshiftLabelPrefix }}") (eq $value "_")) {{ "}}" }}
