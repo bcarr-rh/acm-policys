@@ -34,7 +34,9 @@ spec:
                 data:
                   machineSets: |
                     {{ "{{" }} $managedClusterLookupResult := (lookup "cluster.open-cluster-management.io/v1" "ManagedCluster" "" "") | default dict {{ "}}" }}
-                    {{ "{{" }} $managedClusterLookupResult | toRawJson {{ "}}" }}
+                    {{ "{{" }} if not (empty $managedClusterLookupResult) {{ "}}" }}
+                      {{ "{{" }} $managedClusters := (index $managedClusterLookupResult "items") | default list {{ "}}" }}
+                      {{ "{{" }} $managedClusters | toRawJson {{ "}}" }}
 
 
 ---
