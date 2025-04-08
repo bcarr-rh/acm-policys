@@ -29,7 +29,7 @@ spec:
             [
               {{ "{{-" }} $configMaps := (lookup "v1" "ConfigMap" "" "" "autoshift.io/cluster-labels") | default list {{ "}}" }}
               {{ "{{-" }} $managedClusterLookupResult := (lookup "cluster.open-cluster-management.io/v1" "ManagedCluster" "" "") | default dict {{ "}}" }}
-              {{ "{{-" }} if ne (empty $managedClusterLookupResult) {{ "}}" }}
+              {{ "{{-" }} if not (empty $managedClusterLookupResult) {{ "}}" }}
                 {{ "{{-" }} $managedClusters := (index $managedClusterLookupResult "items") | default list {{ "}}" }}
                 {{ "{{-" }} $lastIndex := (sub (len $managedClusters) 1) {{ "}}" }}
                 {{ "{{-" }} if (ne $lastIndex 0) {{ "}}" }}
