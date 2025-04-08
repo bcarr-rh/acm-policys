@@ -2,12 +2,16 @@
 # the Advanced Cluster Operator on the hub cluster.
 #
 # Note that OpenShift 4.18 is required.
+{{- if .Values.hubClusterSets }}
+{{- $policyName :=  "policy-acm-mch-install" }}
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
-  name: policy-acm-mch-install
-  namespace: open-cluster-policies
+  name: {{ $policyName }}
+  namespace: {{ .Values.policy_namespace }}
   annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+    argocd.argoproj.io/sync-wave: "8"
     policy.open-cluster-management.io/standards: NIST SP 800-53
     policy.open-cluster-management.io/categories: CM Configuration Management
     policy.open-cluster-management.io/controls: CM-2 Baseline Configuration
@@ -22,7 +26,7 @@ spec:
         spec:
           remediationAction: enforce
           severity: high
-          object-templates:
+          object-templates-raw: |
             - complianceType: musthave
               objectDefinition:
                 apiVersion: operator.open-cluster-management.io/v1
@@ -31,19 +35,23 @@ spec:
                   name: multiclusterhub
                   namespace: {{ .Values.acm.namespace }}
                 spec:
-                  availabilityConfig: {{ .Values.acm.availabilityConfig | default "Basic" }}
-                  {{- if .Values.acm.disable_hub_self_management }}
-                  disableHubSelfManagement: {{ .Values.acm.disable_hub_self_management }}
-                  {{- end}}
+                  availabilityConfig: '{{ "{{hub" }} $availability_config := index .ManagedClusterLabels "autoshift.io/acm-availability-config" | default "{{ .Values.acm.availabilityConfig }}" {{ "-hub}}" }} {{ "{{hub" }} print (substr 0 1 $availability_config | upper) (substr 1 (len $availability_config) $availability_config) {{ "-hub}}" }}'
+                  {{ "{{-" }} $selfmanaged := {{ "{{" }}hub (index .ManagedClusterLabels "autoshift.io/self-managed") | default "true" hub{{ "}}" }} {{ "}}" }}
+                  {{ "{{-" }} if eq (print $selfmanaged) "false" {{ "}}" }}
+                  disableHubSelfManagement: 'true'
+                  {{ "{{- " }}end {{ "}}" }}
 ---
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
 metadata:
-  name: placement-policy-acm-mch-install
-  namespace: open-cluster-policies
+  name: placement-{{ $policyName }}
+  namespace: {{ .Values.policy_namespace }}
+  annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+    argocd.argoproj.io/sync-wave: "8"
 spec:
   clusterSets:
-  {{- range $clusterSet, $value := $.Values.hubClusterSets }}
+  {{- range $clusterSet, $value := .Values.hubClusterSets }}
     - {{ $clusterSet }}
   {{- end }}
   tolerations:
@@ -55,13 +63,17 @@ spec:
 apiVersion: policy.open-cluster-management.io/v1
 kind: PlacementBinding
 metadata:
-  name: placement-policy-acm-mch-install
-  namespace: open-cluster-policies
+  name: placement-{{ $policyName }}
+  namespace: {{ .Values.policy_namespace }}
+  annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+    argocd.argoproj.io/sync-wave: "8"
 placementRef:
-  name: placement-policy-acm-mch-install
+  name: placement-{{ $policyName }}
   apiGroup: cluster.open-cluster-management.io
   kind: Placement
 subjects:
-  - name: policy-acm-mch-install
+  - name: {{ $policyName }}
     apiGroup: policy.open-cluster-management.io
     kind: Policy
+{{- end }}

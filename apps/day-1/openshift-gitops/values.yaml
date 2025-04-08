@@ -1,9 +1,10 @@
 # Default values for the gitops operator
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-
+policy_namespace: open-cluster-policies
 gitops:
   namespace: openshift-gitops-operator
+  argoNamespace: openshift-gitops
   group: openshift-gitops-operator
   source: redhat-operators
   channel: latest
@@ -16,10 +17,10 @@ gitops:
   controller:
     limits:
       cpu: 2000m
-      memory: 4096Mi
+      memory: 6Gi
     requests:
       cpu: 250m
-      memory: 4096Mi
+      memory: 6Gi
   ha:
     enabled: false
     limits:
@@ -56,14 +57,15 @@ gitops:
     requests:
       cpu: 250m
       memory: 128Mi
-hubClusterSets:
-  hub:
-    labels:
-      test1: 'test'
-managedClusterSets:
-  sandbox:
-    labels:
-      test3: 'test'
-  managed:
-    labels:
-      test4: 'test'
+
+# hubClusterSets:
+#   hub:
+#     labels:
+#       test1: 'test'
+# managedClusterSets:
+#   sandbox:
+#     labels:
+#       test3: 'test'
+#   managed:
+#     labels:
+#       test4: 'test'

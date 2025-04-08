@@ -14,13 +14,13 @@ apiVersion: v1
 kind: ConfigMap
 metadata: 
   name: "{{ printf "managed-cluster.%s" $cluster }}"
-  namespace: "open-cluster-policies" 
+  namespace: "{{ $.Values.policy_namespace }}" 
 data: 
   values: '{{ $data | toJson }}'
   labels: '{{ $prefixedClusterLabels | toJson }}'
 {{- end }}
 
-{{- range $clusterSet, $data := merge $.Values.hubClusterSets $.Values.managedClusterSets }}
+{{- range $clusterSet, $data := merge ($.Values.hubClusterSets | default dict) ($.Values.managedClusterSets | default dict) }}
 ---
   {{- $prefixedClusterSetLabels := dict -}}
   {{- range $label, $value := $data.labels -}}
@@ -35,7 +35,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata: 
   name: {{ printf "cluster-set.%s" $clusterSet }}
-  namespace: "open-cluster-policies" 
+  namespace: "{{ $.Values.policy_namespace }}" 
 data:
   values: '{{ $data | toJson }}'
   labels: '{{ $prefixedClusterSetLabels | toJson }}'

@@ -19,6 +19,7 @@ Install OpenShift Gitops
 ```
 helm template openshift-gitops -f apps/day-1/openshift-gitops/values.yaml | oc apply -f -
 ```
+Note: This will need to be run several times, the subscription will create a CRD that is than applied. Once there are no errors running this command continue on to the next step
 
 Note: If OpenShift GitOps is already installed manually on cluster this will create two Operator Groups for OpenShift GitOps. Removing one will fix the issue.
 
@@ -26,6 +27,7 @@ Install Advanced Cluster Management
 ```
 helm template advanced-cluster-management -f apps/day-1/advanced-cluster-management/values.yaml | oc apply -f -
 ```
+Note: This will need to be run several times, the subscription will create a CRD that is than applied. Once there are no errors running this command continue on to the next step
 
 Both ACM and GitOps will be controlled by autoshift after it is installed for version upgrading
 
@@ -34,12 +36,10 @@ Update autoshift/values.yaml with desired feature flags and repo url
 Note: If your GitOps does not have access to git url provided you will need to add the repo to OpenShift GitOps
 
 Install AutoShiftv2
+
+example using the hub values file
 ```
-helm install autoshift autoshift
-```
-or
-```
-helm template autoshift autoshift | oc apply -f -
+helm template autoshift autoshift -f autoshift/values.hub.yaml | oc apply -f -
 ```
 
 Given the labels and cluster sets provided in the values file, ACM cluster sets will be created along with ACM. Manually select which cluster will belong to each cluster set, or when provisioning a new cluster from ACM you can select the desired cluster set from ACM at time of creation.
@@ -49,6 +49,21 @@ That's it. Welcome to OpenShift Platform Plus!
 ## Cluster Labels
 #### values can be set on a per clusterset level to decide what features of autoshift will be applied to each cluster
 ##
+
+### Advanced Cluster Manager
+Hub Clusters Only
+
+self-managed: true or false
+
+acm-channel: default release-2.13
+
+acm-install-plan-approval: default Automatic
+
+acm-source: default redhat-operators
+
+acm-source-namespace: default openshift-marketplace
+
+acm-availability-config: supports basic or high
 
 ### infra-nodes
 infra-nodes<int>: Number of infra nodes min if autoscale. If not set infra nodes are not managed, if blank infra nodes will be deleted

@@ -2,11 +2,12 @@
 # the Advanced Cluster Operator on the hub cluster.
 #
 # Note that OpenShift 4.18 is required.
+{{- if .Values.hubClusterSets }}
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
   name: policy-gitops-operator-install
-  namespace: open-cluster-policies
+  namespace: {{ .Values.policy_namespace }}
   annotations:
     policy.open-cluster-management.io/standards: NIST SP 800-53
     policy.open-cluster-management.io/categories: CM Configuration Management
@@ -54,7 +55,7 @@ apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
 metadata:
   name: placement-policy-gitops-operator-install
-  namespace: open-cluster-policies
+  namespace: {{ .Values.policy_namespace }}
 spec:
   clusterSets:
   {{- range $clusterSet, $value := $.Values.hubClusterSets }}
@@ -70,7 +71,7 @@ apiVersion: policy.open-cluster-management.io/v1
 kind: PlacementBinding
 metadata:
   name: placement-policy-gitops-operator-install
-  namespace: open-cluster-policies
+  namespace: {{ .Values.policy_namespace }}
 placementRef:
   name: placement-policy-gitops-operator-install
   apiGroup: cluster.open-cluster-management.io
@@ -79,3 +80,4 @@ subjects:
   - name: policy-gitops-operator-install
     apiGroup: policy.open-cluster-management.io
     kind: Policy
+{{- end }}

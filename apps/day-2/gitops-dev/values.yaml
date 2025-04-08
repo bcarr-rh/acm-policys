@@ -1,6 +1,7 @@
 # Default values for gitops-dev.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates
+policy_namespace: open-cluster-policies
 teams:
   dev:
     gitops_rbac_policies:
@@ -54,11 +55,11 @@ teams:
   test:
     gitops_rbac_policies:
     - 'g, openshift-systems, role:admin'
-hubClusterSets:
-  hub:
-    labels:
-      test1: 'test'
-managedClusterSets:
-  managed:
-    labels:
-      test4: 'test'
+# hubClusterSets:
+#   hub:
+#     labels:
+#       test1: 'test'
+# managedClusterSets:
+#   managed:
+#     labels:
+#       test4: 'test'

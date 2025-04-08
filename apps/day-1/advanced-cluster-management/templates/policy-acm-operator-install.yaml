@@ -2,12 +2,15 @@
 # the Advanced Cluster Operator on the hub cluster.
 #
 # Note that OpenShift 4.18 is required.
+{{- if .Values.hubClusterSets }}
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
   name: policy-acm-operator-install
-  namespace: open-cluster-policies
+  namespace: {{ .Values.policy_namespace }}
   annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+    argocd.argoproj.io/sync-wave: "7"
     policy.open-cluster-management.io/standards: NIST SP 800-53
     policy.open-cluster-management.io/categories: CM Configuration Management
     policy.open-cluster-management.io/controls: CM-2 Baseline Configuration
@@ -29,6 +32,12 @@ spec:
                 kind: Namespace
                 metadata:
                   name: {{ .Values.acm.namespace }}
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: v1
+                kind: Namespace
+                metadata:
+                  name: {{ .Values.policy_namespace }}
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1beta1
         kind: OperatorPolicy
@@ -56,10 +65,13 @@ apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
 metadata:
   name: placement-policy-acm-operator-install
-  namespace: open-cluster-policies
+  namespace: {{ .Values.policy_namespace }}
+  annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+    argocd.argoproj.io/sync-wave: "7"
 spec:
   clusterSets:
-  {{- range $clusterSet, $value := $.Values.hubClusterSets }}
+  {{- range $clusterSet, $value := .Values.hubClusterSets }}
     - {{ $clusterSet }}
   {{- end }}
   tolerations:
@@ -72,7 +84,10 @@ apiVersion: policy.open-cluster-management.io/v1
 kind: PlacementBinding
 metadata:
   name: placement-policy-acm-operator-install
-  namespace: open-cluster-policies
+  namespace: {{ .Values.policy_namespace }}
+  annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+    argocd.argoproj.io/sync-wave: "7"
 placementRef:
   name: placement-policy-acm-operator-install
   apiGroup: cluster.open-cluster-management.io
@@ -81,3 +96,4 @@ subjects:
   - name: policy-acm-operator-install
     apiGroup: policy.open-cluster-management.io
     kind: Policy
+{{- end }}

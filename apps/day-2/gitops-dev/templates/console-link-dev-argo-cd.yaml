@@ -1,3 +1,4 @@
+{{- if .Values.hubClusterSets }}
 {{- range $team, $value := .Values.teams }}
 ---
 apiVersion: policy.open-cluster-management.io/v1
@@ -70,4 +71,5 @@ subjects:
   - name: policy-gitops-{{ $team }}-console-link
     apiGroup: policy.open-cluster-management.io
     kind: Policy
+{{- end }}
 {{- end }}

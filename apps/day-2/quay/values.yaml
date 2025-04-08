@@ -1,6 +1,7 @@
 # Default values for quay.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
+policy_namespace: open-cluster-policies
 quayOperator:
     name: quay-operator
     namespace: quay-operator
@@ -8,14 +9,14 @@ quayOperator:
     installPlanApproval: Automatic
     source: redhat-operators
     sourceNamespace: openshift-marketplace
-hubClusterSets:
-  hub:
-    labels:
-      test1: 'test'
-managedClusterSets:
-  managed:
-    labels:
-      test4: 'test'
+# hubClusterSets:
+#   hub:
+#     labels:
+#       test1: 'test'
+# managedClusterSets:
+#   managed:
+#     labels:
+#       test4: 'test'
 
 ### Labels Quay
 # quay<bool>: If not set Quay will not be managed

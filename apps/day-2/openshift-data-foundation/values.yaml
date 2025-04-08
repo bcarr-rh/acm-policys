@@ -1,6 +1,7 @@
 # Default values for loki.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
+policy_namespace: open-cluster-policies
 odf:
     name: odf-operator
     namespace: openshift-storage
@@ -15,14 +16,14 @@ odf:
     ocsStorageCount: 1
     ocsStorageReplicas: 3
     resourceProfile: balanced # lean: suitable for clusters with limited resources, balanced: suitable for most use cases, performance: suitable for clusters with high amount of resources.
-hubClusterSets:
-  hub:
-    labels:
-      test1: 'test'
-managedClusterSets:
-  managed:
-    labels:
-      test4: 'test'
+# hubClusterSets:
+#   hub:
+#     labels:
+#       test1: 'test'
+# managedClusterSets:
+#   managed:
+#     labels:
+#       test4: 'test'
 
 # Labels
 # autoshift.io/odf<bool>: If not set OpenShift Data Foundation will not be managed. if Storage Nodes are enable will deploy ODF on local storage/ storage nodes

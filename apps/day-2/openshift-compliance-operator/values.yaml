@@ -1,6 +1,7 @@
 # Default values for compliance operator.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
+policy_namespace: open-cluster-policies
 compliance:
     name: compliance-operator
     namespace: openshift-compliance
@@ -9,14 +10,14 @@ compliance:
     sourceNamespace: openshift-marketplace
     nameSub: compliance-operator
     channel: stable
-hubClusterSets:
-  hub:
-    labels:
-      test1: 'test'
-managedClusterSets:
-  managed:
-    labels:
-      test4: 'test'
+# hubClusterSets:
+#   hub:
+#     labels:
+#       test1: 'test'
+# managedClusterSets:
+#   managed:
+#     labels:
+#       test4: 'test'
 
 # Labels
 # compliance<bool>: If not set Compliance Operator will not be managed. Helm chart config map must be set with profiles and remediations
