@@ -33,8 +33,8 @@ spec:
                   namespace: open-cluster-policies
                 data:
                   machineSets: |
-                      {{ "{{" }} $workers := "hello" {{ "}}" }}
-                      {{ "{{" }} $ms := (index (lookup "machine.openshift.io/v1beta1" "MachineSet" "openshift-machine-api" "") "items") | default list {{ "}}" }}
+                    {{ "{{" }} $managedClusterLookupResult := (lookup "cluster.open-cluster-management.io/v1" "ManagedCluster" "" "") | default dict {{ "}}" }}
+                    {{ "{{" }} $managedClusterLookupResult | toRawJson {{ "}}" }}
 
 
 ---
