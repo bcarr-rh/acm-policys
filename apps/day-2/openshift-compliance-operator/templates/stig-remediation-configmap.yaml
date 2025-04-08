@@ -12,6 +12,7 @@ data:
   ocp4-stig: |
     ocp4-stig-api-server-encryption-provider-cipher
     ocp4-stig-audit-profile-set
+    ocp4-stig-oauth-or-oauthclient-inactivity-timeout
     ocp4-stig-oauth-or-oauthclient-token-maxage
   rhcos4-stig: |
     rhcos4-stig-master-audit-access-failed
@@ -101,6 +102,7 @@ data:
     rhcos4-stig-master-audit-rules-usergroup-modification-passwd
     rhcos4-stig-master-audit-rules-usergroup-modification-shadow
     rhcos4-stig-master-auditd-data-disk-error-action
+    rhcos4-stig-master-configure-usbguard-auditbackend
     rhcos4-stig-master-coreos-audit-backlog-limit-kernel-argument
     rhcos4-stig-master-coreos-audit-option
     rhcos4-stig-master-coreos-page-poison-kernel-argument
@@ -202,6 +204,7 @@ data:
     rhcos4-stig-worker-audit-rules-usergroup-modification-passwd
     rhcos4-stig-worker-audit-rules-usergroup-modification-shadow
     rhcos4-stig-worker-auditd-data-disk-error-action
+    rhcos4-stig-worker-configure-usbguard-auditbackend
     rhcos4-stig-worker-coreos-audit-backlog-limit-kernel-argument
     rhcos4-stig-worker-coreos-audit-option
     rhcos4-stig-worker-coreos-page-poison-kernel-argument
