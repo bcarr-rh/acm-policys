@@ -30,7 +30,7 @@ spec:
           object-templates-raw: |
             [
               {{ "{{-" }} $thisClusterSet := "{{ $clusterSetKey }}" {{ "}}" }}
-              {{ "{{-" }} $configMapNamespace := "{{ $clusterSetValues.configMapNamespace | default "open-cluster-policies" }}" {{ "}}" }}
+              {{ "{{-" }} $configMapNamespace := "{{ $clusterSetValue.configMapNamespace | default "open-cluster-policies" }}" {{ "}}" }}
               {{ "{{-" }} $clusters := (lookup "cluster.open-cluster-management.io/v1" "ManagedCluster" "" "").items {{ "}}" }}
               {{ "{{-" }} $lastIndex := (sub (len $clusters) 1) {{ "}}" }}
               {{ "{{-" }} range $index, $value := $clusters {{ "}}" }}
