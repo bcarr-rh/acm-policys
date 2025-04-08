@@ -44,7 +44,7 @@ spec:
                             {{ "{{-" }} $clusterName := (index $cluster "metadata" "name") {{ "}}" }}
                             {{ "{{-" }} $clusterSet := (index (index $cluster "metadata" "labels") "cluster.open-cluster-management.io/clusterset") | default "" {{ "}}" }}
                             {{ "{{-" }} $labelSets := (dict) {{ "}}" }}
-                            {{ "{{-" }} $existingLabels :=  (index $cluster "labels") {{ "}}" }}
+                            {{ "{{-" }} $existingLabels :=  (index $cluster "metadata" "labels") {{ "}}" }}
                             {{ "{{-" }} $existingLabelsNoAutoshift := dict {{ "}}" }}
                             {{ "{{-" }} range $label, $value := $existingLabels {{ "}}" }}
                               {{ "{{-" }} if not (hasPrefix "autoshift.io/" $label) {{ "}}" }}
