@@ -19,7 +19,7 @@ login to hub cluster as cluster-admin
 oc login
 ```
 
-Update apps/day-1/openshift-gitops/values.yaml with desired source mirror registry for disconnected or leave as is for connected
+Update apps/day-1/openshift-gitops/values.yaml and apps/day-1/advanced-cluster-management/values.yaml with desired source mirror registry for disconnected or leave as is for connected
 
 
 If your clone of AutoShiftv2 requires credentials or you would like to add credentials to any other git repos you can do this in the openshift-gitops/values file before installing. This can also be done in the OpenShift GitOps GUI after install.
@@ -46,7 +46,8 @@ example using the hub values file
 helm template autoshift autoshift -f autoshift/values.hub.yaml | oc apply -f -
 ```
 
-Given the labels and cluster sets provided in the values file, ACM cluster sets will be created along with ACM. Manually select which cluster will belong to each cluster set, or when provisioning a new cluster from ACM you can select the desired cluster set from ACM at time of creation.
+Given the labels and cluster sets provided in the values file, ACM cluster sets will be created. Manually select which cluster will belong to each cluster set, or when provisioning a new cluster from ACM you can select the desired cluster set from ACM at time of creation.
+![alt text](images/acm-add-hub-cluster.png)
 
 That's it. Welcome to OpenShift Platform Plus!
 
