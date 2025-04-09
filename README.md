@@ -1,5 +1,11 @@
 # AutoShiftv2
 
+## Hub Architecture
+![alt text](images/AutoShiftv2-Hub.jpg)
+
+## Hub of Hubs Architecture
+![alt text](images/AutoShiftv2-HubOfHubs.jpg)
+
 ## How To Install
 
 Fork, clone, or use upstream git repo
@@ -13,7 +19,7 @@ login to hub cluster as cluster-admin
 oc login
 ```
 
-Update apps/day-1/openshift-gitops/values.yaml with desired source mirror registry for disconnected or leave as is for connected
+Update apps/day-1/openshift-gitops/values.yaml and apps/day-1/advanced-cluster-management/values.yaml with desired source mirror registry for disconnected or leave as is for connected
 
 
 If your clone of AutoShiftv2 requires credentials or you would like to add credentials to any other git repos you can do this in the openshift-gitops/values file before installing. This can also be done in the OpenShift GitOps GUI after install.
@@ -40,12 +46,19 @@ example using the hub values file
 helm template autoshift autoshift -f autoshift/values.hub.yaml | oc apply -f -
 ```
 
-Given the labels and cluster sets provided in the values file, ACM cluster sets will be created along with ACM. Manually select which cluster will belong to each cluster set, or when provisioning a new cluster from ACM you can select the desired cluster set from ACM at time of creation.
+Given the labels and cluster sets provided in the values file, ACM cluster sets will be created.
+
+Go to cluster sets in the acm console
+![alt text](images/acm-cluster-sets.png)
+
+Manually select which cluster will belong to each cluster set, or when provisioning a new cluster from ACM you can select the desired cluster set from ACM at time of creation.
+![alt text](images/acm-add-hub-cluster.png)
 
 That's it. Welcome to OpenShift Platform Plus!
 
 ## Cluster Labels
-#### values can be set on a per clusterset level to decide what features of autoshift will be applied to each cluster
+#### values can be set on a per cluster and clusterset level to decide what features of autoshift will be applied to each cluster. If a value is defined in helm values, a clusterset label and a cluster 
+#### label precedence will be cluster -> clusterset -> helm values where helm values is the least. Helm values are meant to be defaults.
 ##
 
 ### Advanced Cluster Manager
@@ -63,7 +76,17 @@ acm-source-namespace: default openshift-marketplace
 
 acm-availability-config: supports basic or high
 
-### infra-nodes
+### OpenShift Gitops
+
+gitops-channel: default latest
+
+gitops-install-plan-approval: default Automatic
+
+gitops-source: default redhat-operators
+
+gitops-source-namespace: default openshift-marketplace
+
+### Infra Nodes
 infra-nodes<int>: Number of infra nodes min if autoscale. If not set infra nodes are not managed, if blank infra nodes will be deleted
 
 infra-nodes-numcpu<int>: Number of cpu per infra node
@@ -74,7 +97,7 @@ infra-nodes-numcores-per-socket<int>: Number of CPU Cores per socket
 
 infra-nodes-zones<list<String>>: list of availability zones
 
-### worker-nodes
+### Worker Nodes
 worker-nodes<int>: Number of worker nodes min if autoscale. If not set worker nodes are not managed, if blank worker nodes will be deleted
 
 worker-nodes-numcpu<int>: Number of cpu per worker node
@@ -85,7 +108,7 @@ worker-nodes-numcores-per-socket<int>: Number of CPU Cores per socket
 
 worker-nodes-zones<list<String>>: list of availability zones
 
-### storage-nodes
+### Storage Nodes
 storage-nodes<int>: Number of storage nodes min if autoscale. If not set storage nodes are not managed, if blank storage nodes will be deleted. Local Storage Operator will be installed if Storage Nodes are enabled
 
 storage-nodes-numcpu<int>: Number of cpu per storage node
