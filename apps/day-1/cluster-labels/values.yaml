@@ -27,6 +27,9 @@ hubClusterSets:
       worker-nodes:  '3'
       test-worked: 'false'
 managedClusterSets:
+  managed-hub: 
+    labels:  
+      hub: 'true'
   managed:
     labels: 
       # infra-nodes-numcpu: '8'
