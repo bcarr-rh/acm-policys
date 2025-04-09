@@ -1,5 +1,11 @@
 # AutoShiftv2
 
+## Hub Architecture
+![alt text](images/AutoShiftv2-Hub.jpg)
+
+## Hub of Hubs Architecture
+![alt text](images/AutoShiftv2-HubOfHubs.jpg)
+
 ## How To Install
 
 Fork, clone, or use upstream git repo
