@@ -46,7 +46,12 @@ example using the hub values file
 helm template autoshift autoshift -f autoshift/values.hub.yaml | oc apply -f -
 ```
 
-Given the labels and cluster sets provided in the values file, ACM cluster sets will be created. Manually select which cluster will belong to each cluster set, or when provisioning a new cluster from ACM you can select the desired cluster set from ACM at time of creation.
+Given the labels and cluster sets provided in the values file, ACM cluster sets will be created.
+
+Go to cluster sets in the acm console
+![alt text](images/acm-cluster-sets.png)
+
+Manually select which cluster will belong to each cluster set, or when provisioning a new cluster from ACM you can select the desired cluster set from ACM at time of creation.
 ![alt text](images/acm-add-hub-cluster.png)
 
 That's it. Welcome to OpenShift Platform Plus!
