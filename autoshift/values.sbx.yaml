@@ -2,8 +2,8 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-autoshiftGitRepo: 'https://github.com/bcarr-rh/acm-policys.git'
-autoshiftGitBranchTag: 'feature/multiple-autoshifts'
+autoshiftGitRepo: https://github.com/auto-shift/autoshiftv2.git
+autoshiftGitBranchTag: main
 
 selfManagedHubSet: hub
 

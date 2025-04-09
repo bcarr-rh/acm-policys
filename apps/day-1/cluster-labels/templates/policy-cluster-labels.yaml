@@ -1,5 +1,5 @@
 {{- if (.Values.enabled | default false) }}
-{{- $allClusterSets := $.Values.hubClusterSets }}
+{{- $allClusterSets := (merge (.Values.hubClusterSets | default dict) (.Values.managedClusterSets | default dict)) }}
 {{- range $clusterSetKey, $clusterSetValue := $allClusterSets }}
 {{- $hubClusterSet := $.Values.hubClusterSet | default "hub" }}
 {{- $policyName := printf "policy-%s-cluster-labels" $clusterSetKey }}
@@ -78,7 +78,7 @@ metadata:
   namespace: {{ $.Values.policy_namespace }}
 spec:
   clusterSets:
-    - {{ $clusterSetKey }}
+    - {{ $.Values.selfManagedHubSet }}
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists
