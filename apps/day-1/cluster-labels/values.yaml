@@ -27,7 +27,7 @@ hubClusterSets:
       worker-nodes:  '3'
       test-worked: 'false'
 managedClusterSets:
-  managed-hub: 
+  managed-hubs: 
     labels:  
       hub: 'true'
   managed:
