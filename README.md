@@ -13,27 +13,25 @@ login to hub cluster as cluster-admin
 oc login
 ```
 
-Update openshift-gitops/values.yaml with desired source mirror registry for disconnected or leave as is for connected
+Update apps/day-1/openshift-gitops/values.yaml with desired source mirror registry for disconnected or leave as is for connected
 
-Install OpenShift Gitops
-```
-helm template openshift-gitops -f apps/day-1/openshift-gitops/values.yaml | oc apply -f -
-```
-Note: This will need to be run several times, the subscription will create a CRD that is than applied. Once there are no errors running this command continue on to the next step
 
-Note: If OpenShift GitOps is already installed manually on cluster this will create two Operator Groups for OpenShift GitOps. Removing one will fix the issue.
+If your clone of AutoShiftv2 requires credentials or you would like to add credentials to any other git repos you can do this in the openshift-gitops/values file before installing. This can also be done in the OpenShift GitOps GUI after install.
+
+Install OpenShift GitOps
+```
+helm upgrade --install openshift-gitops openshift-gitops -f apps/day-1/openshift-gitops/values.yaml
+```
+Note: If OpenShift GitOps is already installed manually on cluster and the default argo instance exists this step can be skipped. Make sure that argocd controller has cluster-admin
 
 Install Advanced Cluster Management
 ```
-helm template advanced-cluster-management -f apps/day-1/advanced-cluster-management/values.yaml | oc apply -f -
+helm upgrade --install advanced-cluster-management advanced-cluster-management -f apps/day-1/advanced-cluster-management/values.yaml
 ```
-Note: This will need to be run several times, the subscription will create a CRD that is than applied. Once there are no errors running this command continue on to the next step
 
 Both ACM and GitOps will be controlled by autoshift after it is installed for version upgrading
 
 Update autoshift/values.yaml with desired feature flags and repo url
-
-Note: If your GitOps does not have access to git url provided you will need to add the repo to OpenShift GitOps
 
 Install AutoShiftv2
 

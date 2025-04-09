@@ -1,0 +1,9 @@
+---
+# this is for argo type deployments of this chart (set to true)
+ignoreHelmHooks: false
+
+# Job Image for waiting for crd
+# can be from Quay or local cluster
+# quay.io/openshift/origin-cli:latest
+# image-registry.openshift-image-registry.svc:5000/openshift/cli:latest
+image: image-registry.openshift-image-registry.svc:5000/openshift/cli:latest

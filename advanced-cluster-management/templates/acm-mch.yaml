@@ -4,10 +4,10 @@ metadata:
   name: multiclusterhub
   namespace: {{ .Values.acm.namespace }}
   annotations:
-    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true,ServerSideApply=true,Delete=false,PrunePropagationPolicy=orphan
-    argocd.argoproj.io/sync-wave: "3"
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "25"
 spec:
-  availabilityConfig: Basic
+  availabilityConfig: {{ .Values.acm.availabilityConfig }}
 {{ if .Values.acm.disable_hub_self_management }}
   disableHubSelfManagement: {{ .Values.acm.disable_hub_self_management }}
 {{ end}}

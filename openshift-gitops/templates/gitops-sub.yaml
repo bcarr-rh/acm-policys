@@ -11,3 +11,7 @@ spec:
   name: {{ .Values.gitops.name | default "openshift-gitops-operator" }}
   source: {{ .Values.gitops.source | default "redhat-operators" }}
   sourceNamespace: {{ .Values.gitops.sourceNamespace | default "openshift-marketplace" }}
+  config:
+    env:
+    - name: DISABLE_DEFAULT_ARGOCD_INSTANCE
+      value:  {{ .Values.disableDefaultArgoCD | quote }}
