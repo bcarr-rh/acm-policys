@@ -57,7 +57,8 @@ Manually select which cluster will belong to each cluster set, or when provision
 That's it. Welcome to OpenShift Platform Plus!
 
 ## Cluster Labels
-#### values can be set on a per clusterset level to decide what features of autoshift will be applied to each cluster
+#### values can be set on a per cluster and clusterset level to decide what features of autoshift will be applied to each cluster. If a value is defined in helm values, a clusterset label and a cluster 
+#### label precedence will be cluster -> clusterset -> helm values where helm values is the least. Helm values are meant to be defaults.
 ##
 
 ### Advanced Cluster Manager
@@ -75,7 +76,17 @@ acm-source-namespace: default openshift-marketplace
 
 acm-availability-config: supports basic or high
 
-### infra-nodes
+### OpenShift Gitops
+
+gitops-channel: default latest
+
+gitops-install-plan-approval: default Automatic
+
+gitops-source: default redhat-operators
+
+gitops-source-namespace: default openshift-marketplace
+
+### Infra Nodes
 infra-nodes<int>: Number of infra nodes min if autoscale. If not set infra nodes are not managed, if blank infra nodes will be deleted
 
 infra-nodes-numcpu<int>: Number of cpu per infra node
@@ -86,7 +97,7 @@ infra-nodes-numcores-per-socket<int>: Number of CPU Cores per socket
 
 infra-nodes-zones<list<String>>: list of availability zones
 
-### worker-nodes
+### Worker Nodes
 worker-nodes<int>: Number of worker nodes min if autoscale. If not set worker nodes are not managed, if blank worker nodes will be deleted
 
 worker-nodes-numcpu<int>: Number of cpu per worker node
@@ -97,7 +108,7 @@ worker-nodes-numcores-per-socket<int>: Number of CPU Cores per socket
 
 worker-nodes-zones<list<String>>: list of availability zones
 
-### storage-nodes
+### Storage Nodes
 storage-nodes<int>: Number of storage nodes min if autoscale. If not set storage nodes are not managed, if blank storage nodes will be deleted. Local Storage Operator will be installed if Storage Nodes are enabled
 
 storage-nodes-numcpu<int>: Number of cpu per storage node
