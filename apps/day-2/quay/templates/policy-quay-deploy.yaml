@@ -1,7 +1,7 @@
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
-  name: policy-quay-operator-install
+  name: policy-quay-deploy
   namespace: {{ .Values.policy_namespace }}
   annotations:
     policy.open-cluster-management.io/standards: NIST SP 800-53
@@ -9,12 +9,23 @@ metadata:
     policy.open-cluster-management.io/controls: CA-2 Security Assessments, CA-7 Continuous Monitoring
 spec:
   disabled: false
+  dependencies:
+  - apiVersion: policy.open-cluster-management.io/v1
+    compliance: Compliant
+    kind: Policy
+    name: policy-quay-operator-install
+    namespace: {{ .Values.policy_namespace }}
+  - apiVersion: policy.open-cluster-management.io/v1
+    compliance: Compliant
+    kind: Policy
+    name: policy-storage-cluster
+    namespace: {{ .Values.policy_namespace }}
   policy-templates:
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: quay-operator-ns
+          name: {{ .Values.quay.enterpriseNamespace }}-ns
         spec:
           remediationAction: enforce
           severity: high
@@ -24,51 +35,58 @@ spec:
                 apiVersion: v1
                 kind: Namespace
                 metadata:
-                  name: {{ .Values.quay.namespace }}
-    - objectDefinition:
-        apiVersion: policy.open-cluster-management.io/v1beta1
-        kind: OperatorPolicy
-        metadata:
-          name: install-operator-quay
-        spec:
-          remediationAction: enforce
-          severity: high
-          complianceType: musthave
-          operatorGroup:
-            name: {{ .Values.quay.namespace }}
-            namespace: {{ .Values.quay.namespace }}
-          subscription:
-            namespace: {{ .Values.quay.namespace }}
-            channel: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/quay-channel" | default "{{ .Values.quay.channel }}" hub{{ "}}" }}'
-            name: {{ .Values.quay.name }}
-            source: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/quay-source" | default "{{ .Values.quay.source }}" hub{{ "}}" }}'
-            sourceNamespace: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/quay-source-namespace" | default "{{ .Values.quay.sourceNamespace }}" hub{{ "}}" }}'
-          # Getting Label and then capitalizing first letter
-          upgradeApproval: '{{ "{{hub" }} $upgrade_approval := index .ManagedClusterLabels "autoshift.io/quay-install-plan-approval" | default "{{ .Values.quay.installPlanApproval }}" {{ "-hub}}" }} {{ "{{hub" }} print (substr 0 1 $upgrade_approval | upper) (substr 1 (len $upgrade_approval) $upgrade_approval) {{ "-hub}}" }}'
+                  name: {{ .Values.quay.enterpriseNamespace }}
+    {{- if .Values.quay.registry_config_bundle }}
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: quay-operator-status
+          name: quay-registry_config_bundle
         spec:
-          remediationAction: inform
+          remediationAction: enforce
           severity: high
           object-templates:
             - complianceType: musthave
               objectDefinition:
-                apiVersion: operators.coreos.com/v1alpha1
-                kind: ClusterServiceVersion
+                apiVersion: v1
+                kind: Secret
                 metadata:
-                  namespace: {{ .Values.quay.namespace }}
+                  name: quay-registry-config-bundle
+                  namespace: {{ .Values.quay.enterpriseNamespace }}
+                type: Opaque 
+                data: 
+                  config.yaml: |
+                  {{- .Values.quay.registry_config_bundle | toYaml | trim | nindent 4 }}
+    {{- end }}
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: quay-registry_config_bundle
+        spec:
+          remediationAction: enforce
+          severity: high
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: quay.redhat.com/v1
+                kind: QuayRegistry
+                metadata:
+                  name: quay-registry
+                  namespace: {{ .Values.quay.enterpriseNamespace }}
                 spec:
-                  displayName: 'Red Hat Quay'
-                status:
-                  phase: Succeeded
+                  {{- if .Values.quay.registry_components }}
+                  components:
+                    {{- .Values.quay.registry_components | toYaml | trim | nindent 4 }}
+                  {{- end }}
+                  {{- if .Values.quay.registry_config_bundle }}
+                  configBundleSecret: quay-registry-config-bundle
+                  {{- end }}
 ---
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
 metadata:
-  name: placement-policy-quay-operator-install
+  name: placement-policy-quay-deploy
   namespace: {{ .Values.policy_namespace }}
 spec:
   clusterSets:
@@ -96,13 +114,13 @@ spec:
 apiVersion: policy.open-cluster-management.io/v1
 kind: PlacementBinding
 metadata:
-  name: placement-policy-quay-operator-install
+  name: placement-policy-quay-deploy
   namespace: {{ .Values.policy_namespace }}
 placementRef:
-  name: placement-policy-quay-operator-install
+  name: placement-policy-quay-deploy
   apiGroup: cluster.open-cluster-management.io
   kind: Placement
 subjects:
-  - name: policy-quay-operator-install
+  - name: policy-quay-deploy
     apiGroup: policy.open-cluster-management.io
     kind: Policy
