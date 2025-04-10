@@ -1,21 +1,27 @@
-{{- range $clusterSet, $value := .Values.managedClusterSets }}
-{{- range $team, $teamjson := $.Values.teams }}
+{{- range $team, $teamjson := .Values.teams }}
 ---
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
 metadata:
-  name: {{ $clusterSet }}
+  name: placement-openshift-gitops-{{ $team }}
   namespace: openshift-gitops-{{ $team }}
   annotations:
     argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
     argocd.argoproj.io/sync-wave: "6"
 spec:
   clusterSets:
-    - {{ $clusterSet }}
+    - global
+  predicates:
+    - requiredClusterSelector:
+        labelSelector:
+          matchExpressions:
+            - key: 'autoshift.io/gitops-dev-team-{{ $team }}'
+              operator: In
+              values:
+              - 'true'
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists
     - key: cluster.open-cluster-management.io/unavailable
       operator: Exists
-{{- end }}
 {{- end }}
