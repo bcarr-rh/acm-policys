@@ -35,8 +35,10 @@ Test if OpenShift GitOps was installed correctly
 oc get argocd -A
 ```
 This command should return something like this:
+```
 NAMESPACE          NAME               AGE
 openshift-gitops   openshift-gitops   29s
+```
 
 If this is not the case you may need to run helm upgrade again.
 
@@ -51,6 +53,7 @@ oc get mch -A -w
 ```
 
 This should look like this:
+```
 NAMESPACE                 NAME              STATUS       AGE     CURRENTVERSION   DESIREDVERSION
 open-cluster-management   multiclusterhub   Installing   2m35s                    2.13.2
 open-cluster-management   multiclusterhub   Installing   2m39s                    2.13.2
@@ -61,6 +64,7 @@ open-cluster-management   multiclusterhub   Installing   4m57s                  
 open-cluster-management   multiclusterhub   Installing   5m15s                    2.13.2
 open-cluster-management   multiclusterhub   Installing   5m51s                    2.13.2
 open-cluster-management   multiclusterhub   Running      6m28s   2.13.2           2.13.2
+```
 
 Note: this does take roughly 6 min to install. You can proceed to installing AutoShift while this is installing but you will not be able to verify AutoShift or select a clusterset until this is finished.
 
