@@ -72,12 +72,18 @@ metadata:
   name: {{ $placementName }}
   namespace: open-cluster-policies
 spec:
-  clusterSets:
-  {{- range $k, $v := $.Values.hubClusterSets  }}
-    {{-  if eq ($v.selfManaged | default "true")  "false" }}
-    - {{ $k }}
-    {{- end }}
+{{- $managedHubs := dict }}
+{{- range $k, $v := $.Values.hubClusterSets  }}
+  {{-  if eq ($v.selfManaged | default "true")  "false" }}
+    {{ $_ := set $managedHubs $k $k}}
   {{- end }}
+{{- end }}
+{{- if not (empty $managedHubs) }}
+  clusterSets:
+  {{- range $k, $v := $managedHubs   }}
+    - {{ $k }}
+  {{- end }}
+{{- end }}
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists
