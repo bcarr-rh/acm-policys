@@ -78,11 +78,13 @@ spec:
     {{ $_ := set $managedHubs $k $k}}
   {{- end }}
 {{- end }}
-{{- if not (empty $managedHubs) }}
   clusterSets:
+{{- if not (empty $managedHubs) }}
   {{- range $k, $v := $managedHubs   }}
     - {{ $k }}
   {{- end }}
+{{- else -}}
+   - 'none'
 {{- end }}
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
