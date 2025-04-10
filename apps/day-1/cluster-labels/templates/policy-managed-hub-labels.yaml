@@ -75,7 +75,7 @@ spec:
 {{- $managedHubs := dict }}
 {{- range $k, $v := $.Values.hubClusterSets  }}
   {{-  if eq ($v.selfManaged | default "true")  "false" }}
-    {{ $_ := set $managedHubs $k $k}}
+    {{- $_ := set $managedHubs $k $k }}
   {{- end }}
 {{- end }}
   clusterSets:
@@ -84,7 +84,7 @@ spec:
     - {{ $k }}
   {{- end }}
 {{- else -}}
-   - 'none'
+    - 'none'
 {{- end }}
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
