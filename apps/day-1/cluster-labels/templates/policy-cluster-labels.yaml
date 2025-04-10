@@ -1,5 +1,5 @@
 {{- if (.Values.enabled | default false) }}
-{{- $allClusterSets := (merge ($.Values.hubClusterSets | default dict) ($.Values.managedClusterSets | default dict)) }}
+{{- $allClusterSets := (merge (dict) ($.Values.hubClusterSets | default dict) ($.Values.managedClusterSets | default dict)) }}
 {{- $hubClusterSet := $.Values.hubClusterSet | default "hub" }}
 {{- $policyName := (print "policy-cluster-labels" "-" ($.Values.deploymentName | default "default")) }}
 {{- $placementName := printf "placement-%s" $policyName }}
@@ -56,8 +56,8 @@ spec:
                   {{ "{{-" }} $clusterConfigMapValues := (index $clusterConfigMapData "values") | default "" {{ "}}" }}  
                   {{ "{{-" }} $clusterLabels := (index ($clusterConfigMapValues | fromJson | default dict) "labels") | default dict {{ "}}" }} 
                 {{ "{{/*" }}  ////////// END LABEL EXTRACTION ////////// {{ "*/}}" }}
-                {{ "{{-" }} $configMapLabels := merge $clusterLabels $clusterSetLabels {{ "}}" }}
-                {{ "{{-" }} $labels := merge $configMapLabels $existingClusterLabelsNoAutoshift {{ "}}" }} 
+                {{ "{{-" }} $configMapLabels := merge (dict) $clusterLabels $clusterSetLabels {{ "}}" }}
+                {{ "{{-" }} $labels := merge (dict) $configMapLabels $existingClusterLabelsNoAutoshift {{ "}}" }} 
                 {{ "{{-" }} $newLabels := dict {{ "}}" }}
                 {{ "{{-" }} range $label, $labelValue := $labels {{ "}}" }}
                   {{ "{{-" }} if not (and ($label | hasPrefix "{{ $.Values.autoshiftLabelPrefix }}") (eq $labelValue "_")) {{ "}}" }}
@@ -82,7 +82,7 @@ metadata:
   namespace: open-cluster-policies
 spec:
   clusterSets:
-  - {{ $.Values.selfManagedHubSet | default "hub" }}
+    - {{ $.Values.selfManagedHubSet | default "hub" }}
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists

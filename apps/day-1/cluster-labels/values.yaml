@@ -16,7 +16,6 @@ hubClusterSets:
       infra-nodes-numcores-per-socket:  '4'
       infra-nodes:  '6'
       self-managed: 'true'
-
       worker-nodes-numcpu:  '8'
       worker-nodes-memory-mib:  '32768'
       worker-nodes-numcores-per-socket:  '4'

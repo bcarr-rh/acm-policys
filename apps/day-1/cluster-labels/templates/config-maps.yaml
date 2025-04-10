@@ -23,7 +23,7 @@ data:
   labels: '{{ $prefixedClusterLabels | toJson }}'
 {{- end }}
 
-{{- range $clusterSet, $data := merge ($.Values.hubClusterSets | default dict) ($.Values.managedClusterSets | default dict) }}
+{{- range $clusterSet, $data := merge (dict) ($.Values.hubClusterSets | default dict) ($.Values.managedClusterSets | default dict) }}
 {{ $configMapNamespace := $data.configMapNamespace | default "open-cluster-policies" }}
 ---
   {{- $prefixedClusterSetLabels := dict -}}

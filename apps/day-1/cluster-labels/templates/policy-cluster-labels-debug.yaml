@@ -55,7 +55,7 @@ spec:
                             {{ "{{-" }} $clusterSetConfigMap := (lookup "v1" "ConfigMap" "" (print "cluster-set." $clusterSet)) | default dict {{ "}}" }}
                             {{ "{{-" }} $clusterLabels := (index $clusterConfigMap "labels" | default dict){{ "}}" }}
                             {{ "{{-" }} $clusterSetLabels := (index $clusterSetConfigMap "labels" | default dict){{ "}}" }}
-                            {{ "{{-" }} $tempLabels := merge $clusterLabels $clusterSetLabels $existingLabels {{ "}}" }}
+                            {{ "{{-" }} $tempLabels := merge (dict) $clusterLabels $clusterSetLabels $existingLabels {{ "}}" }}
                             {{ "{{-" }} $newLabels := dict {{ "}}" }}
                             {{ "{{-" }} range $label, $value := $tempLabels {{ "}}" }}
                               {{ "{{-" }} if not (and ($label | hasPrefix "{{ $.Values.autoshiftLabelPrefix }}") (eq $value "_")) {{ "}}" }}
@@ -76,19 +76,6 @@ spec:
 
 
 ---
-{{/*
-
-                    {{ "{{" }} range $index, $item := $ms {{ "}}" }} 
-                      {{ "{{" }} $labels := index $item "spec" "template" "metadata" "labels" {{ "}}" }} 
-                      {{ "{{" }} if  eq (index $labels "machine.openshift.io/cluster-api-machine-role") "worker" {{ "}}" }}  
-                        {{ "{{" }} $_ := set $workers "worker" $item {{ "}}" }} 
-                        {{ "{{-" }} break {{ "}}" }} 
-                      {{ "{{" }} end {{ "}}" }} 
-                    {{ "{{" }} end {{ "}}" }} 
-
- (index ((index (lookup "v1" "ConfigMap" "open-cluster-policies" (printf "cluster-set.%s"  $clusterSet)) "data" "values") | fromJson) "labels") | default dict */}}
-
-                    {{/*{{ "{{-" }} (lookup "cluster.open-cluster-management.io/v1" "Manage*/}}
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
 metadata:
@@ -96,9 +83,7 @@ metadata:
   namespace: open-cluster-policies
 spec:
   clusterSets:
-  {{ range $cluster, $value := $.Values.hubClusterSets }}
-    - {{ $cluster }}
-  {{ end }}
+    - {{ $clusterSetKey }}
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists
@@ -180,3 +165,16 @@ subjects:
                                 {{ "{{" }} end {{ "}}" }}
                               ]
 */}}
+{{/*
+
+                    {{ "{{" }} range $index, $item := $ms {{ "}}" }} 
+                      {{ "{{" }} $labels := index $item "spec" "template" "metadata" "labels" {{ "}}" }} 
+                      {{ "{{" }} if  eq (index $labels "machine.openshift.io/cluster-api-machine-role") "worker" {{ "}}" }}  
+                        {{ "{{" }} $_ := set $workers "worker" $item {{ "}}" }} 
+                        {{ "{{-" }} break {{ "}}" }} 
+                      {{ "{{" }} end {{ "}}" }} 
+                    {{ "{{" }} end {{ "}}" }} 
+
+ (index ((index (lookup "v1" "ConfigMap" "open-cluster-policies" (printf "cluster-set.%s"  $clusterSet)) "data" "values") | fromJson) "labels") | default dict */}}
+
+                    {{/*{{ "{{-" }} (lookup "cluster.open-cluster-management.io/v1" "Manage*/}}
