@@ -30,10 +30,40 @@ helm upgrade --install openshift-gitops openshift-gitops -f apps/day-1/openshift
 ```
 Note: If OpenShift GitOps is already installed manually on cluster and the default argo instance exists this step can be skipped. Make sure that argocd controller has cluster-admin
 
+Test if OpenShift GitOps was installed correctly
+```
+oc get argocd -A
+```
+This command should return something like this:
+NAMESPACE          NAME               AGE
+openshift-gitops   openshift-gitops   29s
+
+If this is not the case you may need to run helm upgrade again.
+
 Install Advanced Cluster Management
 ```
 helm upgrade --install advanced-cluster-management advanced-cluster-management -f apps/day-1/advanced-cluster-management/values.yaml
 ```
+
+Test Advanced Cluster Management
+```
+oc get mch -A -w
+```
+
+This should look like this:
+NAMESPACE                 NAME              STATUS       AGE     CURRENTVERSION   DESIREDVERSION
+open-cluster-management   multiclusterhub   Installing   2m35s                    2.13.2
+open-cluster-management   multiclusterhub   Installing   2m39s                    2.13.2
+open-cluster-management   multiclusterhub   Installing   3m12s                    2.13.2
+open-cluster-management   multiclusterhub   Installing   3m41s                    2.13.2
+open-cluster-management   multiclusterhub   Installing   4m11s                    2.13.2
+open-cluster-management   multiclusterhub   Installing   4m57s                    2.13.2
+open-cluster-management   multiclusterhub   Installing   5m15s                    2.13.2
+open-cluster-management   multiclusterhub   Installing   5m51s                    2.13.2
+open-cluster-management   multiclusterhub   Running      6m28s   2.13.2           2.13.2
+
+Note: this does take roughly 6 min to install. You can proceed to installing AutoShift while this is installing but you will not be able to verify AutoShift or select a clusterset until this is finished.
+
 
 Both ACM and GitOps will be controlled by autoshift after it is installed for version upgrading
 
