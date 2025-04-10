@@ -52,7 +52,7 @@ Test Advanced Cluster Management
 oc get mch -A -w
 ```
 
-This should look like this:
+This command should return something like this:
 ```
 NAMESPACE                 NAME              STATUS       AGE     CURRENTVERSION   DESIREDVERSION
 open-cluster-management   multiclusterhub   Installing   2m35s                    2.13.2
