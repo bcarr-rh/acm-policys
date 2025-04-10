@@ -84,7 +84,7 @@ spec:
     - {{ $k }}
   {{- end }}
 {{- else }}
-    - 'none'
+    - 'NOT-APPLICABLE'
 {{- end }}
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
