@@ -80,10 +80,10 @@ spec:
 {{- end }}
   clusterSets:
 {{- if not (empty $managedHubs) }}
-  {{- range $k, $v := $managedHubs   }}
+  {{- range $k, $v := $managedHubs }}
     - {{ $k }}
   {{- end }}
-{{- else -}}
+{{- else }}
     - 'none'
 {{- end }}
   tolerations:
