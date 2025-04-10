@@ -41,7 +41,7 @@ spec:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: quay-registry_config_bundle
+          name: quay-registry-config-bundle
         spec:
           remediationAction: enforce
           severity: high
@@ -61,7 +61,7 @@ spec:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: quay-registry_config_bundle
+          name: quay-registry
         spec:
           remediationAction: enforce
           severity: high
