@@ -55,8 +55,7 @@ spec:
                   namespace: {{ .Values.quay.enterpriseNamespace }}
                 type: Opaque 
                 data: 
-                  config.yaml: |
-                  {{- .Values.quay.registry_config_bundle | toYaml | trim | nindent 20 }}
+                  config.yaml: {{ .Values.quay.registry_config_bundle | toYaml | trim | b64enc }}
     {{- end }}
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
