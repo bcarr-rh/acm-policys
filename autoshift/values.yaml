@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 
 autoshiftGitRepo: https://github.com/bcarr-rh/acm-policys.git
-autoshiftGitBranchTag: allClusterSets
+autoshiftGitBranchTag: managed-hub
 
 # Hub Cluster Sets with Feature Flags. Blank will remove
 hubClusterSets:
