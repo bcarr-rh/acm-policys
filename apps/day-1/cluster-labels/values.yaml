@@ -36,6 +36,8 @@ managedClusterSets:
       # worker-nodes-numcores-per-socket:  '4'
       # worker-nodes:  '3'
 clusters:
+  managed-hub: 
+    selfManaged: false
   nonprod:
     labels:
       infra-nodes-numcpu: '8'

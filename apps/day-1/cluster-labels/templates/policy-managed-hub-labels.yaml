@@ -13,7 +13,18 @@ metadata:
     policy.open-cluster-management.io/controls: CM-2 Baseline Configuration
     policy.open-cluster-management.io/standards: NIST SP 800-53
 spec:
-  disabled: false
+{{- $managedHubs := dict }}
+{{- range $k, $v := $.Values.hubClusterSets  }}
+  {{-  if eq ($v.selfManaged | default "true")  "false" }}
+    {{- $_ := set $managedHubs $k $k }}
+  {{- end }}
+{{- end }}
+{{- if (empty $managedHubs) }}
+  disabled: true 
+{{- else }}
+  disabled: false 
+{{- end }}
+
   remediationAction: enforce
   policy-templates:
     - objectDefinition:
@@ -47,7 +58,7 @@ spec:
                     {{ "{{-" }} $clusterSetConfigMap := (lookup "v1" "ConfigMap" "" (print "cluster-set." $clusterSet)) | default dict {{ "}}" }}
                     {{ "{{-" }} $clusterLabels := (index $clusterConfigMap "labels" | default dict){{ "}}" }}
                     {{ "{{-" }} $clusterSetLabels := (index $clusterSetConfigMap "labels" | default dict){{ "}}" }}
-                    {{ "{{-" }} $tempLabels := merge $clusterLabels $clusterSetLabels $existingLabelsNoAutoshift {{ "}}" }}
+                    {{ "{{-" }} $tempLabels := merge (dict) $clusterLabels $clusterSetLabels $existingLabelsNoAutoshift {{ "}}" }}
                     {{ "{{-" }} $newLabels := dict {{ "}}" }}
                     {{ "{{-" }} range $label, $value := $tempLabels {{ "}}" }}
                       {{ "{{-" }} if not (and ($label | hasPrefix "{{ $.Values.autoshiftLabelPrefix }}") (eq $value "_")) {{ "}}" }}
@@ -72,20 +83,10 @@ metadata:
   name: {{ $placementName }}
   namespace: open-cluster-policies
 spec:
-{{- $managedHubs := dict }}
-{{- range $k, $v := $.Values.hubClusterSets  }}
-  {{-  if eq ($v.selfManaged | default "true")  "false" }}
-    {{- $_ := set $managedHubs $k $k }}
-  {{- end }}
-{{- end }}
   clusterSets:
-{{- if not (empty $managedHubs) }}
   {{- range $k, $v := $managedHubs }}
     - {{ $k }}
   {{- end }}
-{{- else }}
-    - 'NOT-APPLICABLE'
-{{- end }}
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists
