@@ -21,7 +21,7 @@ hubClusterSets:
       worker-nodes-numcores-per-socket:  '4'
       worker-nodes:  '3'
       test-worked: 'false'
-  managed-hub: 
+  managed-hubs: 
     selfManaged: 'false'
     labels:  
       hub: 'true'
