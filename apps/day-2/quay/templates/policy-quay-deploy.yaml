@@ -71,7 +71,7 @@ spec:
                 apiVersion: quay.redhat.com/v1
                 kind: QuayRegistry
                 metadata:
-                  name: quay-registry
+                  name: registry
                   namespace: {{ .Values.quay.enterpriseNamespace }}
                 spec:
                   {{- if .Values.quay.registry_components }}
