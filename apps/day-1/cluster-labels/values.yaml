@@ -21,10 +21,12 @@ hubClusterSets:
       worker-nodes-numcores-per-socket:  '4'
       worker-nodes:  '3'
       test-worked: 'false'
-managedClusterSets:
-  managed-hubs: 
+  managed-hub: 
+    selfManaged: 'false'
     labels:  
       hub: 'true'
+
+managedClusterSets:
   managed:
     labels: 
       # infra-nodes-numcpu: '8'

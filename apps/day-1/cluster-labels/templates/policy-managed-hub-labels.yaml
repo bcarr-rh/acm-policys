@@ -35,7 +35,6 @@ spec:
           annotations:
         spec:
           severity: high 
-          severity: high 
           object-templates-raw: |
             [
               {{ "{{-" }} $configMaps := (lookup "v1" "ConfigMap" "" "" "autoshift.io/cluster-labels") | default list {{ "}}" }}
