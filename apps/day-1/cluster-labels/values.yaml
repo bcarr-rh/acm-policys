@@ -8,25 +8,10 @@ acmversion: "2.12"
 debug: true
 enabled: true
 autoshiftLabelPrefix: "autoshift.io/"
-hubClusterSets:
-  hub:
-    labels: 
-      infra-nodes-numcpu: '8'
-      infra-nodes-memory-mib:  '24576'
-      infra-nodes-numcores-per-socket:  '4'
-      infra-nodes:  '6'
-      self-managed: 'true'
-      worker-nodes-numcpu:  '8'
-      worker-nodes-memory-mib:  '32768'
-      worker-nodes-numcores-per-socket:  '4'
-      worker-nodes:  '3'
-      test-worked: 'false'
 managedClusterSets:
-  managed-hubs: 
-    labels:  
-      hub: 'true'
   managed:
     labels: 
+      enforced-by-hub-of-hubs: 'true'
       # infra-nodes-numcpu: '8'
       # infra-nodes-memory-mib:  '24576'
       # infra-nodes-numcores-per-socket:  '4'
@@ -36,20 +21,7 @@ managedClusterSets:
       # worker-nodes-numcores-per-socket:  '4'
       # worker-nodes:  '3'
 clusters:
-  managed-hub: 
-    selfManaged: false
-  nonprod:
+  gitops: 
     labels:
-      infra-nodes-numcpu: '8'
-      infra-nodes-memory-mib:  '24576'
-      infra-nodes-numcores-per-socket:  '4'
-      infra-nodes:  '4'
-      worker-nodes-numcpu:  '8'
-      worker-nodes-memory-mib:  '32768'
-      worker-nodes-numcores-per-socket:  '4'
-      worker-nodes:  '3'
-  local-cluster: 
-    labels: 
-      test-worked: ''
-      second-label:  ''
-      infra-nodes: '3'
+      cluster-specific-label: 'hello'
+

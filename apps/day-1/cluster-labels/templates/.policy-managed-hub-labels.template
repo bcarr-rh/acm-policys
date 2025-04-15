@@ -24,7 +24,6 @@ spec:
           annotations:
         spec:
           severity: high 
-          severity: high 
           object-templates-raw: |
             [
 #meta 7
