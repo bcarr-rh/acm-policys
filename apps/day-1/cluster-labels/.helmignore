@@ -17,6 +17,7 @@
 *.orig
 *~
 # Various IDEs
+*.template
 .project
 .idea/
 *.tmproj

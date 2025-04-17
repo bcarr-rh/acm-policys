@@ -11,15 +11,21 @@ autoshiftLabelPrefix: "autoshift.io/"
 hubClusterSets:
   hub:
     labels: 
-      # infra-nodes-numcpu: '8'
-      # infra-nodes-memory-mib:  '24576'
-      # infra-nodes-numcores-per-socket:  '4'
-      # infra-nodes:  '6'
-      # worker-nodes-numcpu:  '8'
-      # worker-nodes-memory-mib:  '32768'
-      # worker-nodes-numcores-per-socket:  '4'
-      # worker-nodes:  '3'
-      # test-worked: 'false'
+      infra-nodes-numcpu: '8'
+      infra-nodes-memory-mib:  '24576'
+      infra-nodes-numcores-per-socket:  '4'
+      infra-nodes:  '6'
+      self-managed: 'true'
+      worker-nodes-numcpu:  '8'
+      worker-nodes-memory-mib:  '32768'
+      worker-nodes-numcores-per-socket:  '4'
+      worker-nodes:  '3'
+      test-worked: 'false'
+  managed-hubs: 
+    selfManaged: 'false'
+    labels:  
+      hub: 'true'
+
 managedClusterSets:
   managed:
     labels: 
@@ -32,17 +38,20 @@ managedClusterSets:
       # worker-nodes-numcores-per-socket:  '4'
       # worker-nodes:  '3'
 clusters:
+  managed-hub: 
+    selfManaged: false
   nonprod:
     labels:
-      # infra-nodes-numcpu: '8'
-      # infra-nodes-memory-mib:  '24576'
-      # infra-nodes-numcores-per-socket:  '4'
-      # infra-nodes:  '6'
-      # worker-nodes-numcpu:  '8'
-      # worker-nodes-memory-mib:  '32768'
-      # worker-nodes-numcores-per-socket:  '4'
-      # worker-nodes:  '3'
+      infra-nodes-numcpu: '8'
+      infra-nodes-memory-mib:  '24576'
+      infra-nodes-numcores-per-socket:  '4'
+      infra-nodes:  '4'
+      worker-nodes-numcpu:  '8'
+      worker-nodes-memory-mib:  '32768'
+      worker-nodes-numcores-per-socket:  '4'
+      worker-nodes:  '3'
   local-cluster: 
     labels: 
-      # test-worked: 'true'
-      # second-label: ''
+      test-worked: ''
+      second-label:  ''
+      infra-nodes: '3'
