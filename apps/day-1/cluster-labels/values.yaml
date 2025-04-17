@@ -9,7 +9,7 @@ debug: true
 enabled: true
 autoshiftLabelPrefix: "autoshift.io/"
 hubClusterSets:
-  hub:
+  hubofhubs:
     labels: 
       infra-nodes-numcpu: '8'
       infra-nodes-memory-mib:  '24576'
