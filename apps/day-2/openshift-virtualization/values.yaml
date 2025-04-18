@@ -1,0 +1,26 @@
+# Default values for openshift-virtualization.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+policy_namespace: open-cluster-policies
+virt:
+    name: kubevirt-hyperconverged
+    namespace: openshift-cnv
+    channel: stable
+    installPlanApproval: Automatic
+    source: redhat-operators
+    sourceNamespace: openshift-marketplace
+# hubClusterSets:
+#   hub:
+#     labels:
+#       test1: 'test'
+# managedClusterSets:
+#   managed:
+#     labels:
+#       test4: 'test'
+
+### Labels OpenShift Virtualization
+# virt<bool>: If not set Developer Hub will not be managed
+# virt-channel<String>: default latest
+# virt-install-plan-approval<String>: default Automatic
+# virt-source<String>: default redhat-operators
+# virt-source-namespace<String>: default openshift-marketplace
