@@ -82,7 +82,7 @@ metadata:
   namespace: open-cluster-policies
 spec:
   clusterSets:
-    - {{ $.Values.selfManagedHubSet | default "hub" }}
+    - {{ $.Values.selfManagedHubSet | default "hubofhubs" }}
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists
