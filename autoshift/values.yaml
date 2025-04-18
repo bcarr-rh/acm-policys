@@ -2,19 +2,19 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-autoshiftGitRepo: https://github.com/auto-shift/autoshiftv2.git
-autoshiftGitBranchTag: main
+autoshiftGitRepo: https://github.com/bcarr-rh/acm-policys.git
+autoshiftGitBranchTag: managed-hub-testing
 
 # Hub Cluster Sets with Feature Flags. Blank will remove
 hubClusterSets:
   hub:
     labels:
       ### infra-nodes
-      infra-nodes: ''
+      infra-nodes: '4'
       infra-nodes-numcpu: ''
       infra-nodes-memory-mib: ''
       infra-nodes-numcores-per-socket: ''
-      infra-nodes-zones: ''
+      infra-nodes-zones: 'us-east-2c'
       ### worker-nodes
       worker-nodes: ''
       worker-nodes-numcpu: ''
@@ -49,25 +49,25 @@ hubClusterSets:
       acs-source: redhat-operators
       acs-source-namespace: openshift-marketplace
       ### Developer Spaces
-      dev-spaces: 'true'
+      dev-spaces: 'false'
       dev-spaces-channel: stable
       dev-spaces-install-plan-approval:  Automatic
       dev-spaces-source: redhat-operators
       dev-spaces-source-namespace: openshift-marketplace
       ### Developer Hub
-      dev-hub: 'true'
+      dev-hub: 'false'
       dev-hub-channel: fast
       dev-hub-install-plan-approval: Automatic
       dev-hub-source: redhat-operators
       dev-hub-source-namespace: openshift-marketplace
       ### OpenShift Pipelines
-      pipelines: 'true'
+      pipelines: 'false'
       pipelines-channel: latest
       pipelines-install-plan-approval: Automatic
       pipelines-source: redhat-operators
       pipelines-source-namespace: openshift-marketplace
       ### Trusted Artifact Signer
-      tas: 'true'
+      tas: 'false'
       tas-channel:  stable
       tas-install-plan-approval: Automatic
       tas-source: redhat-operators
@@ -79,9 +79,9 @@ hubClusterSets:
       quay-source: redhat-operators
       quay-source-namespace: openshift-marketplace
       ### Developer OpenShift Gitops
-      gitops-dev: 'true'
+      gitops-dev: 'false'
       ### Loki
-      loki: 'true' 
+      loki: 'false' 
       loki-channel: stable-6.2
       loki-install-plan-approval: Automatic
       loki-source: redhat-operators
@@ -102,7 +102,7 @@ hubClusterSets:
       coo-source: redhat-operators
       coo-source-namespace: openshift-marketplace
       ### Compliance Operator Stig Apply
-      compliance: 'true'
+      compliance: 'false'
       compliance-name: compliance-operator
       compliance-install-plan-approval: Automatic
       compliance-source: redhat-operators
@@ -113,7 +113,7 @@ managedClusterSets:
   managed:
     labels:
       ### infra-nodes
-      infra-nodes: ''
+      infra-nodes: '4'
       infra-nodes-numcpu: ''
       infra-nodes-memory-mib: ''
       infra-nodes-numcores-per-socket: ''
@@ -131,7 +131,7 @@ managedClusterSets:
       storage-nodes-numcores-per-socket: ''
       storage-nodes-zones: ''
       ### OpenShift Data Foundation
-      odf: 'true'
+      odf: 'false'
       odf-multi-cloud-gateway: standalone
       odf-nooba-pvpool: ''
       odf-nooba-store-size: ''
@@ -182,7 +182,7 @@ managedClusterSets:
       quay-source: '' # redhat-operators
       quay-source-namespace: '' # openshift-marketplace
       ### Developer OpenShift Gitops
-      gitops-dev: 'true'
+      gitops-dev: 'false'
       gitops-dev-team-dev: 'true'
       ### Loki
       loki: 'true' 
@@ -206,7 +206,7 @@ managedClusterSets:
       coo-source: redhat-operators
       coo-source-namespace: openshift-marketplace
       ### Compliance Operator Stig Apply
-      compliance: 'true'
+      compliance: 'false'
       compliance-name: compliance-operator
       compliance-install-plan-approval: Automatic
       compliance-source: redhat-operators
