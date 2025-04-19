@@ -28,7 +28,7 @@ hubClusterSets:
       storage-nodes-numcores-per-socket: ''
       storage-nodes-zones: ''
       ### OpenShift Data Foundation
-      odf: 'true'
+      odf: 'false'
       odf-multi-cloud-gateway: standalone
       odf-nooba-pvpool: ''
       odf-nooba-store-size: ''
@@ -73,7 +73,7 @@ hubClusterSets:
       tas-source: redhat-operators
       tas-source-namespace: openshift-marketplace
       ### Quay
-      quay: 'true'
+      quay: 'false'
       quay-channel: stable-3.13
       quay-install-plan-approval: Automatic
       quay-source: redhat-operators
@@ -90,13 +90,13 @@ hubClusterSets:
       loki-storageclass: gp3-csi
       loki-lokistack-name: logging-lokistack
       ### OpenShift Logging
-      logging: 'true'
+      logging: 'false'
       logging-channel:  stable-6.2
       logging-install-plan-approval: Automatic
       logging-source: redhat-operators
       logging-source-namespace: openshift-marketplace
       ### Cluster Observability Operator
-      coo: 'true'
+      coo: 'false'
       coo-channel: stable
       coo-install-plan-approval: Automatic
       coo-source: redhat-operators
@@ -129,7 +129,7 @@ hubClusterSets:
       storage-nodes-numcores-per-socket: ''
       storage-nodes-zones: ''
       ### OpenShift Data Foundation
-      odf: 'true'
+      odf: 'false'
       odf-multi-cloud-gateway: standalone
       odf-nooba-pvpool: ''
       odf-nooba-store-size: ''
@@ -144,7 +144,7 @@ hubClusterSets:
       odf-source: redhat-operators
       odf-source-namespace: openshift-marketplace
       ### Advanced Cluster Security
-      acs: 'true'
+      acs: 'false'
       acs-channel: stable
       acs-install-plan-approval: Automatic
       acs-source: redhat-operators
@@ -174,7 +174,7 @@ hubClusterSets:
       tas-source: redhat-operators
       tas-source-namespace: openshift-marketplace
       ### Quay
-      quay: 'true'
+      quay: 'false'
       quay-channel: stable-3.13
       quay-install-plan-approval: Automatic
       quay-source: redhat-operators
@@ -191,13 +191,13 @@ hubClusterSets:
       loki-storageclass: gp3-csi
       loki-lokistack-name: logging-lokistack
       ### OpenShift Logging
-      logging: 'true'
+      logging: 'false'
       logging-channel:  stable-6.2
       logging-install-plan-approval: Automatic
       logging-source: redhat-operators
       logging-source-namespace: openshift-marketplace
       ### Cluster Observability Operator
-      coo: 'true'
+      coo: 'false'
       coo-channel: stable
       coo-install-plan-approval: Automatic
       coo-source: redhat-operators
