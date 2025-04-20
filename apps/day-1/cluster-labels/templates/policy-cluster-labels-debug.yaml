@@ -46,7 +46,7 @@ spec:
                           {{ "{{" }} $existingLabelsNoAutoshift := (dict) {{ "}}" }}
                           {{ "{{" }} $clusterName {{ "}}" }}
                           {{ "{{" }} range $l, $v := $existingLabels {{ "}}" }}
-                            {{ "{{" }} if not (hasPrefix $l "autoshift.io/")
+                            {{ "{{" }} if not (hasPrefix $l "autoshift.io/") {{ "}}" }}
                               {{ "{{" }} $_ := set $existingLabelsNoAutoshift $l $v {{ "}}" }}
                             {{ "{{" }} end {{ "}}" }}
                           {{ "{{" }} end {{ "}}" }}
