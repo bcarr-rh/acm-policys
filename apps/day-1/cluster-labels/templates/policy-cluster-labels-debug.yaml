@@ -44,9 +44,7 @@ spec:
                           {{ "{{" }} $clusterSet := (index (index $cluster  "metadata" "labels" | default dict) "cluster.open-cluster-management.io/clusterset") | default "" {{ "}}" }}
                           {{ "{{" }} $existingLabels := (index $cluster "metadata" "labels" | default dict) {{ "}}" }}
                           {{ "{{" }} $existingLabelsNoAutoshift := (dict) {{ "}}" }}
-                          {{ "{{" }} range $k, $v := $existingLabels {{ "}}" }}
-                          {{ "{{" }} printf "%s | %s" $k $v {{ "}}" }} 
-                          {{ "{{" }} end {{ "}}" }}
+                          {{ "{{" }} $existingLabels | toRawJson {{ "}}" }}
                         {{ "{{" }} end {{ "}}" }}
                       {{ "{{" }} end {{ "}}" }}
                     {{ "{{" }} end {{ "}}" }}
