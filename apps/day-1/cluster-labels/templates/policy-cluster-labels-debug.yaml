@@ -42,7 +42,7 @@ spec:
                         {{ "{{" }} range $index, $cluster := $managedClusters {{ "}}" }}
                           {{ "{{" }} $clusterName := (index $cluster "metadata" "name") {{ "}}" }}
                           {{ "{{" }} $clusterSet := (index (index $cluster  "metadata" "labels" | default dict) "cluster.open-cluster-management.io/clusterset") | default "" {{ "}}" }}
-                          {{ "{{" }} $existingLabels := (index $cluster "metadata" "labels") | default dict {{ "}}" }}
+                          {{ "{{" }} $existingLabels := (index $cluster "metadata" "labels" | default dict) {{ "}}" }}
                           {{ "{{" }} $existingLabelsNoAutoshift := (dict) {{ "}}" }}
                             {{ "{{" }} range $label, $value := $existingLabels {{ "}}" }}
                               {{ "{{" }} printf "%s | %s" $label $value {{ "}}" }}
