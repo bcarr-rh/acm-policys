@@ -42,13 +42,8 @@ spec:
                         {{ "{{" }} range $index, $cluster := $managedClusters {{ "}}" }}
                           {{ "{{" }} $clusterName := (index $cluster "metadata" "name") {{ "}}" }}
                           {{ "{{" }} $clusterSet := (index (index $cluster  "metadata" "labels" | default dict) "cluster.open-cluster-management.io/clusterset") | default "" {{ "}}" }}
-                          {{ "{{" }} $existingLabels :=  (index $cluster "metadata" "labels") {{ "}}" }}
+                          {{ "{{" }} $existingLabels := (index $cluster "metadata" "labels") {{ "}}" }}
                           {{ "{{" }} $existingLabelsNoAutoshift := (dict) {{ "}}" }}
-                          {{ "{{" }} range $label, $value := $existingLabels {{ "}}" }}
-                            {{ "{{" }} if not (hasPrefix "autoshift.io/" $label) {{ "}}" }}
-                              {{ "{{" }} $_ :=  set $existingLabelsNoAutoshift $label $value {{ "}}" }}
-                            {{ "{{" }} end {{ "}}" }}
-                          {{ "{{" }} end {{ "}}" }}
                           {{ "{{" }} $existingLabelsNoAutoshift {{ "}}" }}
                         {{ "{{" }} end {{ "}}" }}
                       {{ "{{" }} end {{ "}}" }}
@@ -58,6 +53,12 @@ spec:
 
 
 ---
+{{/*                          {{ "{{" }} range $label, $value := $existingLabels {{ "}}" }}
+                            {{ "{{" }} if not (hasPrefix "autoshift.io/" $label) {{ "}}" }}
+                              {{ "{{" }} $_ :=  set $existingLabelsNoAutoshift $label $value {{ "}}" }}
+                            {{ "{{" }} end {{ "}}" }}
+                          {{ "{{" }} end {{ "}}" }}
+*/}}
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
 metadata:
