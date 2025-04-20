@@ -44,10 +44,10 @@ spec:
                           {{ "{{" }} $clusterSet := (index (index $cluster  "metadata" "labels" | default dict) "cluster.open-cluster-management.io/clusterset") | default "" {{ "}}" }}
                           {{ "{{" }} $existingLabels := (index $cluster "metadata" "labels" | default dict) {{ "}}" }}
                           {{ "{{" }} $existingLabelsNoAutoshift := (dict) {{ "}}" }}
-                          {{ "{{" }} $existingLabels | toRawJson {{ "}}" }}
                           {{ "{{" }} range $l, $v := $existingLabels {{ "}}" }}
-                            {{ "{{" }} $l {{ "}}" }}
+                            {{ "{{" }} set $existingLabelsNoAutoshift $l $v {{ "}}" }}
                           {{ "{{" }} end {{ "}}" }}
+                          {{ "{{" }} $existingLabelsNoAutoshift {{ "}}" }}
                         {{ "{{" }} end {{ "}}" }}
                       {{ "{{" }} end {{ "}}" }}
                     {{ "{{" }} end {{ "}}" }}
