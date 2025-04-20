@@ -45,6 +45,9 @@ spec:
                           {{ "{{" }} $existingLabels := (index $cluster "metadata" "labels" | default dict) {{ "}}" }}
                           {{ "{{" }} $existingLabelsNoAutoshift := (dict) {{ "}}" }}
                           {{ "{{" }} $existingLabels | toRawJson {{ "}}" }}
+                          {{ "{{" }} range $l, $v := $existingLabels {{ "}}" }}
+                            {{ "{{" }} $l {{ "}}" }}
+                          {{ "{{" }} end {{ "}}" }}
                         {{ "{{" }} end {{ "}}" }}
                       {{ "{{" }} end {{ "}}" }}
                     {{ "{{" }} end {{ "}}" }}
