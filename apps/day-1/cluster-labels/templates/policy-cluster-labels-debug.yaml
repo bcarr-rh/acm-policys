@@ -45,7 +45,7 @@ spec:
                           {{ "{{" }} $existingLabels := (index $cluster "metadata" "labels" | default dict) {{ "}}" }}
                           {{ "{{" }} $existingLabelsNoAutoshift := (dict) {{ "}}" }}
                           {{ "{{" }} range $k, $v := $existingLabels {{ "}}" }}
-                            {{ "{{" }} printf "%s | %s" $k $v {{ "}}" }} 
+                          {{ "{{" }} printf "%s | %s" $k $v {{ "}}" }} 
                           {{ "{{" }} end {{ "}}" }}
                         {{ "{{" }} end {{ "}}" }}
                       {{ "{{" }} end {{ "}}" }}
