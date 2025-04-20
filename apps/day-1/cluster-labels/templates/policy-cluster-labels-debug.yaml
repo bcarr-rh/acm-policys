@@ -50,6 +50,7 @@ spec:
                               {{ "{{" }} $_ := set $existingLabelsNoAutoshift $l $v {{ "}}" }}
                             {{ "{{" }} end {{ "}}" }}
                           {{ "{{" }} end {{ "}}" }}
+                          {{ "{{" }} $existingLabelsNoAutoshift {{ "}}" }}
                         {{ "{{" }} end {{ "}}" }}
                       {{ "{{" }} end {{ "}}" }}
                     {{ "{{" }} end {{ "}}" }}
