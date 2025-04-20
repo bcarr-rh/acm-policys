@@ -46,7 +46,6 @@ spec:
                           {{ "{{" }} $existingLabelsNoAutoshift := (dict) {{ "}}" }}
                             {{ "{{" }} range $label, $value := $existingLabels {{ "}}" }}
                             {{ "{{" }} if not (hasPrefix "autoshift.io/" $label) {{ "}}" }}
-                              {{ "{{" }} set $existingLabelsNoAutoshift $label $value {{ "}}" }}
                             {{ "{{" }} end {{ "}}" }}
                           {{ "{{" }} end {{ "}}" }}
                           {{ "{{" }} $existingLabelsNoAutoshift {{ "}}" }}
