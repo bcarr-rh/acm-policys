@@ -45,8 +45,7 @@ spec:
                           {{ "{{" }} $existingLabels := (index $cluster "metadata" "labels") | default dict {{ "}}" }}
                           {{ "{{" }} $existingLabelsNoAutoshift := (dict) {{ "}}" }}
                             {{ "{{" }} range $label, $value := $existingLabels {{ "}}" }}
-                              {{ "{{" }} if not (hasPrefix "autoshift.io/" $label) {{ "}}" }}
-                              {{ "{{" }} end {{ "}}" }}
+                              {{ "{{" }} printf "%s | %s" $label $value {{ "}}" }}
                             {{ "{{" }} end {{ "}}" }}
                           {{ "{{" }} $existingLabelsNoAutoshift {{ "}}" }}
                         {{ "{{" }} end {{ "}}" }}
