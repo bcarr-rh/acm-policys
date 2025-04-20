@@ -44,6 +44,11 @@ spec:
                           {{ "{{" }} $clusterSet := (index (index $cluster  "metadata" "labels" | default dict) "cluster.open-cluster-management.io/clusterset") | default "" {{ "}}" }}
                           {{ "{{" }} $existingLabels := (index $cluster "metadata" "labels") {{ "}}" }}
                           {{ "{{" }} $existingLabelsNoAutoshift := (dict) {{ "}}" }}
+                            {{ "{{" }} range $label, $value := $existingLabels {{ "}}" }}
+                            {{ "{{" }} if not (hasPrefix "autoshift.io/" $label) {{ "}}" }}
+                              {{ "{{" }} set $existingLabelsNoAutoshift $label $value {{ "}}" }}
+                            {{ "{{" }} end {{ "}}" }}
+                          {{ "{{" }} end {{ "}}" }}
                           {{ "{{" }} $existingLabelsNoAutoshift {{ "}}" }}
                         {{ "{{" }} end {{ "}}" }}
                       {{ "{{" }} end {{ "}}" }}
@@ -53,7 +58,8 @@ spec:
 
 
 ---
-{{/*                          {{ "{{" }} range $label, $value := $existingLabels {{ "}}" }}
+{{/*
+                            {{ "{{" }} range $label, $value := $existingLabels {{ "}}" }}
                             {{ "{{" }} if not (hasPrefix "autoshift.io/" $label) {{ "}}" }}
                               {{ "{{" }} $_ :=  set $existingLabelsNoAutoshift $label $value {{ "}}" }}
                             {{ "{{" }} end {{ "}}" }}
