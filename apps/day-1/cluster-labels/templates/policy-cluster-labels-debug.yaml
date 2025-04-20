@@ -33,8 +33,18 @@ spec:
                   namespace: open-cluster-policies
                 data:
                   clusterConfigMaps: |
-                    {{ "{{-" }} $managedClusterLookupResult := (lookup "cluster.open-cluster-management.io/v1" "ManagedCluster" "" "") | default dict {{ "}}" }}
-                    {{ "{{" }} $managedClusterLookupResult | toRawJson {{ "}}" }}
+                    {{ "{{" }} $configMaps := (lookup "v1" "ConfigMap" "" "" "autoshift.io/cluster-labels") | default list {{ "}}" }}
+                    {{ "{{" }} $managedClusterLookupResult := (lookup "cluster.open-cluster-management.io/v1" "ManagedCluster" "" "") | default dict {{ "}}" }}
+                    {{ "{{" }} if not (empty $managedClusterLookupResult) {{ "}}" }}
+                      {{ "{{" }} $managedClusters := (index $managedClusterLookupResult "items") | default list {{ "}}" }}
+                      {{ "{{" }} $lastIndex := (sub (len $managedClusters) 1) {{ "}}" }}
+                      {{ "{{-" }} if (ne $lastIndex -1) {{ "}}" }}
+                        {{ "{{" }} range $index, $cluster := $managedClusters {{ "}}" }}
+                          {{ "{{" }} $cluster.metadta.name {{ "}}" }}
+                        {{ "{{" }} end {{ "}}" }}
+                      {{ "{{" }} end {{ "}}" }}
+                    {{ "{{" }} end {{ "}}" }}
+
                     
 
 
