@@ -40,7 +40,7 @@ spec:
                       {{ "{{" }} $lastIndex := (sub (len $managedClusters) 1) {{ "}}" }}
                       {{ "{{-" }} if (ne $lastIndex -1) {{ "}}" }}
                         {{ "{{" }} range $index, $cluster := $managedClusters {{ "}}" }}
-                          {{ "{{" }} $cluster.metadata {{ "}}" }}
+                          {{ "{{" }} $cluster.metadata.name {{ "}}" }}
                         {{ "{{" }} end {{ "}}" }}
                       {{ "{{" }} end {{ "}}" }}
                     {{ "{{" }} end {{ "}}" }}
