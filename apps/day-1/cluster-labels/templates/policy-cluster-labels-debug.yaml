@@ -46,7 +46,7 @@ spec:
                           {{ "{{" }} $existingLabelsNoAutoshift := (dict) {{ "}}" }}
                           {{ "{{" }} $clusterName {{ "}}" }}
                           {{ "{{" }} range $l, $v := $existingLabels {{ "}}" }}
-                            {{ "{{" }} printf "%s | %s" $l $v {{ "}}" }}
+                            {{ "{{" }} $_ := set $existingLabelsNoAutoshift $l $v {{ "}}" }}
                           {{ "{{" }} end {{ "}}" }}
                         {{ "{{" }} end {{ "}}" }}
                       {{ "{{" }} end {{ "}}" }}
