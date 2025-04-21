@@ -53,6 +53,7 @@ spec:
                           {{ "{{" }} $clusterSetConfigMap := (lookup "v1" "ConfigMap" "" (print "cluster-set." $clusterSet)) | default dict {{ "}}" }}
                           {{ "{{" }} $clusterLabels := (index $clusterConfigMap "labels" | default dict) {{ "}}" }}
                           {{ "{{" }} $clusterSetLabels := (index $clusterSetConfigMap "labels" | default dict){{ "}}" }}
+                          {{ "{{" }} $clusterLabels {{ "}}" }}
                         {{ "{{" }} end {{ "}}" }}
                       {{ "{{" }} end {{ "}}" }}
                     {{ "{{" }} end {{ "}}" }}
