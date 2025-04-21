@@ -20,9 +20,9 @@ spec:
   {{- end }}
 {{- end }}
 {{- if (empty $managedHubs) }}
-  disabled: true 
+  disabled: true
 {{- else }}
-  disabled: false 
+  disabled: false
 {{- end }}
 
   remediationAction: enforce
@@ -34,7 +34,7 @@ spec:
           name: {{ $configPolicyName }}
           annotations:
         spec:
-          severity: high 
+          severity: high
           object-templates-raw: |
             [
               {{ "{{-" }} $configMaps := (lookup "v1" "ConfigMap" "" "" "autoshift.io/cluster-labels") | default list {{ "}}" }}
