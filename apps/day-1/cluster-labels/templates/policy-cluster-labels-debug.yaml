@@ -52,7 +52,8 @@ spec:
                           {{ "{{" }} $clusterConfigMap := (lookup "v1" "ConfigMap" "" (print "managed-cluster." $clusterName)) | default dict {{ "}}" }}
                           {{ "{{" }} $clusterSetConfigMap := (lookup "v1" "ConfigMap" "" (print "cluster-set." $clusterSet)) | default dict {{ "}}" }}
                           {{ "{{" }} $clusterLabels := (index $clusterConfigMap "labels" | default dict) {{ "}}" }}
-                          {{ "{{" }} $clusterSetLabels := (index $clusterSetConfigMap "labels" | default dict){{ "}}" }}
+                          {{ "{{" }} $clusterSetLabels := (index $clusterSetConfigMap "labels" | default dict) {{ "}}" }}
+                          {{ "{{" }} $clusterLabels | toRawJson {{ "}}" }}
                         {{ "{{" }} end {{ "}}" }}
                       {{ "{{" }} end {{ "}}" }}
                     {{ "{{" }} end {{ "}}" }}
