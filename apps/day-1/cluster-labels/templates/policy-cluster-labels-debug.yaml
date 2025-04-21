@@ -32,7 +32,7 @@ spec:
                   name: cluster-set-{{ $clusterSetKey }}-lookup-debug
                   namespace: open-cluster-policies
                 data:
-                  clusterConfigMaps: |1
+                  clusterConfigMaps: |
                     [
                       {{ "{{-" }} $thisClusterSet := "{{ $clusterSetKey }}" {{ "}}" }}
                       {{ "{{-" }} $configMapNamespace := "{{ $clusterSetValue.configMapNamespace | default "open-cluster-policies" }}" {{ "}}" }}
@@ -51,7 +51,6 @@ spec:
                             {{ "{{-" }} $_ := set $existingClusterLabelsNoAutoshift $existingKey $existingValue {{ "}}" }}
                           {{ "{{-" }} end {{ "}}" }}
                         {{ "{{-" }} end {{ "}}" }}
-                        {{ "{{/*" }} ////////// BEGIN LABEL EXTRACTION ////////// {{ "*/}}" }}
                           {{ "{{-" }} $clusterSetConfigMap := (lookup "v1" "ConfigMap" $configMapNamespace (printf "cluster-set.%s" $clusterSet)) | default dict {{ "}}" }}   
                           {{ "{{-" }} $clusterSetConfigMapData := (index $clusterSetConfigMap "data") | default dict {{ "}}" }} 
                           {{ "{{-" }} $clusterSetConfigMapValues := (index $clusterSetConfigMapData "values") | default "" {{ "}}" }}  
@@ -60,7 +59,6 @@ spec:
                           {{ "{{-" }} $clusterConfigMapData := (index $clusterConfigMap "data") | default dict {{ "}}" }} 
                           {{ "{{-" }} $clusterConfigMapValues := (index $clusterConfigMapData "values") | default "" {{ "}}" }}  
                           {{ "{{-" }} $clusterLabels := (index ($clusterConfigMapValues | fromJson | default dict) "labels") | default dict {{ "}}" }} 
-                        {{ "{{/*" }}  ////////// END LABEL EXTRACTION ////////// {{ "*/}}" }}
                         {{ "{{-" }} $configMapLabels := merge (dict) $clusterLabels $clusterSetLabels {{ "}}" }}
                         {{ "{{-" }} $labels := merge (dict) $configMapLabels $existingClusterLabelsNoAutoshift {{ "}}" }} 
                         {{ "{{-" }} $newLabels := dict {{ "}}" }}
