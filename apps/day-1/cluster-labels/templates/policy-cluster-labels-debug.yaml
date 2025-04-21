@@ -55,6 +55,9 @@ spec:
                             {{ "{{-" }} $clusterData := (index $clusterConfigMap "data" | default dict) {{ "}}" }}
                             {{ "{{-" }} $clusterLabels := (index $clusterData "labels" | default dict){{ "}}" }}
                             {{ "{{" }} $clusterLabels {{ "}}" }}
+                          {{ "{{-" }} end {{ "}}" }}
+                        {{ "{{-" }} end {{ "}}" }}
+                      {{ "{{-" }} end {{ "}}" }}
                             {{/*
                             {{ "{{-" }} $clusterSetLabels := (index (index $clusterSetConfigMap "data" | default dict) "labels" | default dict){{ "}}" }}
                             {{ "{{-" }} $tempLabels := merge (dict) $clusterLabels $clusterSetLabels $existingLabelsNoAutoshift {{ "}}" }}
@@ -71,9 +74,6 @@ spec:
                               "complianceType": "mustonlyhave",
                               "objectDefinition": {{ "{{" }} $objectDefinition | toRawJson  {{ "}}" }}
                             }{{ "{{-" }} if ne $lastIndex $index {{ "}}" }},{{ "{{-" }} end {{ "}}" }}
-                          {{ "{{-" }} end {{ "}}" }}
-                        {{ "{{-" }} end {{ "}}" }}
-                      {{ "{{-" }} end {{ "}}" }}
 
                     ]
                   */}}
