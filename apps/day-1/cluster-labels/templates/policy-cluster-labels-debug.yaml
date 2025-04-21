@@ -72,11 +72,6 @@ spec:
                         {{ "{{" }} $metadata := set $value.metadata "labels" $newLabels {{ "}}" }}
                         {{ "{{" }} $objectDefinition := set $value "metadata" $metadata {{ "}}" }}
                         {{ "{{" }} $_ := unset $objectDefinition "status" {{ "}}" }}
-                        {
-                          "complianceType": "mustonlyhave",
-                          "objectDefinition": {{ "{{" }} $objectDefinition | toRawJson  {{ "}}" }}
-                        }{{ "{{" }} if ne $lastIndex $index {{ "}}" }},{{ "{{-" }} end {{ "}}" }}
-                      {{ "{{" }} end {{ "}}" }}
                     ]
                     
 
