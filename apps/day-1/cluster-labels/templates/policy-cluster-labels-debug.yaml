@@ -47,7 +47,7 @@ spec:
                           {{ "{{" }} range $l, $v := $existingLabels {{ "}}" }}
                             {{ "{{" }} if not (hasPrefix "autoshift.io/" $l) {{ "}}" }}
                               {{ "{{" }} $_ := set $existingLabelsNoAutoshift $l $v {{ "}}" }}
-                            {{ "{{" }} print "hello" {{ "}}" }}
+                            {{ "  {{" }} print "hello" {{ "}}" }}
                             {{ "{{" }} end {{ "}}" }}
                           {{ "{{" }} end {{ "}}" }}
                         {{ "{{" }} end {{ "}}" }}
