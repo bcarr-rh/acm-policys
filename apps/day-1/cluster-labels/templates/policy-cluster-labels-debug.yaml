@@ -34,7 +34,6 @@ spec:
                 data:
                   clusterConfigMaps: |1
                     {{ "{{" }} $configMaps := (lookup "v1" "ConfigMap" "" "" "autoshift.io/cluster-labels") | default list {{ "}}" }}
-                    {{ "{{" }}print "hello" {{ "}}" }}
                     {{ "{{" }} $managedClusterLookupResult := (lookup "cluster.open-cluster-management.io/v1" "ManagedCluster" "" "") | default dict {{ "}}" }}
                     {{ "{{" }} if not (empty $managedClusterLookupResult) {{ "}}" }}
                       {{ "{{" }} $managedClusters := (index $managedClusterLookupResult "items") | default list {{ "}}" }}
@@ -50,10 +49,14 @@ spec:
                               {{ "{{" }} $_ := set $existingLabelsNoAutoshift $l $v {{ "}}" }}
                             {{ "{{" }} end {{ "}}" }}
                           {{ "{{" }} end {{ "}}" }}
-                          {{ "{{" }} print "hello" {{ "}}" }}
+                          {{ "{{" }} $clusterConfigMap := (lookup "v1" "ConfigMap" "" (print "managed-cluster." $clusterName)) | default dict {{ "}}" }}
+                          {{ "{{" }} $clusterSetConfigMap := (lookup "v1" "ConfigMap" "" (print "cluster-set." $clusterSet)) | default dict {{ "}}" }}
+                          {{ "{{" }} $clusterLabels := (index $clusterConfigMap "labels" | default dict){{ "}}" }}
+                          {{ "{{" }} $clusterSetLabels := (index $clusterSetConfigMap "labels" | default dict){{ "}}" }}
+                          {{ "{{" }} $tempLabels := merge (dict) $clusterLabels $clusterSetLabels $existingLabelsNoAutoshift {{ "}}" }}
+                          {{ "{{" }} $tempLabels {{ "}}" }}
                         {{ "{{" }} end {{ "}}" }}
                       {{ "{{" }} end {{ "}}" }}
-                      {{ "{{" }} print "hello" {{ "}}" }}
                     {{ "{{" }} end {{ "}}" }}
 
                     
