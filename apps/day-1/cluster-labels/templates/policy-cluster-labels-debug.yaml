@@ -73,7 +73,6 @@ spec:
                         {{ "{{" }} $objectDefinition := set $value "metadata" $metadata {{ "}}" }}
                         {{ "{{" }} $_ := unset $objectDefinition "status" {{ "}}" }}
                     ]
-                    
 
 
 ---
