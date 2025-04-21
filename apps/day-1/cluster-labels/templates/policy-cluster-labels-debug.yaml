@@ -32,7 +32,7 @@ spec:
                   name: cluster-set-{{ $clusterSetKey }}-lookup-debug
                   namespace: open-cluster-policies
                 data:
-                  clusterConfigMaps: |1
+                  clusterConfigMaps: |
                     [
                       {{ "{{-" }} $thisClusterSet := "{{ $clusterSetKey }}" {{ "}}" }}
                       {{ "{{-" }} $configMapNamespace := "{{ $clusterSetValue.configMapNamespace | default "open-cluster-policies" }}" {{ "}}" }}
