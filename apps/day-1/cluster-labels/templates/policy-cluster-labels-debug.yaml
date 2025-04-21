@@ -32,7 +32,7 @@ spec:
                   name: cluster-set-{{ $clusterSetKey }}-lookup-debug
                   namespace: open-cluster-policies
                 data:
-                  clusterConfigMaps: |2 
+                  clusterConfigMaps: |2
                     {{ "{{" }} $configMaps := (lookup "v1" "ConfigMap" "" "" "autoshift.io/cluster-labels") | default list {{ "}}" }}
                     {{ "{{" }} $managedClusterLookupResult := (lookup "cluster.open-cluster-management.io/v1" "ManagedCluster" "" "") | default dict {{ "}}" }}
                     {{ "{{" }} if not (empty $managedClusterLookupResult) {{ "}}" }}
