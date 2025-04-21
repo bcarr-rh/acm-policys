@@ -26,6 +26,7 @@ spec:
           annotations:
         spec:
           severity: high 
+          severity: high 
           object-templates-raw: |
             [
               {{ "{{-" }} $thisClusterSet := "{{ $clusterSetKey }}" {{ "}}" }}
