@@ -50,9 +50,10 @@ spec:
                                 {{ "{{-" }} $_ :=  set $existingLabelsNoAutoshift $label $value {{ "}}" }}
                               {{ "{{-" }} end {{ "}}" }}
                             {{ "{{-" }} end {{ "}}" }}
-                            {{ "{{-" }} $clusterConfigMap := (lookup "v1" "ConfigMap" "open-cluster-policies" (print "managed-cluster." $clusterName) | default dict) {{ "}}" }}
                             {{ "{{-" }} $clusterSetConfigMap := (lookup "v1" "ConfigMap" "open-cluster-policies" (print "cluster-set." $clusterSet) | default dict) {{ "}}" }}
-                            {{ "{{-" }} $clusterLabels := (index (index $clusterConfigMap "data" | default dict) "labels" | default dict){{ "}}" }}
+                            {{ "{{-" }} $clusterConfigMap := (lookup "v1" "ConfigMap" "open-cluster-policies" (print "managed-cluster." $clusterName) | default dict) {{ "}}" }}
+                            {{ "{{-" }} $clusterData := (index $clusterConfigMap "data" | default dict) {{ "}}" }}
+                            {{ "{{-" }} $clusterLabels := (index $clusterData "labels" | default dict){{ "}}" }}
                             {{ "{{-" }} $clusterSetLabels := (index (index $clusterSetConfigMap "data" | default dict) "labels" | default dict){{ "}}" }}
                             {{ "{{-" }} $tempLabels := merge (dict) $clusterLabels $clusterSetLabels $existingLabelsNoAutoshift {{ "}}" }}
                             {{ "{{-" }} $newLabels := dict {{ "}}" }}
