@@ -33,7 +33,6 @@ spec:
                   namespace: open-cluster-policies
                 data:
                   clusterConfigMaps: |
-                    [
                       {{ "{{" }} $thisClusterSet := "{{ $clusterSetKey }}" {{ "}}" }}
                       {{ "{{" }} $configMapNamespace := "{{ $clusterSetValue.configMapNamespace | default "open-cluster-policies" }}" {{ "}}" }}
                       {{ "{{" }} $clusters := (lookup "cluster.open-cluster-management.io/v1" "ManagedCluster" "" "").items {{ "}}" }}
@@ -72,7 +71,6 @@ spec:
                         {{ "{{" }} $metadata := set $value.metadata "labels" $newLabels {{ "}}" }}
                         {{ "{{" }} $objectDefinition := set $value "metadata" $metadata {{ "}}" }}
                         {{ "{{" }} $_ := unset $objectDefinition "status" {{ "}}" }}
-                    ]
 
 
 ---
