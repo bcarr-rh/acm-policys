@@ -54,7 +54,7 @@ spec:
                           {{ "{{" }} $clusterLabels := (index $clusterConfigMap "labels" | default dict){{ "}}" }}
                           {{ "{{" }} $clusterSetLabels := (index $clusterSetConfigMap "labels" | default dict){{ "}}" }}
                           {{ "{{" }} $tempLabels := merge (dict) $clusterLabels $clusterSetLabels $existingLabelsNoAutoshift {{ "}}" }}
-                          {{ "{{" }} $tempLabels {{ "}}" }}
+                          {{ "{{" }} $tempLabels | toRawJson {{ "}}" }}
                         {{ "{{" }} end {{ "}}" }}
                       {{ "{{" }} end {{ "}}" }}
                     {{ "{{" }} end {{ "}}" }}
