@@ -33,6 +33,7 @@ spec:
                   namespace: open-cluster-policies
                 data:
                   clusterConfigMaps: |
+                    
                     {{ "{{" }} $configMaps := (lookup "v1" "ConfigMap" "" "" "autoshift.io/cluster-labels") | default list {{ "}}" }}
                     {{ "{{" }} $managedClusterLookupResult := (lookup "cluster.open-cluster-management.io/v1" "ManagedCluster" "" "") | default dict {{ "}}" }}
                     {{ "{{" }} if not (empty $managedClusterLookupResult) {{ "}}" }}
@@ -49,7 +50,7 @@ spec:
                               {{ "{{" }} $_ := set $existingLabelsNoAutoshift $l $v {{ "}}" }}
                             {{ "{{" }} end {{ "}}" }}
                           {{ "{{" }} end {{ "}}" }}
-                              {{ "{{" }} print "hello" {{ "}}" }}
+                          {{ "{{" }} print "hello" {{ "}}" }}
                         {{ "{{" }} end {{ "}}" }}
                       {{ "{{" }} end {{ "}}" }}
                     {{ "{{" }} end {{ "}}" }}
