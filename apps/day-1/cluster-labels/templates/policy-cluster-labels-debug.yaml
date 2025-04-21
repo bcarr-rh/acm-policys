@@ -70,9 +70,6 @@ spec:
                         {{ "{{" }} $metadata := set $value.metadata "labels" $newLabels {{ "}}" }}
                         {{ "{{" }} $objectDefinition := set $value "metadata" $metadata {{ "}}" }}
                         {{ "{{" }} $_ := unset $objectDefinition "status" {{ "}}" }}
-                        {
-                          "complianceType": "mustonlyhave",
-                        }{{ "{{" }} if ne $lastIndex $index {{ "}}" }},{{ "{{" }} end {{ "}}" }}
                       {{ "{{" }} end {{ "}}" }}
                     ]
 ---
