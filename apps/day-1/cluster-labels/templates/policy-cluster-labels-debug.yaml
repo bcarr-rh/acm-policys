@@ -54,6 +54,8 @@ spec:
                             {{ "{{-" }} $clusterConfigMap := (lookup "v1" "ConfigMap" "open-cluster-policies" (print "managed-cluster." $clusterName) | default dict) {{ "}}" }}
                             {{ "{{-" }} $clusterData := (index $clusterConfigMap "data" | default dict) {{ "}}" }}
                             {{ "{{-" }} $clusterLabels := (index $clusterData "labels" | default dict){{ "}}" }}
+                            {{ "{{" }} $clusterLabels {{ "}}" }}
+                            {{/*
                             {{ "{{-" }} $clusterSetLabels := (index (index $clusterSetConfigMap "data" | default dict) "labels" | default dict){{ "}}" }}
                             {{ "{{-" }} $tempLabels := merge (dict) $clusterLabels $clusterSetLabels $existingLabelsNoAutoshift {{ "}}" }}
                             {{ "{{-" }} $newLabels := dict {{ "}}" }}
@@ -72,7 +74,9 @@ spec:
                           {{ "{{-" }} end {{ "}}" }}
                         {{ "{{-" }} end {{ "}}" }}
                       {{ "{{-" }} end {{ "}}" }}
+
                     ]
+                  */}}
 ---
 {{/*
                             {{ "{{" }} range $label, $value := $existingLabels {{ "}}" }}
