@@ -33,6 +33,7 @@ spec:
                   namespace: open-cluster-policies
                 data:
                   lookupResult: | 
+                    
                     {{ "{{" }} lookup "v1" "ConfigMap" "open-cluster-policies "" "" {{ "}}" }}
                   clusterConfigMaps: |
                       {{ "{{-" }} $configMaps := (lookup "v1" "ConfigMap" "open-cluster-policies" "" "autoshift.io/cluster-labels") | default list {{ "}}" }}
