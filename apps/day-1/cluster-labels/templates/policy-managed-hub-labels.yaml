@@ -1,5 +1,4 @@
 {{- if (.Values.enabled | default false) }}
-{{- $hubClusterSet := $.Values.hubClusterSet | default "hub" }}
 {{- $policyName := (print "policy-managed-hub-cluster-labels" "-" ($.Values.deploymentName | default "default")) }}
 {{- $placementName := printf "placement-%s" $policyName }}
 {{- $configPolicyName := printf "managed-hub-cluster-labels"  }}
@@ -32,7 +31,6 @@ spec:
         kind: ConfigurationPolicy
         metadata:
           name: {{ $configPolicyName }}
-          annotations:
         spec:
           severity: high
           object-templates-raw: |
