@@ -37,7 +37,7 @@ spec:
           severity: high
           object-templates-raw: |
             [
-              {{ "{{-" }} $configMaps := (lookup "v1" "ConfigMap" "" "" "autoshift.io/cluster-labels") | default list {{ "}}" }}
+              {{ "{{-" }} $configMaps := (lookup "v1" "ConfigMap" "open-cluster-policies" "" "autoshift.io/cluster-labels") | default list {{ "}}" }}
               {{ "{{-" }} $managedClusterLookupResult := (lookup "cluster.open-cluster-management.io/v1" "ManagedCluster" "" "") | default dict {{ "}}" }}
               {{ "{{-" }} if not (empty $managedClusterLookupResult) {{ "}}" }}
                 {{ "{{-" }} $managedClusters := (index $managedClusterLookupResult "items") | default list {{ "}}" }}
@@ -45,34 +45,36 @@ spec:
                 {{ "{{-" }} if (ne $lastIndex -1) {{ "}}" }}
                   {{ "{{-" }} range $index, $cluster := $managedClusters {{ "}}" }}
                     {{ "{{-" }} $clusterName := (index $cluster "metadata" "name") {{ "}}" }}
-                    {{ "{{-" }} $clusterSet := (index (index $cluster  "metadata" "labels" | default dict) "cluster.open-cluster-management.io/clusterset") | default "" {{ "}}" }}
-                    {{ "{{-" }} $existingLabels :=  (index $cluster "metadata" "labels") {{ "}}" }}
-                    {{ "{{-" }} $existingLabelsNoAutoshift := dict {{ "}}" }}
-                    {{ "{{-" }} range $label, $value := $existingLabels {{ "}}" }}
-                      {{ "{{-" }} if not (hasPrefix "autoshift.io/" $label) {{ "}}" }}
-                        {{ "{{-" }} $_ :=  set $existingLabelsNoAutoshift $label $value {{ "}}" }}
+                    {{ "{{-" }} $clusterSet := (index $clusterLabels "cluster.open-cluster-management.io/clusterset") | default "" {{ "}}" }}
+                    {{ "{{-" }} if (ne $clusterSet "") {{ "}}" }}
+                      {{ "{{-" }} $existingLabels :=  (index $cluster "metadata" "labels") {{ "}}" }}
+                      {{ "{{-" }} $existingLabelsNoAutoshift := dict {{ "}}" }}
+                      {{ "{{-" }} range $label, $value := $existingLabels {{ "}}" }}
+                        {{ "{{-" }} if not (hasPrefix "autoshift.io/" $label) {{ "}}" }}
+                          {{ "{{-" }} $_ :=  set $existingLabelsNoAutoshift $label $value {{ "}}" }}
+                        {{ "{{-" }} end {{ "}}" }}
                       {{ "{{-" }} end {{ "}}" }}
-                    {{ "{{-" }} end {{ "}}" }}
-                    {{ "{{-" }} $clusterSetConfigMap := (lookup "v1" "ConfigMap" "open-cluster-policies" (print "cluster-set." $clusterSet) | default dict) {{ "}}" }}
-                    {{ "{{-" }} $clusterSetData := (index $clusterSetConfigMap "data" | default dict) {{ "}}" }}
-                    {{ "{{-" }} $clusterSetLabels := (index $clusterSetData "labels" | default "") | fromJson | default dict{{ "}}" }}
-                    {{ "{{-" }} $clusterConfigMap := (lookup "v1" "ConfigMap" "open-cluster-policies" (print "managed-cluster." $clusterName) | default dict) {{ "}}" }}
-                    {{ "{{-" }} $clusterData := (index $clusterConfigMap "data" | default dict) {{ "}}" }}
-                    {{ "{{-" }} $clusterLabels := (index $clusterData "labels" | default "") | fromJson | default dict{{ "}}" }}
-                    {{ "{{-" }} $tempLabels := merge (dict) $clusterLabels $clusterSetLabels $existingLabelsNoAutoshift {{ "}}" }}
-                    {{ "{{-" }} $newLabels := dict {{ "}}" }}
-                    {{ "{{-" }} range $label, $value := $tempLabels {{ "}}" }}
-                      {{ "{{-" }} if not (and ($label | hasPrefix "{{ $.Values.autoshiftLabelPrefix }}") (eq $value "_")) {{ "}}" }}
-                        {{ "{{-" }} $_ := set $newLabels $label $value {{ "}}" }}
+                      {{ "{{-" }} $clusterConfigMap := (lookup "v1" "ConfigMap" "open-cluster-policies" (print "managed-cluster." $clusterName) | default dict) {{ "}}" }}
+                      {{ "{{-" }} $clusterData := (index $clusterConfigMap "data" | default dict) {{ "}}" }}
+                      {{ "{{-" }} $clusterLabels := (index $clusterData "labels" | default "") | fromJson | default dict{{ "}}" }}
+                      {{ "{{-" }} $clusterSetConfigMap := (lookup "v1" "ConfigMap" "open-cluster-policies" (print "cluster-set." $clusterSet) | default dict) {{ "}}" }}
+                      {{ "{{-" }} $clusterSetData := (index $clusterSetConfigMap "data" | default dict) {{ "}}" }}
+                      {{ "{{-" }} $clusterSetLabels := (index $clusterSetData "labels" | default "") | fromJson | default dict{{ "}}" }}
+                      {{ "{{-" }} $tempLabels := merge (dict) $clusterLabels $clusterSetLabels $existingLabelsNoAutoshift {{ "}}" }}
+                      {{ "{{-" }} $newLabels := dict {{ "}}" }}
+                      {{ "{{-" }} range $label, $value := $tempLabels {{ "}}" }}
+                        {{ "{{-" }} if not (and ($label | hasPrefix "{{ $.Values.autoshiftLabelPrefix }}") (eq $value "_")) {{ "}}" }}
+                          {{ "{{-" }} $_ := set $newLabels $label $value {{ "}}" }}
+                        {{ "{{-" }} end {{ "}}" }}
                       {{ "{{-" }} end {{ "}}" }}
+                      {{ "{{-" }} $metadata := set $cluster.metadata "labels" $newLabels {{ "}}" }}
+                      {{ "{{-" }} $objectDefinition := set $cluster "metadata" $metadata {{ "}}" }}
+                      {{ "{{-" }} $_ := unset $objectDefinition "status" {{ "}}" }}
+                      {
+                        "complianceType": "mustonlyhave",
+                        "objectDefinition": {{ "{{" }} $objectDefinition | toRawJson  {{ "}}" }}
+                      }{{ "{{-" }} if ne $lastIndex $index {{ "}}" }},{{ "{{-" }} end {{ "}}" }}
                     {{ "{{-" }} end {{ "}}" }}
-                    {{ "{{-" }} $metadata := set $cluster.metadata "labels" $newLabels {{ "}}" }}
-                    {{ "{{-" }} $objectDefinition := set $cluster "metadata" $metadata {{ "}}" }}
-                    {{ "{{-" }} $_ := unset $objectDefinition "status" {{ "}}" }}
-                    {
-                      "complianceType": "mustonlyhave",
-                      "objectDefinition": {{ "{{" }} $objectDefinition | toRawJson  {{ "}}" }}
-                    }{{ "{{-" }} if ne $lastIndex $index {{ "}}" }},{{ "{{-" }} end {{ "}}" }}
                   {{ "{{-" }} end {{ "}}" }}
                 {{ "{{-" }} end {{ "}}" }}
               {{ "{{-" }} end {{ "}}" }}
