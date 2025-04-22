@@ -45,9 +45,9 @@ spec:
                 {{ "{{-" }} if (ne $lastIndex -1) {{ "}}" }}
                   {{ "{{-" }} range $index, $cluster := $managedClusters {{ "}}" }}
                     {{ "{{-" }} $clusterName := (index $cluster "metadata" "name") {{ "}}" }}
-                    {{ "{{-" }} $clusterSet := (index $clusterLabels "cluster.open-cluster-management.io/clusterset") | default "" {{ "}}" }}
+                    {{ "{{-" }} $existingLabels :=  (index $cluster "metadata" "labels") {{ "}}" }}
+                    {{ "{{-" }} $clusterSet := (index $existingLabels "cluster.open-cluster-management.io/clusterset") | default "" {{ "}}" }}
                     {{ "{{-" }} if (ne $clusterSet "") {{ "}}" }}
-                      {{ "{{-" }} $existingLabels :=  (index $cluster "metadata" "labels") {{ "}}" }}
                       {{ "{{-" }} $existingLabelsNoAutoshift := dict {{ "}}" }}
                       {{ "{{-" }} range $label, $value := $existingLabels {{ "}}" }}
                         {{ "{{-" }} if not (hasPrefix "autoshift.io/" $label) {{ "}}" }}

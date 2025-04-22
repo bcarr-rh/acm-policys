@@ -108,7 +108,7 @@ hubClusterSets:
       compliance-source: redhat-operators
       compliance-source-namespace: openshift-marketplace
       compliance-channel: stable
-  hub:
+  managed-hub:
     labels:
       ### infra-nodes
       infra-nodes: '4'
