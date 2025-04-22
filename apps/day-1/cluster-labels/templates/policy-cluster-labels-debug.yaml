@@ -32,7 +32,7 @@ spec:
                   name: cluster-set-{{ $clusterSetKey }}-lookup-debug
                   namespace: open-cluster-policies
                 data:
-                  lookupResult: | 
+                  lookupResult: |
                     {{ "{{" }} lookup "v1" "ConfigMap" "open-cluster-policies "" "" | toRawJson {{ "}}" }}
                   clusterConfigMaps: |
                       {{ "{{-" }} $configMaps := (lookup "v1" "ConfigMap" "open-cluster-policies" "" "autoshift.io/cluster-labels") | default list {{ "}}" }}
