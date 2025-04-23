@@ -1,5 +1,5 @@
 {{- if (.Values.enabled | default false) }}
-{{- $policyName := (print "policy-managed-hub-cluster-labels" "-" ($.Values.deploymentName | default "default")) }}
+{{- $policyName := (print "policy-child-hub-cluster-labels" "-" ($.Values.deploymentName | default "default")) }}
 {{- $placementName := printf "placement-%s" $policyName }}
 {{- $configPolicyName := printf "managed-hub-cluster-labels"  }}
 apiVersion: policy.open-cluster-management.io/v1
