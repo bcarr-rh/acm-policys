@@ -28,6 +28,7 @@ spec:
         metadata:
           name: {{ $configPolicyName }}
         spec:
+          disabled: false
           severity: high
           object-templates-raw: |
             [
