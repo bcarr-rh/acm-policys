@@ -1,7 +1,15 @@
 {{- if (.Values.enabled | default false) }}
-{{- $policyName := (print "policy-child-hub-cluster-labels" "-" ($.Values.deploymentName | default "default")) }}
-{{- $placementName := printf "placement-%s" $policyName }}
-{{- $configPolicyName := printf "managed-hub-cluster-labels"  }}
+  {{- $managedHubs := dict }}
+  {{- range $k, $v := $.Values.hubClusterSets  }}
+    {{-  if eq ($v.selfManaged | default "true")  "false" }}
+      {{- $_ := set $managedHubs $k $k }}
+    {{- end }}
+  {{- end }}
+  {{- if not (empty $managedHubs) }}
+    {{- range $managedHub, $_ := $managedHubs }}
+      {{- $policyName := (printf "policy-child-hub-%s-labels-%s" $managedHub ($.Values.deploymentName | default "default")) }}
+      {{- $placementName := printf "placement-%s" $policyName }}
+      {{- $configPolicyName := printf "%s-children-labels" $managedHub }}
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
@@ -12,18 +20,6 @@ metadata:
     policy.open-cluster-management.io/controls: CM-2 Baseline Configuration
     policy.open-cluster-management.io/standards: NIST SP 800-53
 spec:
-{{- $managedHubs := dict }}
-{{- range $k, $v := $.Values.hubClusterSets  }}
-  {{-  if eq ($v.selfManaged | default "true")  "false" }}
-    {{- $_ := set $managedHubs $k $k }}
-  {{- end }}
-{{- end }}
-{{- if (empty $managedHubs) }}
-  disabled: true
-{{- else }}
-  disabled: false
-{{- end }}
-
   remediationAction: enforce
   policy-templates:
     - objectDefinition:
@@ -85,9 +81,7 @@ metadata:
   namespace: open-cluster-policies
 spec:
   clusterSets:
-  {{- range $k, $v := $managedHubs }}
-    - {{ $k }}
-  {{- end }}
+    - {{ $managedHub }}
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists
@@ -108,4 +102,6 @@ subjects:
     apiGroup: policy.open-cluster-management.io
     kind: Policy
 ---
+    {{- end }}
+  {{- end }}
 {{- end }}
