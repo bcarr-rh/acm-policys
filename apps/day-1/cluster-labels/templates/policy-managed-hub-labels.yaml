@@ -7,7 +7,7 @@
   {{- end }}
   {{- if not (empty $managedHubs) }}
     {{- range $managedHub, $_ := $managedHubs }}
-      {{- $policyName := (printf "policy-child-hub-%s-labels-%s" $managedHub ($.Values.deploymentName | default "default")) }}
+      {{- $policyName := (printf "child-%s-labels" $managedHub) }}
       {{- $placementName := printf "placement-%s" $policyName }}
       {{- $configPolicyName := printf "%s-children-labels" $managedHub }}
 apiVersion: policy.open-cluster-management.io/v1
