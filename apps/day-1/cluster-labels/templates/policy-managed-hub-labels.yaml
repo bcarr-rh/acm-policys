@@ -10,11 +10,12 @@
       {{- $policyName := (printf "child-%s-labels" $managedHub) }}
       {{- $placementName := printf "placement-%s" $policyName }}
       {{- $configPolicyName := printf "%s-children-labels" $managedHub }}
+      {{- $policyNamespace := $.Values.autoshiftPolicyNamespace }}
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
   name: {{ $policyName }}
-  namespace: open-cluster-policies
+  namespace: {{ $policyNamespace }}
   annotations:
     policy.open-cluster-management.io/categories: CM Configuration Management
     policy.open-cluster-management.io/controls: CM-2 Baseline Configuration
@@ -32,7 +33,7 @@ spec:
           severity: high
           object-templates-raw: |
             [
-              {{ "{{-" }} $configMaps := (lookup "v1" "ConfigMap" "open-cluster-policies" "" "autoshift.io/cluster-labels") | default list {{ "}}" }}
+              {{ "{{-" }} $configMaps := (lookup "v1" "ConfigMap" "{{ $policyNamespace }}" "" "autoshift.io/cluster-labels") | default list {{ "}}" }}
               {{ "{{-" }} $managedClusterLookupResult := (lookup "cluster.open-cluster-management.io/v1" "ManagedCluster" "" "") | default dict {{ "}}" }}
               {{ "{{-" }} if not (empty $managedClusterLookupResult) {{ "}}" }}
                 {{ "{{-" }} $managedClusters := (index $managedClusterLookupResult "items") | default list {{ "}}" }}
@@ -49,10 +50,10 @@ spec:
                           {{ "{{-" }} $_ :=  set $existingLabelsNoAutoshift $label $value {{ "}}" }}
                         {{ "{{-" }} end {{ "}}" }}
                       {{ "{{-" }} end {{ "}}" }}
-                      {{ "{{-" }} $clusterConfigMap := (lookup "v1" "ConfigMap" "open-cluster-policies" (print "managed-cluster." $clusterName) | default dict) {{ "}}" }}
+                      {{ "{{-" }} $clusterConfigMap := (lookup "v1" "ConfigMap" "{{ $policyNamespace }}" (print "managed-cluster." $clusterName) | default dict) {{ "}}" }}
                       {{ "{{-" }} $clusterData := (index $clusterConfigMap "data" | default dict) {{ "}}" }}
                       {{ "{{-" }} $clusterLabels := (index $clusterData "labels" | default "") | fromJson | default dict{{ "}}" }}
-                      {{ "{{-" }} $clusterSetConfigMap := (lookup "v1" "ConfigMap" "open-cluster-policies" (print "cluster-set." $clusterSet) | default dict) {{ "}}" }}
+                      {{ "{{-" }} $clusterSetConfigMap := (lookup "v1" "ConfigMap" "{{ $policyNamespace }}" (print "cluster-set." $clusterSet) | default dict) {{ "}}" }}
                       {{ "{{-" }} $clusterSetData := (index $clusterSetConfigMap "data" | default dict) {{ "}}" }}
                       {{ "{{-" }} $clusterSetLabels := (index $clusterSetData "labels" | default "") | fromJson | default dict{{ "}}" }}
                       {{ "{{-" }} $tempLabels := merge (dict) $clusterLabels $clusterSetLabels $existingLabelsNoAutoshift {{ "}}" }}
@@ -79,7 +80,7 @@ apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
 metadata:
   name: {{ $placementName }}
-  namespace: open-cluster-policies
+  namespace: {{ $policyNamespace }}
 spec:
   clusterSets:
     - {{ $managedHub }}
@@ -93,7 +94,7 @@ apiVersion: policy.open-cluster-management.io/v1
 kind: PlacementBinding
 metadata:
   name: {{ $placementName }}
-  namespace: open-cluster-policies
+  namespace: {{ $policyNamespace }}
 placementRef:
   name: {{ $placementName}}
   apiGroup: cluster.open-cluster-management.io

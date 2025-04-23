@@ -4,6 +4,7 @@
 
 autoshiftGitRepo: https://github.com/bcarr-rh/acm-policys.git
 autoshiftGitBranchTag: managed-hub-testing
+autoshiftPolicyNamespace: "open-cluster-policies"
 
 # Hub Cluster Sets with Feature Flags. Blank will remove
 hubClusterSets:
