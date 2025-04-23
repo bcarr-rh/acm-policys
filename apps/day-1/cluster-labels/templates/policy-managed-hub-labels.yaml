@@ -21,6 +21,7 @@ metadata:
     policy.open-cluster-management.io/standards: NIST SP 800-53
 spec:
   remediationAction: enforce
+  disabled: false
   policy-templates:
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
@@ -28,7 +29,6 @@ spec:
         metadata:
           name: {{ $configPolicyName }}
         spec:
-          disabled: false
           severity: high
           object-templates-raw: |
             [
