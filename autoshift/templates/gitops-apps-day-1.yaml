@@ -30,7 +30,8 @@ spec:
           valueFiles:
           - values.yaml
           valuesObject:
-            {{- if .Values.autoshiftPolicyNamespace }} 
+            {{- if .Values.autoshiftPolicyNamespace }}
+            variable: {{ $.Values.<component>.value | default $.Values.value }}
             autoshiftPolicyNamespace: {{ $.Values.autoshiftPolicyNamespace }}
             {{- end }}
             {{- if .Values.hubClusterSets }}

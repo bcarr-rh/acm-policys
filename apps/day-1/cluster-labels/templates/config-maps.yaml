@@ -1,17 +1,16 @@
-{{- if (.Values.enabled | default false) }}
-  {{- $policyNamespace := $.Values.autoshiftPolicyNamespace }}
-  {{- range $cluster, $data := ($.Values.clusters | default dict) }}
-    {{- $configMapNamespace := $data.configMapNamespace | default $policyNamespace }}
+{{- $policyNamespace := $.Values.autoshiftPolicyNamespace }}
+{{- range $cluster, $data := ($.Values.clusters | default dict) }}
+  {{- $configMapNamespace := $data.configMapNamespace | default $policyNamespace }}
 ---
-    {{- $prefixedClusterLabels := dict -}}
-    {{- range $label, $value := $data.labels -}}
-      {{- if eq ($value | trim) "" -}}
-        {{- $_ := set $prefixedClusterLabels (printf "%s%s" $.Values.autoshiftLabelPrefix $label) "_" -}}
-      {{- else -}}
-        {{- $_ := set $prefixedClusterLabels (printf "%s%s" $.Values.autoshiftLabelPrefix $label) ($value | lower | trim) -}}
-      {{- end -}}
+  {{- $prefixedClusterLabels := dict -}}
+  {{- range $label, $value := $data.labels -}}
+    {{- if eq ($value | trim) "" -}}
+      {{- $_ := set $prefixedClusterLabels (printf "%s%s" $.Values.autoshiftLabelPrefix $label) "_" -}}
+    {{- else -}}
+      {{- $_ := set $prefixedClusterLabels (printf "%s%s" $.Values.autoshiftLabelPrefix $label) ($value | lower | trim) -}}
     {{- end -}}
-    {{- $_ := set $data "labels" $prefixedClusterLabels -}}
+  {{- end -}}
+  {{- $_ := set $data "labels" $prefixedClusterLabels -}}
 apiVersion: v1
 kind: ConfigMap
 metadata: 
@@ -22,20 +21,20 @@ metadata:
 data: 
   values: '{{ $data | toJson }}'
   labels: '{{ $prefixedClusterLabels | toJson }}'
-  {{- end }}
+{{- end }}
 
-  {{- range $clusterSet, $data := merge (dict) ($.Values.hubClusterSets | default dict) ($.Values.managedClusterSets | default dict) }}
+{{- range $clusterSet, $data := merge (dict) ($.Values.hubClusterSets | default dict) ($.Values.managedClusterSets | default dict) }}
 ---
-    {{- $configMapNamespace := $data.configMapNamespace | default $policyNamespace }}
-    {{- $prefixedClusterSetLabels := dict -}}
-    {{- range $label, $value := $data.labels -}}
-      {{- if eq ($value | trim) "" -}}
-        {{- $_ := set $prefixedClusterSetLabels (printf "%s%s" $.Values.autoshiftLabelPrefix $label) "_" -}}
-      {{- else -}}
-        {{- $_ := set $prefixedClusterSetLabels (printf "%s%s" $.Values.autoshiftLabelPrefix $label) ($value | lower | trim) -}}
-      {{- end -}}
+  {{- $configMapNamespace := $data.configMapNamespace | default $policyNamespace }}
+  {{- $prefixedClusterSetLabels := dict -}}
+  {{- range $label, $value := $data.labels -}}
+    {{- if eq ($value | trim) "" -}}
+      {{- $_ := set $prefixedClusterSetLabels (printf "%s%s" $.Values.autoshiftLabelPrefix $label) "_" -}}
+    {{- else -}}
+      {{- $_ := set $prefixedClusterSetLabels (printf "%s%s" $.Values.autoshiftLabelPrefix $label) ($value | lower | trim) -}}
     {{- end -}}
-    {{- $_ := set $data "labels" $prefixedClusterSetLabels -}}
+  {{- end -}}
+  {{- $_ := set $data "labels" $prefixedClusterSetLabels -}}
 apiVersion: v1
 kind: ConfigMap
 metadata: 
@@ -46,5 +45,4 @@ metadata:
 data:
   values: '{{ $data | toJson }}'
   labels: '{{ $prefixedClusterSetLabels | toJson }}'
-  {{- end }}
 {{- end }}

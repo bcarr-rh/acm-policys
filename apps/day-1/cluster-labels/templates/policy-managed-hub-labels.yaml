@@ -1,16 +1,15 @@
-{{- if (.Values.enabled | default false) }}
-  {{- $managedHubs := dict }}
-  {{- range $k, $v := $.Values.hubClusterSets  }}
-    {{-  if eq ($v.selfManaged | default "true")  "false" }}
-      {{- $_ := set $managedHubs $k $k }}
-    {{- end }}
+{{- $managedHubs := dict }}
+{{- range $k, $v := $.Values.hubClusterSets  }}
+  {{-  if eq ($v.selfManaged | default "true")  "false" }}
+    {{- $_ := set $managedHubs $k $k }}
   {{- end }}
-  {{- if not (empty $managedHubs) }}
-    {{- range $managedHub, $_ := $managedHubs }}
-      {{- $policyName := (printf "child-%s-labels" $managedHub) }}
-      {{- $placementName := printf "placement-%s" $policyName }}
-      {{- $configPolicyName := printf "%s-children-labels" $managedHub }}
-      {{- $policyNamespace := $.Values.autoshiftPolicyNamespace }}
+{{- end }}
+{{- if not (empty $managedHubs) }}
+  {{- range $managedHub, $_ := $managedHubs }}
+    {{- $policyName := (printf "child-%s-labels" $managedHub) }}
+    {{- $placementName := printf "placement-%s" $policyName }}
+    {{- $configPolicyName := printf "%s-children-labels" $managedHub }}
+    {{- $policyNamespace := $.Values.autoshiftPolicyNamespace }}
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
@@ -104,6 +103,5 @@ subjects:
     apiGroup: policy.open-cluster-management.io
     kind: Policy
 ---
-    {{- end }}
   {{- end }}
 {{- end }}
