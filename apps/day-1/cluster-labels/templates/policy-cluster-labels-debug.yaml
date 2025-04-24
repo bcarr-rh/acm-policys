@@ -51,6 +51,7 @@ spec:
                     {{ "{{-" }} end {{ "}}" }}
                     {{ "{{-" }} $managedClusterLookupResult := (lookup "cluster.open-cluster-management.io/v1" "ManagedCluster" "" "") | default dict {{ "}}" }}
                     {{ "{{-" }} $managedClusters := (index $managedClusterLookupResult "items") | default list {{ "}}" }}
+                    {{ "{{-" }} $lastIndex := (sub (len $managedClusters) 1) {{ "}}" }}
                     {{ "{{-" }} range $_, $cluster := $managedClusters {{ "}}" }}
                       {{ "{{-" }} $clusterLabels := (index $cluster "metadta" "labels" "cluster.open-cluster-management.io/clusterset") | default dict {{ "}}" }}
                       {{ "{{-" }} $clusterSetName := (index $clusterLabels "cluster.open-cluster-management.io/clusterset") | default "" {{ "}}" }}
