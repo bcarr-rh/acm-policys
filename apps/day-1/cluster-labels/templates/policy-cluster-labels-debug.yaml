@@ -34,7 +34,7 @@ spec:
                   namespace: {{ $policyNamespace }}
                 data:
                   clusterConfigMaps: |
-                      {{ "{{-" }} $configMaps := (lookup "v1" "ConfigMap" "" "" "autoshift.io/cluster-labels") | default list {{ "}}" }}
+                      {{ "{{-" }} $configMaps := (lookup "v1" "ConfigMap" "" "" "autoshift.io") | default list {{ "}}" }}
                       {{ "{{" }} $configMaps | toRawJson {{ "}}" }}
                     {{/*
                     [
