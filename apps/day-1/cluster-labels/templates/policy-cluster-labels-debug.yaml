@@ -39,7 +39,7 @@ spec:
                     {{ "{{-" }} $clusterSetConfigMaps := (dict) {{ "}}" }}
                     {{ "{{-" }} if not (empty $configMaps.items) {{ "}}" }}
                       {{ "{{-" }} range $_, $map := $configMaps {{ "}}" }}
-                        {{ "{{-" }} $mapName := (index $map "metadata" "name) {{ "}}" }}
+                        {{ "{{-" }} $mapName := (index $map "metadata" "name") {{ "}}" }}
                         {{ "{{-" }} if hasPrefix "cluster-set" $mapName {{ "}}" }}
                           {{ "{{-" }} $_ := set $clusterConfigMaps $mapName $map {{ "}}" }}
                         {{ "{{-" }} else if hasPrefix "managed-cluster" $mapName {{ "}}" }}
