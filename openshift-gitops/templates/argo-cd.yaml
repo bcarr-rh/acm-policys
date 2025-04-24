@@ -2,7 +2,7 @@
 apiVersion: argoproj.io/v1beta1
 kind: ArgoCD
 metadata:
-  name: infra-gitops
+  name: {{ .Values.gitops.argoName }}
   namespace: {{ .Values.gitops.argoNamespace }}
   annotations:
     "helm.sh/hook": post-install,post-upgrade

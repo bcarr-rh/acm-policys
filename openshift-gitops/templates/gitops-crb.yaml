@@ -1,7 +1,7 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: cluster-admin-{{ .Values.gitops.argoNamespace }}-argocd-application-controller
+  name: cluster-admin-{{ .Values.gitops.argoName }}-argocd-application-controller
   annotations:
     helm.sh/hook-weight: "3"
 roleRef:
@@ -10,5 +10,5 @@ roleRef:
   name: cluster-admin
 subjects:
 - kind: ServiceAccount
-  name: {{ .Values.gitops.argoNamespace }}-argocd-application-controller
+  name: {{ .Values.gitops.argoName }}-argocd-application-controller
   namespace: {{ .Values.gitops.argoNamespace }}

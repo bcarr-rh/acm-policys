@@ -11,6 +11,7 @@ gitops:
   sourceNamespace: openshift-marketplace
   installPlanApproval: Automatic
   name: openshift-gitops-operator
+  argoName: infra-gitops
   rbac_policies:
   - 'g, openshift-systems, role:admin'
   # OPTIONAL
