@@ -34,7 +34,7 @@ spec:
                   namespace: {{ $policyNamespace }}
                 data:
                   clusterConfigMaps: |
-                    {{ "{{-" }} $configMaps := (index (lookup "v1" "ConfigMap" "" "" "autoshift.io/cluster-labels=true") "items) | default list {{ "}}" }}
+                    {{ "{{-" }} $configMaps := (index (lookup "v1" "ConfigMap" "" "" "autoshift.io/cluster-labels=true") "items") | default list {{ "}}" }}
                     {{ "{{-" }} $clusterConfigMaps := (dict) {{ "}}" }}
                     {{ "{{-" }} $clusterSetConfigMaps := (dict) {{ "}}" }}
                     {{ "{{-" }} if not (empty $configMaps) {{ "}}" }}
