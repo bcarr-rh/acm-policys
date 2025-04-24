@@ -34,17 +34,11 @@ spec:
                   namespace: {{ $policyNamespace }}
                 data:
                   clusterConfigMaps: |
-                    {{ "{{-" }} $configMaps := (lookup "v1" "ConfigMap" "" "" "autoshift.io/cluster-labels=true") | default list {{ "}}" }}
+                    {{ "{{-" }} $configMaps := (index (lookup "v1" "ConfigMap" "" "" "autoshift.io/cluster-labels=true") "items) | default list {{ "}}" }}
                     {{ "{{-" }} $clusterConfigMaps := (dict) {{ "}}" }}
                     {{ "{{-" }} $clusterSetConfigMaps := (dict) {{ "}}" }}
-                    {{ "{{-" }} if not (empty $configMaps.items) {{ "}}" }}
-                      {{ "{{-" }} range $_, $map := $configMaps.items {{ "}}" }}
-                        {{ "{{" }} $map | toRawJson {{ "}}" }}
-                      {{ "{{-" }} end {{ "}}" }}
-                    {{ "{{-" }} end {{ "}}" }}
-
-
-                    {{/*
+                    {{ "{{-" }} if not (empty $configMaps) {{ "}}" }}
+                      {{ "{{-" }} range $_, $map := $configMaps {{ "}}" }}
                         {{ "{{-" }} $mapName := (index $map "metadata" "name") {{ "}}" }}
                         {{ "{{-" }} if hasPrefix "cluster-set" $mapName {{ "}}" }}
                           {{ "{{-" }} $_ := set $clusterConfigMaps $mapName $map {{ "}}" }}
@@ -53,9 +47,11 @@ spec:
                         {{ "{{-" }} else {{ "}}" }}
                           {{ "{{-" }} continue {{ "}}" }}
                         {{ "{{-" }} end {{ "}}" }}
+                      {{ "{{-" }} end {{ "}}" }}
                     {{ "{{-" }} end {{ "}}" }}
                     {{ "{{-" }} $clusterConfigMaps | toRawJson {{ "}}" }}
                     {{ "{{-" }} $clusterSetConfigMaps | toRawJson {{ "}}" }}
+                    {{/*
                     [
                     "{{-" }} $clusterConfigMaps := (dict) {{ "}}" }}
                     {{ "{{-" }} $clusterSetConfigMaps := (dict) {{ "}}" }}
