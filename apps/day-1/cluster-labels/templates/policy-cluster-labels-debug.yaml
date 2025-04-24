@@ -35,8 +35,10 @@ spec:
                 data:
                   clusterConfigMaps: |
                       {{ "{{-" }} $configMaps := (lookup "v1" "ConfigMap" "" "" "") | default list {{ "}}" }}
-                      {{ "{{" }} $configMaps {{ "}}" }}
-                    {{/* "{{-" }} $clusterConfigMaps := (dict) {{ "}}" }}
+                      {{ "{{  " }} $configMaps {{ "}}" }}
+                    {{/*
+                    [
+                    "{{-" }} $clusterConfigMaps := (dict) {{ "}}" }}
                     {{ "{{-" }} $clusterSetConfigMaps := (dict) {{ "}}" }}
                     {{ "{{-" }} if not (empty $configMaps)
                     {{ "{{-" }} range $_, $configMap := $configMaps {{ "}}" }}
@@ -76,7 +78,9 @@ spec:
                           }{{ "{{-" }} if ne $lastIndex $index {{ "}}" }},{{ "{{-" }} end {{ "}}" }}
                         {{ "{{-" }} end {{ "}}" }}
                       {{ "{{-" }} end {{ "}}" }}
-                    {{ "{{-" }} end {{ "}}" */}}
+                    {{ "{{-" }} end {{ "}}" 
+                    ]
+                    */}}
 ---
 {{/*
                             {{ "{{" }} range $label, $value := $existingLabels {{ "}}" }}
