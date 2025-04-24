@@ -1,10 +1,10 @@
-{{ if (.Values.debug | default false) }}
-{{ range $clusterSetKey, $clusterSetValue := $.Values.hubClusterSets }}
-{{ $hubClusterSet := $.Values.hubClusterSet | default "hub" }}
-{{ $policyName := printf "policy-%s-cluster-labels-debug" $clusterSetKey }}
-{{ $configPolicyName := printf "cluster-labels-%s-debug" $clusterSetKey }}
-{{ $placementName := printf "placement-%s" $policyName }}
-{{- $policyNamespace := $.Values.autoshiftPolicyNamespace }}
+{{- if (.Values.debug | default false) }}
+  {{- range $clusterSetKey, $clusterSetValue := $.Values.hubClusterSets }}
+    {{- $hubClusterSet := $.Values.hubClusterSet | default "hub" }}
+    {{- $policyName := printf "policy-%s-cluster-labels-debug" $clusterSetKey }}
+    {{- $configPolicyName := printf "cluster-labels-%s-debug" $clusterSetKey }}
+    {{- $placementName := printf "placement-%s" $policyName }}
+    {{- $policyNamespace := $.Values.autoshiftPolicyNamespace }}
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
@@ -35,7 +35,11 @@ spec:
                 data:
                   clusterConfigMaps: |
                     [
-                    {{ "{{-" }} $configMaps := (lookup "v1" "ConfigMap" "{{ $policyNamespace }}" "" "autoshift.io/cluster-labels") | default list {{ "}}" }}
+                    {{ "{{-" }} $configMaps := (lookup "v1" "ConfigMap" "" "" "autoshift.io/cluster-labels=true") | default list {{ "}}" }}
+                    {{/* "{{-" }} $clusterConfigMaps := (dict) {{ "}}" }}
+                    {{ "{{-" }} $clusterSetConfigMaps := (dict) {{ "}}" }}
+                    {{ "{{-" }} if not (empty $configMaps)
+                    {{ "{{-" }} range $_, $configMap := $configMaps {{ "}}" }}
                     {{ "{{-" }} $managedClusterLookupResult := (lookup "cluster.open-cluster-management.io/v1" "ManagedCluster" "" "") | default dict {{ "}}" }}
                     {{ "{{-" }} if not (empty $managedClusterLookupResult) {{ "}}" }}
                       {{ "{{-" }} $managedClusters := (index $managedClusterLookupResult "items") | default list {{ "}}" }}
@@ -72,7 +76,7 @@ spec:
                           }{{ "{{-" }} if ne $lastIndex $index {{ "}}" }},{{ "{{-" }} end {{ "}}" }}
                         {{ "{{-" }} end {{ "}}" }}
                       {{ "{{-" }} end {{ "}}" }}
-                    {{ "{{-" }} end {{ "}}" }}
+                    {{ "{{-" }} end {{ "}}" */}}
                     ]
 ---
 {{/*
@@ -110,7 +114,7 @@ subjects:
     apiGroup: policy.open-cluster-management.io
     kind: Policy
 ---
-{{ end }}
+  {{- end }}
 {{ end }}
 {{/*                  lookupManagedClusters: |
                     {{ "{{" }}  (lookup "cluster.open-cluster-management.io/v1" "ManagedCluster" "" "") | toRawJson {{ "}}" }}
