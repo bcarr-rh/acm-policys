@@ -35,7 +35,7 @@ spec:
                 data:
                   clusterConfigMaps: |
                       {{ "{{-" }} $configMaps := (lookup "v1" "ConfigMap" "" "" "autoshift.io/cluster-labels") | default list {{ "}}" }}
-                      {{ "{{" }} $configMaps {{ "}}" }}
+                      {{ "{{" }} $configMaps | toRawJson {{ "}}" }}
                     {{/*
                     [
                     "{{-" }} $clusterConfigMaps := (dict) {{ "}}" }}
