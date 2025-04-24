@@ -35,8 +35,8 @@ spec:
                 data:
                   clusterConfigMaps: |
                       {{ "{{-" }} $configMaps := (lookup "v1" "ConfigMap" "" "" "") | default list {{ "}}" }}
-                      {{ "  {{" }} $configMaps {{ "}}" }}
                     {{/*
+                      {{ "{{" }} $configMaps {{ "}}" }}
                     [
                     "{{-" }} $clusterConfigMaps := (dict) {{ "}}" }}
                     {{ "{{-" }} $clusterSetConfigMaps := (dict) {{ "}}" }}
