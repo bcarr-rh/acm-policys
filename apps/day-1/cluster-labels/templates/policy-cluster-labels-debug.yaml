@@ -34,8 +34,22 @@ spec:
                   namespace: {{ $policyNamespace }}
                 data:
                   clusterConfigMaps: |
-                      {{ "{{-" }} $configMaps := (lookup "v1" "ConfigMap" "" "" "autoshift.io") | default list {{ "}}" }}
-                      {{ "{{" }} $configMaps | toRawJson {{ "}}" }}
+                      {{ "{{-" }} $configMaps := (lookup "v1" "ConfigMap" "" "" "autoshift.io/cluster-labels=true") | default list {{ "}}" }}
+                      {{ "{{-" }} $clusterConfigMaps := (dict) {{ "}}" }}
+                      {{ "{{-" }} $clusterSetConfigMaps := (dict) {{ "}}" }}
+                      {{ "{{-" }} if not (empty $configMaps.items) {{ "}}" }}
+                        {{ "{{-" }} range $_, $map := $configMaps {{ "}}" }}
+                          {{ "{{-" }} $mapName := (index $map "metadata" "name) {{ "}}" }}
+                          {{ "{{-" }} if hasPrefix "cluster-set" $mapName {{ "}}" }}
+                            {{ "{{-" }} $_ := set $clusterConfigMaps $mapName $map {{ "}}" }}
+                          {{ "{{-" }} else if hasPrefix "managed-cluster" $mapName {{ "}}" }}
+                            {{ "{{-" }} $_ := set $clusterSetConfigMaps $mapName $map {{ "}}" }}
+                          {{ "{{-" }} else {{ "}}" }}
+                            {{ "{{-" }} continue {{ "}}" }}
+                          {{ "{{-" }} end {{ "}}" }}
+                        {{ "{{-" }} end {{ "}}" }}
+                        {{ "{{-" }} $clusterConfigMaps | toRawJson {{ "}}" }}
+                        {{ "{{-" }} $clusterSetConfigMaps | toRawJson {{ "}}" }}
                     {{/*
                     [
                     "{{-" }} $clusterConfigMaps := (dict) {{ "}}" }}
