@@ -48,8 +48,9 @@ spec:
                             {{ "{{-" }} continue {{ "}}" }}
                           {{ "{{-" }} end {{ "}}" }}
                         {{ "{{-" }} end {{ "}}" }}
-                        {{ "{{-" }} $clusterConfigMaps | toRawJson {{ "}}" }}
-                        {{ "{{-" }} $clusterSetConfigMaps | toRawJson {{ "}}" }}
+                      {{ "{{-" }} end {{ "}}" }}
+                      {{ "{{-" }} $clusterConfigMaps | toRawJson {{ "}}" }}
+                      {{ "{{-" }} $clusterSetConfigMaps | toRawJson {{ "}}" }}
                     {{/*
                     [
                     "{{-" }} $clusterConfigMaps := (dict) {{ "}}" }}
