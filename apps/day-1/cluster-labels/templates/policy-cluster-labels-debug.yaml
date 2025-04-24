@@ -39,6 +39,12 @@ spec:
                     {{ "{{-" }} $clusterSetConfigMaps := (dict) {{ "}}" }}
                     {{ "{{-" }} if not (empty $configMaps.items) {{ "}}" }}
                       {{ "{{-" }} range $_, $map := $configMaps {{ "}}" }}
+                        {{ "{{" }} $map | toRawJson {{ "}}" }}
+                      {{ "{{-" }} end {{ "}}" }}
+                    {{ "{{-" }} end {{ "}}" }}
+
+
+                    {{/*
                         {{ "{{-" }} $mapName := (index $map "metadata" "name") {{ "}}" }}
                         {{ "{{-" }} if hasPrefix "cluster-set" $mapName {{ "}}" }}
                           {{ "{{-" }} $_ := set $clusterConfigMaps $mapName $map {{ "}}" }}
@@ -47,11 +53,9 @@ spec:
                         {{ "{{-" }} else {{ "}}" }}
                           {{ "{{-" }} continue {{ "}}" }}
                         {{ "{{-" }} end {{ "}}" }}
-                      {{ "{{-" }} end {{ "}}" }}
                     {{ "{{-" }} end {{ "}}" }}
                     {{ "{{-" }} $clusterConfigMaps | toRawJson {{ "}}" }}
                     {{ "{{-" }} $clusterSetConfigMaps | toRawJson {{ "}}" }}
-                    {{/*
                     [
                     "{{-" }} $clusterConfigMaps := (dict) {{ "}}" }}
                     {{ "{{-" }} $clusterSetConfigMaps := (dict) {{ "}}" }}
