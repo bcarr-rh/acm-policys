@@ -35,7 +35,7 @@ spec:
                 apiVersion: argoproj.io/v1beta1
                 kind: ArgoCD
                 metadata:
-                  name: openshift-gitops
+                  name: infra-gitops
                   namespace: {{ .Values.gitops.argoNamespace }}
                   annotations:
                     argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true

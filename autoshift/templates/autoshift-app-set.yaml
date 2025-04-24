@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: {{ .Release.Name }}-argo-apps-day-2
+  name: "{{ .Release.Name }}-policies"
   namespace: openshift-gitops
   labels:
     velero.io/exclude-from-backup: "true"
@@ -13,12 +13,18 @@ spec:
       repoURL: {{ .Values.autoshiftGitRepo }}
       revision: {{ .Values.autoshiftGitBranchTag }}
       directories:
-      - path: 'apps/day-2/*'
+      - path: 'policies/*'
+      {{- if .Values.excludePolicies }}
+      {{- range .Values.excludePolicies }}
+      - path: 'policies/{{ . }}'
+        exclude: true
+      {{- end }}
+      {{- end }}
   template:
     metadata:
       name: '{{ .Release.Name }}-{{"{{"}} .path.basename {{"}}"}}'
       labels:
-        app: argo-apps-day-2
+        app: "{{ .Release.Name }}-policies"
         velero.io/exclude-from-backup: "true"
     spec:
       project: default
