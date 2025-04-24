@@ -38,7 +38,7 @@ spec:
                     {{ "{{-" }} $clusterConfigMaps := (dict) {{ "}}" }}
                     {{ "{{-" }} $clusterSetConfigMaps := (dict) {{ "}}" }}
                     {{ "{{-" }} if not (empty $configMaps.items) {{ "}}" }}
-                      {{ "{{-" }} range $_, $map := $configMaps {{ "}}" }}
+                      {{ "{{-" }} range $_, $map := $configMaps.items {{ "}}" }}
                         {{ "{{" }} $map | toRawJson {{ "}}" }}
                       {{ "{{-" }} end {{ "}}" }}
                     {{ "{{-" }} end {{ "}}" }}
