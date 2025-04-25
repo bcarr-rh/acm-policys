@@ -12,20 +12,6 @@ loki:
     size: 1x.extra-small
     storageClass: gp3-csi
     lokistackName: logging-lokistack
-logging:
-    name: cluster-logging
-    namespace: openshift-logging
-    channel: stable-6.2
-    installPlanApproval: Automatic
-    source: redhat-operators
-    sourceNamespace: openshift-marketplace
-coo:
-    name: cluster-observability-operator
-    namespace: openshift-cluster-observability-operator
-    channel: stable
-    installPlanApproval: Automatic
-    source: redhat-operators
-    sourceNamespace: openshift-marketplace
 # hubClusterSets:
 #   hub:
 #     labels:
@@ -44,15 +30,3 @@ coo:
 # loki-size<String>: default 1x.extra-small
 # loki-storageclass<String>: default gp3-csi
 # loki-lokistack-name<String>: default logging-lokistack
-
-# logging<bool>: If not set OpenShift Logging will not be managed, Dependent on Loki and COO
-# logging-channel<String>: default stable-6.1
-# logging-install-plan-approval<String>: default Automatic
-# logging-source<String>: default redhat-operators
-# logging-source-namespace<String>: default openshift-marketplace
-
-# coo<bool>: If not set Cluster Observability Operator will not be managed
-# coo-channel<String>: default stable
-# coo-install-plan-approval<String>: default Automatic
-# coo-source<String>: default redhat-operators
-# coo-source-namespace<String>: default openshift-marketplace
