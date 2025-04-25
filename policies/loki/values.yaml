@@ -12,6 +12,7 @@ loki:
     size: 1x.extra-small
     storageClass: gp3-csi
     lokistackName: logging-lokistack
+    lokistackNamespace: openshift-logging
 # hubClusterSets:
 #   hub:
 #     labels:
