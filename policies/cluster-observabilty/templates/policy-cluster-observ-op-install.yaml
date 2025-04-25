@@ -53,26 +53,6 @@ spec:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: openshift-coo-uiplugin-logging
-        spec:
-          remediationAction: enforce
-          severity: high
-          object-templates:
-            - complianceType: musthave
-              objectDefinition:
-                apiVersion: observability.openshift.io/v1alpha1
-                kind: UIPlugin
-                metadata:
-                  name: logging
-                spec:
-                  logging:
-                    lokiStack:
-                      name: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/loki-lokistack-name" | default "{{ .Values.loki.lokistackName }}" hub{{ "}}" }}'
-                  type: Logging
-    - objectDefinition:
-        apiVersion: policy.open-cluster-management.io/v1
-        kind: ConfigurationPolicy
-        metadata:
           name: openshift-coo-status
         spec:
           remediationAction: inform
