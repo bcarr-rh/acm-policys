@@ -19,14 +19,14 @@ login to hub cluster as cluster-admin
 oc login
 ```
 
-Update apps/day-1/openshift-gitops/values.yaml and apps/day-1/advanced-cluster-management/values.yaml with desired source mirror registry for disconnected or leave as is for connected
+Update policies/openshift-gitops/values.yaml and policies/advanced-cluster-management/values.yaml with desired source mirror registry for disconnected or leave as is for connected
 
 
 If your clone of AutoShiftv2 requires credentials or you would like to add credentials to any other git repos you can do this in the openshift-gitops/values file before installing. This can also be done in the OpenShift GitOps GUI after install.
 
 Install OpenShift GitOps
 ```
-helm upgrade --install openshift-gitops openshift-gitops -f apps/day-1/openshift-gitops/values.yaml
+helm upgrade --install openshift-gitops openshift-gitops -f policies/openshift-gitops/values.yaml
 ```
 Note: If OpenShift GitOps is already installed manually on cluster and the default argo instance exists this step can be skipped. Make sure that argocd controller has cluster-admin
 
@@ -37,14 +37,14 @@ oc get argocd -A
 This command should return something like this:
 ```
 NAMESPACE          NAME               AGE
-openshift-gitops   openshift-gitops   29s
+openshift-gitops   infra-gitops   29s
 ```
 
 If this is not the case you may need to run helm upgrade again.
 
 Install Advanced Cluster Management
 ```
-helm upgrade --install advanced-cluster-management advanced-cluster-management -f apps/day-1/advanced-cluster-management/values.yaml
+helm upgrade --install advanced-cluster-management advanced-cluster-management -f policies/advanced-cluster-management/values.yaml
 ```
 
 Test Advanced Cluster Management

@@ -7,6 +7,12 @@ autoshiftGitBranchTag: main
 
 selfManagedHubSet: hub
 
+# Optional: If you want to exclude policies from all clusters, you can add the folder name here.
+# excludePolicies:
+#   - infra-nodes
+#   - worker-nodes
+
+
 # Hub Cluster Sets with Feature Flags. Blank will remove
 hubClusterSets:
   hub:
