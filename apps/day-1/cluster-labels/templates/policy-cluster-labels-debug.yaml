@@ -53,7 +53,8 @@ spec:
                           {{ "{{-" }} end {{ "}}" }}
                         {{ "{{-" }} end {{ "}}" }}
                         {{ "{{-" }} range $index, $cluster := $managedClusters {{ "}}" }}
-                          {{ "{{-" }} $clusterLabels := (index $cluster "metadata" | default dict) {{ "}}" }}
+                          {{ "{{-" }} $clusterMetadata := (index $cluster "metadata" | default dict) {{ "}}" }}
+                          {{ "{{-" }} $clusterLabels := (index $clusterMetadata "labels" | default dict) {{ "}}" }}
                           {{ "{{-" }} $clusterSetName := (index $clusterLabels "cluster.open-cluster-management.io/clusterset") | default "" {{ "}}" }}
                           {{ "{{-" }} if not (empty $clusterSetName) {{ "}}" }}
                             {{ "{{-" }} $existingLabels :=  (index $cluster "metadata" "labels") {{ "}}" }}
