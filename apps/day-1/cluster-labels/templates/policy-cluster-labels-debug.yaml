@@ -45,9 +45,9 @@ spec:
                         {{ "{{-" }} range $_, $map := $configMaps {{ "}}" }}
                           {{ "{{-" }} $mapName := (index $map "metadata" "name") {{ "}}" }}
                           {{ "{{-" }} if hasPrefix "cluster-set" $mapName {{ "}}" }}
-                            {{ "{{-" }} $_ := set $clusterConfigMaps $mapName $map {{ "}}" }}
-                          {{ "{{-" }} else if hasPrefix "managed-cluster" $mapName {{ "}}" }}
                             {{ "{{-" }} $_ := set $clusterSetConfigMaps $mapName $map {{ "}}" }}
+                          {{ "{{-" }} else if hasPrefix "managed-cluster" $mapName {{ "}}" }}
+                            {{ "{{-" }} $_ := set $clusterConfigMaps $mapName $map {{ "}}" }}
                           {{ "{{-" }} else {{ "}}" }}
                             {{ "{{-" }} continue {{ "}}" }}
                           {{ "{{-" }} end {{ "}}" }}
@@ -83,9 +83,6 @@ spec:
                               "complianceType": "mustonlyhave",
                               "objectDefinition": {{ "{{" }} $objectDefinition | toRawJson  {{ "}}" }}
                             }{{ "{{-" }} if ne $lastIndex $index {{ "}}" }},{{ "{{-" }} end {{ "}}" }}
-                            {{ "{{-" }}  {{ "}}" }}
-                            {{ "{{-" }}  {{ "}}" }}
-                            {{ "{{-" }}  {{ "}}" }}
                             {{ "{{-" }} end {{ "}}" }}
                           {{ "{{-" }} end {{ "}}" }}
                         {{ "{{-" }} end {{ "}}" }}
