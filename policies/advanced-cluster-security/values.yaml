@@ -1,0 +1,32 @@
+# Default values for rh-acs.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+acs:
+  channel: stable
+  installPlanApproval: Automatic
+  name: rhacs-operator
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+  operatorNamespace: rhacs-operator
+  namespace: stackrox
+  cliImage: image-registry.openshift-image-registry.svc:5000/openshift/cli:latest
+hubClusterSets:
+  hub:
+    labels:
+      test1: 'test'
+managedClusterSets:
+  managed:
+    labels:
+      test4: 'test'
+
+# Labels
+# acs<bool>: If not set Advanced Cluster Security will not be managed
+# acs-channel<String>: default stable
+# acs-install-plan-approval<String>: default Automatic
+# acs-source<String>: default redhat-operators
+# acs-source-namespace<String>: default openshift-marketplace
+
+# --- REMOVED Force Helm--
+# acs-namespace<String>: default stackrox
+# acs-operator-namespace<String>: default rhacs-operator
+# acs-name-sub<String>: default rhacs-operator

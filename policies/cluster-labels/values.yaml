@@ -1,0 +1,57 @@
+# Default values for cluster-labels.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+# Labels can be set from Application Set
+---
+selfManaged: false
+acmversion: "2.12"
+debug: true
+enabled: true
+autoshiftLabelPrefix: "autoshift.io/"
+hubClusterSets:
+  hubofhubs:
+    labels: 
+      infra-nodes-numcpu: '8'
+      infra-nodes-memory-mib:  '24576'
+      infra-nodes-numcores-per-socket:  '4'
+      infra-nodes:  '6'
+      self-managed: 'true'
+      worker-nodes-numcpu:  '8'
+      worker-nodes-memory-mib:  '32768'
+      worker-nodes-numcores-per-socket:  '4'
+      worker-nodes:  '3'
+      test-worked: 'false'
+  managed-hubs: 
+    selfManaged: 'false'
+    labels:  
+      hub: 'true'
+
+managedClusterSets:
+  managed:
+    labels: 
+      #infra-nodes-numcpu: '8'
+      # infra-nodes-memory-mib:  '24576'
+      # infra-nodes-numcores-per-socket:  '4'
+      # infra-nodes:  '6'
+      # worker-nodes-numcpu:  '8'
+      # worker-nodes-memory-mib:  '32768'
+      # worker-nodes-numcores-per-socket:  '4'
+      # worker-nodes:  '3'
+clusters:
+  managed-hub: 
+    selfManaged: false
+  nonprod:
+    labels:
+      infra-nodes-numcpu: '8'
+      infra-nodes-memory-mib:  '24576'
+      infra-nodes-numcores-per-socket:  '4'
+      infra-nodes:  '4'
+      worker-nodes-numcpu:  '8'
+      worker-nodes-memory-mib:  '32768'
+      worker-nodes-numcores-per-socket:  '4'
+      worker-nodes:  '3'
+  local-cluster: 
+    labels: 
+      test-worked: ''
+      second-label:  ''
+      infra-nodes: '3'

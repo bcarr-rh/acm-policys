@@ -1,0 +1,111 @@
+# This policy verifies the installation of the official & supported version of
+# the Developer Hub Operator on the managed clusters.
+#
+# Note that OpenShift 4.17 is required.
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: policy-developer-hub-operator-install
+  namespace: open-cluster-policies
+  annotations:
+    policy.open-cluster-management.io/standards: NIST SP 800-53
+    policy.open-cluster-management.io/categories: CA Security Assessment and Authorization
+    policy.open-cluster-management.io/controls: CA-2 Security Assessments, CA-7 Continuous Monitoring
+spec:
+  disabled: false
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: developer-hub-operator-ns
+        spec:
+          remediationAction: enforce # will be overridden by remediationAction in parent policy
+          severity: high
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: v1
+                kind: Namespace
+                metadata:
+                  name: {{ .Values.developerHub.namespace }}
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1beta1
+        kind: OperatorPolicy
+        metadata:
+          name: install-operator-developer-hub
+        spec:
+          remediationAction: enforce
+          severity: high
+          complianceType: musthave
+          operatorGroup:
+            name: {{ .Values.developerHub.namespace }}
+            namespace: {{ .Values.developerHub.namespace }}
+          subscription:
+            namespace: {{ .Values.developerHub.namespace }}
+            channel: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/dev-hub-channel" | default "{{ .Values.developerHub.channel }}" hub{{ "}}" }}'
+            name: {{ .Values.developerHub.name }}
+            source: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/dev-hub-source" | default "{{ .Values.developerHub.source }}" hub{{ "}}" }}'
+            sourceNamespace: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/dev-hub-source-namespace" | default "{{ .Values.developerHub.sourceNamespace }}" hub{{ "}}" }}'
+          # Getting Label and then capitalizing first letter
+          upgradeApproval: '{{ "{{hub" }} $upgrade_approval := index .ManagedClusterLabels "autoshift.io/dev-hub-install-plan-approval" | default "{{ .Values.developerHub.installPlanApproval }}" {{ "-hub}}" }} {{ "{{hub" }} print (substr 0 1 $upgrade_approval | upper) (substr 1 (len $upgrade_approval) $upgrade_approval) {{ "-hub}}" }}'
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: developer-hub-operator-status
+        spec:
+          remediationAction: inform # will be overridden by remediationAction in parent policy
+          severity: high
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: operators.coreos.com/v1alpha1
+                kind: ClusterServiceVersion
+                metadata:
+                  namespace: {{ .Values.developerHub.namespace }}
+                spec:
+                  displayName: 'Red Hat Developer Hub Operator'                
+                status:
+                  phase: Succeeded # check the csv status to determine if operator is running or not
+---
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: placement-policy-developer-hub-operator-install
+  namespace: open-cluster-policies
+spec:
+  clusterSets:
+  {{- range $clusterSet, $value := .Values.managedClusterSets }}
+    - {{ $clusterSet }}
+  {{- end }}
+  {{- range $clusterSet, $value := .Values.hubClusterSets }}
+    - {{ $clusterSet }}
+  {{- end }}
+  predicates:
+    - requiredClusterSelector:
+        labelSelector:
+          matchExpressions:
+            - key: 'autoshift.io/dev-hub'
+              operator: In
+              values:
+              - 'true'
+  tolerations:
+    - key: cluster.open-cluster-management.io/unreachable
+      operator: Exists
+    - key: cluster.open-cluster-management.io/unavailable
+      operator: Exists
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: placement-policy-developer-hub-operator-install
+  namespace: open-cluster-policies
+placementRef:
+  name: placement-policy-developer-hub-operator-install
+  apiGroup: cluster.open-cluster-management.io
+  kind: Placement
+subjects:
+  - name: policy-developer-hub-operator-install
+    apiGroup: policy.open-cluster-management.io
+    kind: Policy

@@ -1,0 +1,25 @@
+# Default values for developer-hub.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+developerHub:
+    name: rhdh
+    namespace: rhdh-operator
+    channel: fast
+    installPlanApproval: Automatic
+    source: redhat-operators
+    sourceNamespace: openshift-marketplace
+hubClusterSets:
+  hub:
+    labels:
+      test1: 'test'
+managedClusterSets:
+  managed:
+    labels:
+      test4: 'test'
+
+### Labels Developer Hub
+# dev-hub<bool>: If not set Developer Hub will not be managed
+# dev-hub-channel<String>: default fast
+# dev-hub-install-plan-approval<String>: default Automatic
+# dev-hub-source<String>: default redhat-operators
+# dev-hub-source-namespace<String>: default openshift-marketplace

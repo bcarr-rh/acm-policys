@@ -1,0 +1,204 @@
+# This policy verifies the installation of the official & supported version of
+# the Compliance Operator on the managed clusters.
+#
+# If set to "enforce" it'll install the operator.
+#
+# Note that OpenShift 4.18 is required.
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: policy-storage-cluster
+  namespace: open-cluster-policies
+  annotations:
+    policy.open-cluster-management.io/standards: NIST SP 800-53
+    policy.open-cluster-management.io/categories: CA Security Assessment and Authorization
+    policy.open-cluster-management.io/controls: CA-2 Security Assessments, CA-7 Continuous Monitoring
+spec:
+  dependencies:
+    - name: policy-odf-operator-install
+      namespace: open-cluster-policies
+      apiVersion: policy.open-cluster-management.io/v1
+      compliance: Compliant
+      kind: Policy  
+  disabled: false
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: storage-cluster-install
+        spec:
+          remediationAction: enforce
+          severity: high
+          object-templates-raw: |
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: ocs.openshift.io/v1
+                kind: StorageCluster
+                metadata:
+                  name: ocs-storagecluster
+                  namespace: {{ .Values.odf.namespace }}
+                {{ "{{hub-" }} if (eq "standalone" (index .ManagedClusterLabels "autoshift.io/odf-multi-cloud-gateway" | default "")) {{ "hub}}" }}
+                spec:
+                  arbiter: {}
+                  encryption:
+                    kms: {}
+                  externalStorage: {}
+                  managedResources:
+                    cephObjectStoreUsers: {}
+                    cephCluster: {}
+                    cephBlockPools: {}
+                    cephNonResilientPools: {}
+                    cephObjectStores: {}
+                    cephFilesystems: {}
+                    cephRBDMirror: {}
+                    cephToolbox: {}
+                    cephDashboard: {}
+                    cephConfig: {}
+                  mirroring: {}
+                  multiCloudGateway:
+                    reconcileStrategy: standalone
+                {{ "{{" }}hub- else hub{{ "}}" }}
+                spec:
+                  storageDeviceSets:
+                    - config: {}
+                      resources: {}
+                      placement: {}
+                      name: ocs-deviceset
+                      dataPVCTemplate:
+                        metadata: {}
+                        spec:
+                          accessModes:
+                            - ReadWriteOnce
+                          resources:
+                            requests:
+                              storage: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/odf-ocs-storage-size" | default "{{ .Values.odf.ocsStorageSize}}" hub{{ "}}" }}'
+                          {{ "{{" }}hub- if ne (index .ManagedClusterLabels "autoshift.io/local-storage" | default "") "" hub{{ "}}" }}
+                          storageClassName: nvme-storageclass
+                          {{ "{{" }}hub- else hub{{ "}}" }}
+                          storageClassName: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/odf-ocs-storage-class-name" | default "{{ .Values.odf.ocsStorageClassName }}" hub{{ "}}" }}'
+                          {{ "{{" }}hub- end hub{{ "}}" }}
+                          volumeMode: Block
+                      count: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/odf-ocs-storage-count" | default "{{ .Values.odf.ocsStorageCount }}" | toInt hub{{ "}}" }}'
+                      replica: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/odf-ocs-storage-replicas" | default "{{ .Values.odf.ocsStorageReplicas }}" | toInt hub{{ "}}" }}'
+                      portable: true
+                      preparePlacement: {}
+                  encryption:
+                    clusterWide: true
+                    enable: true
+                    keyRotation:
+                      schedule: '@weekly'
+                    kms: {}
+                  mirroring: {}
+                  managedResources:
+                    cephObjectStoreUsers: {}
+                    cephCluster: {}
+                    cephBlockPools:
+                      defaultStorageClass: true
+                    cephNonResilientPools:
+                      count: 1
+                      resources: {}
+                      volumeClaimTemplate:
+                        metadata: {}
+                        spec:
+                          resources: {}
+                        status: {}
+                    cephObjectStores: {}
+                    cephFilesystems:
+                      dataPoolSpec:
+                        application: ''
+                        erasureCoded:
+                          codingChunks: 0
+                          dataChunks: 0
+                        mirroring: {}
+                        quotas: {}
+                        replicated:
+                          size: 0
+                        statusCheck:
+                          mirror: {}
+                    cephRBDMirror:
+                      daemonCount: 1
+                    cephToolbox: {}
+                    cephDashboard: {}
+                    cephConfig: {}
+                  arbiter: {}
+                  multiCloudGateway:
+                    reconcileStrategy: manage
+                  network:
+                    connections:
+                      encryption:
+                        enabled: true
+                    multiClusterService: {}
+                  nodeTopologies: {}
+                  externalStorage: {}
+                  resourceProfile: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/odf-resource-profile" | default "{{ .Values.odf.resourceProfile }}" hub{{ "}}" }}'
+                {{ "{{" }}hub- end hub{{ "}}" }}
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: storage-cluster-install-test
+        spec:
+          remediationAction: inform
+          severity: high
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: ocs.openshift.io/v1
+                kind: StorageCluster
+                metadata:
+                  name: ocs-storagecluster
+                  namespace: {{ .Values.odf.namespace }}
+                status:
+                  conditions:
+                    - status: 'False'
+                      type: VersionMismatch
+                    - status: 'True'
+                      type: ReconcileComplete
+                    - status: 'True'
+                      type: Available
+                    - status: 'False'
+                      type: Progressing
+                    - status: 'False'
+                      type: Degraded
+---
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: placement-policy-storage-cluster
+  namespace: open-cluster-policies
+spec:
+  clusterSets:
+  {{- range $clusterSet, $value := $.Values.managedClusterSets }}
+    - {{ $clusterSet }}
+  {{- end }}
+  {{- range $clusterSet, $value := $.Values.hubClusterSets }}
+    - {{ $clusterSet }}
+  {{- end }}
+  predicates:
+    - requiredClusterSelector:
+        labelSelector:
+          matchExpressions:
+            - key: 'autoshift.io/odf'
+              operator: In
+              values:
+              - 'true'
+  tolerations:
+    - key: cluster.open-cluster-management.io/unreachable
+      operator: Exists
+    - key: cluster.open-cluster-management.io/unavailable
+      operator: Exists
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: placement-policy-storage-cluster
+  namespace: open-cluster-policies
+placementRef:
+  name: placement-policy-storage-cluster
+  apiGroup: cluster.open-cluster-management.io
+  kind: Placement
+subjects:
+  - name: policy-storage-cluster
+    apiGroup: policy.open-cluster-management.io
+    kind: Policy

@@ -1,0 +1,25 @@
+# Default values for devspaces.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+devspaces:
+    name: devspaces
+    namespace: openshift-operators-redhat
+    channel: stable
+    installPlanApproval: Automatic
+    source: redhat-operators
+    sourceNamespace: openshift-marketplace
+hubClusterSets:
+  hub:
+    labels:
+      test1: 'test'
+managedClusterSets:
+  managed:
+    labels:
+      test4: 'test'
+
+# Labels
+# dev-spaces<bool>: If not set OpenShift Dev Spaces will not be managed
+# dev-spaces-channel<String>: default stable
+# dev-spaces-install-plan-approval<String>: default Automatic
+# dev-spaces-source<String>: default redhat-operators
+# dev-spaces-source-namespace<String>: default openshift-marketplace

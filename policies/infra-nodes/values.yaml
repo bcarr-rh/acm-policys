@@ -1,0 +1,40 @@
+# Default values for infra-nodes.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+infraNodes:
+  labelPrefix: "autoshift.io/"
+  remediationAction: "inform"
+  clusterSets:
+    - hub
+    - managed
+  imageRegistry: 
+    migrate: true
+    remediationAction: enforce
+  ingress: 
+    migrate: true
+    remediationAction: enforce
+  monitoring: 
+    migrate: true
+    remediationAction: enforce
+  gitops: 
+    migrate: true
+    remediationAction: enforce
+    namespace: openshift-gitops
+    apiVersion: pipelines.openshift.io/v1alpha1
+    kind: GitopsService
+    metadata:
+      name: cluster
+  zones:
+    - us-east-2b
+  externalIngress:
+    clusterSets:
+      - managed  
+  dependencies: 
+    install: 
+      - "policy-infra-nodes"
+    remove: 
+      - policy-remove-infra-gitops 
+      - policy-remove-infra-image-registry
+      - policy-remove-infra-ingress
+      - policy-remove-infra-monitoring 
+

@@ -1,0 +1,116 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: policy-acs-secured-cluster-hub
+  namespace: open-cluster-policies
+  annotations:
+    argocd.argoproj.io/sync-options: Prune=false,SkipDryRunOnMissingResource=true
+    argocd.argoproj.io/compare-options: IgnoreExtraneous
+    policy.open-cluster-management.io/standards: NIST SP 800-53
+    policy.open-cluster-management.io/categories: CM Configuration Management
+    policy.open-cluster-management.io/controls: CM-2 Baseline Configuration
+spec:
+  disabled: false
+  dependencies:
+    - name: policy-acs-init-bundle
+      namespace: open-cluster-policies
+      apiVersion: policy.open-cluster-management.io/v1
+      compliance: Compliant
+      kind: Policy
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: managed-cluster-security-endpoints
+        spec:
+          remediationAction: enforce
+          severity: high
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: platform.stackrox.io/v1alpha1
+                kind: SecuredCluster
+                metadata:
+                  namespace: {{ .Values.acs.namespace }}
+                  name: stackrox-secured-cluster-services
+                spec:
+                  clusterName: '{{ "{{" }} fromSecret "open-cluster-management-agent" "hub-kubeconfig-secret" "cluster-name" | base64dec {{ "}}" }}'
+                  auditLogs:
+                    collection: Auto
+                  centralEndpoint: '{{ "{{" }} fromSecret "{{ .Values.acs.namespace }}" "sensor-tls" "acs-host" | base64dec {{ "}}" }}'
+                  admissionControl:
+                    listenOnCreates: false
+                    listenOnEvents: true
+                    listenOnUpdates: false
+                  perNode:
+                    collector:
+                      collection: EBPF
+                      imageFlavor: Regular
+                    taintToleration: TolerateTaints
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: managed-cluster-security-endpoints-test
+        spec:
+          remediationAction: inform
+          severity: high
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: platform.stackrox.io/v1alpha1
+                kind: SecuredCluster
+                metadata:
+                  namespace: {{ .Values.acs.namespace }}
+                  name: stackrox-secured-cluster-services
+                status:
+                  conditions:
+                    - status: 'True'
+                      type: Deployed
+                    - status: 'True'
+                      type: Initialized
+                    - status: 'False'
+                      type: Irreconcilable
+                    - status: 'False'
+                      type: ProxyConfigFailed
+                    - status: 'False'
+                      type: ReleaseFailed
+---
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: policy-acs-secured-cluster-hub-placement
+  namespace: open-cluster-policies
+spec:
+  clusterSets:
+  {{- range $clusterSet, $value := .Values.hubClusterSets }}
+    - {{ $clusterSet }}
+  {{- end }}
+  predicates:
+    - requiredClusterSelector:
+        labelSelector:
+          matchExpressions:
+            - key: 'autoshift.io/acs'
+              operator: In
+              values:
+              - 'true'
+  tolerations:
+    - key: cluster.open-cluster-management.io/unreachable
+      operator: Exists
+    - key: cluster.open-cluster-management.io/unavailable
+      operator: Exists
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: policy-acs-secured-cluster-hub-placement
+  namespace: open-cluster-policies
+placementRef:
+  name: policy-acs-secured-cluster-hub-placement
+  apiGroup: cluster.open-cluster-management.io
+  kind: Placement
+subjects:
+  - name: policy-acs-secured-cluster-hub
+    apiGroup: policy.open-cluster-management.io
+    kind: Policy

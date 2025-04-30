@@ -1,0 +1,193 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: policy-storage-nodes
+  namespace: open-cluster-policies
+  annotations:
+    policy.open-cluster-management.io/categories: CM Configuration Management
+    policy.open-cluster-management.io/controls: CM-2 Baseline Configuration
+    policy.open-cluster-management.io/standards: NIST SP 800-53
+spec:
+  disabled: false
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: create-storage-nodes
+        spec:
+          object-templates-raw: |
+              {{ "{{-" }} /* Specify the parameters needed to create the MachineSet  */ {{ "-}}" }}
+              {{ "{{-" }} $machineset_role := "storage" {{ "}}" }}
+              {{ "{{-" }} $zones := list{{ range (toStrings .Values.storageNodes.zones) }} "{{ . }}"{{ end }} {{ "}}" }}
+              {{ "{{-" }} $infrastructure_id := (lookup "config.openshift.io/v1" "Infrastructure" "" "cluster").status.infrastructureName {{ "}}" }}
+              {{ "{{-" }} $worker_ms := (index (lookup "machine.openshift.io/v1beta1" "MachineSet" "openshift-machine-api" "").items 0) {{ "}}" }}
+              {{ "{{-" }} /* Generate the MachineSet for each zone as specified  */ {{ "-}}" }}
+              {{ "{{-" }} range $zone := $zones {{ "}}" }}
+              - complianceType: musthave
+                objectDefinition:
+                  apiVersion: machine.openshift.io/v1beta1
+                  kind: MachineSet
+                  metadata:
+                    labels:
+                      machine.openshift.io/cluster-api-cluster: {{ "{{" }} $infrastructure_id {{ "}}" }}
+                    name: {{ "{{" }} $infrastructure_id {{ "}}" }}-{{ "{{" }} $machineset_role {{ "}}" }}-{{ "{{" }} $zone {{ "}}" }}
+                    namespace: openshift-machine-api
+                  spec:
+                    replicas: {{ "{{" }} fromClusterClaim "storage-nodes" {{ "}}" }}
+                    selector:
+                      matchLabels:
+                        machine.openshift.io/cluster-api-cluster: {{ "{{" }} $infrastructure_id {{ "}}" }}
+                        machine.openshift.io/cluster-api-machineset: {{ "{{" }} $infrastructure_id {{ "}}" }}-{{ "{{" }} $machineset_role {{ "}}" }}-{{ "{{" }} $zone {{ "}}" }}
+                    template:
+                      metadata:
+                        labels:
+                          machine.openshift.io/cluster-api-cluster: {{ "{{" }} $infrastructure_id {{ "}}" }}
+                          machine.openshift.io/cluster-api-machine-role: infra
+                          machine.openshift.io/cluster-api-machine-type: infra
+                          machine.openshift.io/cluster-api-machineset: {{ "{{" }} $infrastructure_id {{ "}}" }}-{{ "{{" }} $machineset_role {{ "}}" }}-{{ "{{" }} $zone {{ "}}" }}
+                      spec:
+                        metadata:
+                          labels:
+                            cluster.ocs.openshift.io/openshift-storage: ''
+                            node-role.kubernetes.io/infra: ''
+                            node-role.kubernetes.io/worker: ''
+                        taints:
+                          - effect: NoSchedule
+                            key: node.ocs.openshift.io/storage
+                            value: 'true'
+                        providerSpec:
+                        {{ "{{-" }} if eq $worker_ms.spec.template.spec.providerSpec.value.kind "VSphereMachineProviderSpec" {{ "}}" }}
+                          value:
+                            numCoresPerSocket: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.numCoresPerSocket {{ "}}" }}
+                            diskGiB: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.diskGiB {{ "}}" }}
+                            snapshot: ''
+                            userDataSecret:
+                              name: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.userDataSecret.name {{ "}}" }}
+                            memoryMiB: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.memoryMiB {{ "}}" }}
+                            credentialsSecret:
+                              name: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.credentialsSecret.name {{ "}}" }}
+                            network:
+                              devices:
+                                - networkName: {{ "{{" }} (index ($worker_ms.spec.template.spec.providerSpec.value.network.devices) 0).networkName {{ "}}" }}
+                            numCPUs: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.numCPUs {{ "}}" }}
+                            kind: VSphereMachineProviderSpec
+                            workspace:
+                              datacenter: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.workspace.datacenter {{ "}}" }}
+                              datastore:  {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.workspace.datastore {{ "}}" }}
+                              folder:  {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.workspace.folder {{ "}}" }}
+                              resourcePool: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.workspace.resourcePool {{ "}}" }}
+                              server: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.workspace.server {{ "}}" }}
+                            template: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.template {{ "}}" }}
+                            apiVersion: machine.openshift.io/v1beta1
+                        {{ "{{-" }} else if eq $worker_ms.spec.template.spec.providerSpec.value.kind "AWSMachineProviderConfig" {{ "}}" }}
+                          value:
+                            userDataSecret:
+                              name: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.userDataSecret.name {{ "}}" }}
+                            placement:
+                              availabilityZone: {{ "{{" }} $zone {{ "}}" }}
+                              region: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.placement.region {{ "}}" }}
+                            credentialsSecret:
+                              name: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.credentialsSecret.name {{ "}}" }}
+                            instanceType: {{ "{{" }} default $worker_ms.spec.template.spec.providerSpec.value.instanceType "{{ .Values.storageNodes.instanceType }}" {{ "}}" }}
+                            {{ "{{-" }} $ebs := (index ($worker_ms.spec.template.spec.providerSpec.value.blockDevices) 0).ebs {{ "}}" }}
+                            blockDevices:
+                              - ebs:
+                                  encrypted: {{ "{{" }} $ebs.encrypted {{ "}}" }}
+                                  iops: {{ "{{" }} $ebs.iops {{ "}}" }}
+                                  {{ "{{-" }} if $ebs.kmsKey.arn {{ "}}" }}
+                                  kmsKey:
+                                    arn: {{ "{{" }} $ebs.kmsKey.arn {{ "}}" }}
+                                  {{ "{{-" }} end {{ "}}" }}
+                                  volumeSize: {{ "{{" }} $ebs.volumeSize {{ "}}" }}
+                                  volumeType: {{ "{{" }} $ebs.volumeType {{ "}}" }}
+                            securityGroups:
+                              - filters:
+                                  - name: 'tag:Name'
+                                    values:
+                                      - {{ "{{" }} (index (index (index ($worker_ms.spec.template.spec.providerSpec.value.securityGroups) 0).filters 0).values 0) {{ "}}" }}
+                            kind: AWSMachineProviderConfig
+                            tags:
+                              {{ "{{-" }} range $tag := $worker_ms.spec.template.spec.providerSpec.value.tags {{ "}}" }}
+                              - name: {{ "{{" }} $tag.name {{ "}}" }}
+                                value: {{ "{{" }} $tag.value {{ "}}" }}
+                              {{ "{{-" }} end {{ "}}" }}
+                            deviceIndex: 0
+                            ami:
+                              id: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.ami.id {{ "}}" }}
+                            subnet:
+                              filters:
+                                - name: 'tag:Name'
+                                  values:
+                                    - {{ "{{" }} $infrastructure_id {{ "}}" }}-private-{{ "{{" }} $zone {{ "}}" }}
+                            apiVersion: machine.openshift.io/v1beta1
+                            iamInstanceProfile:
+                              id: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.iamInstanceProfile.id {{ "}}" }}
+                        {{ "{{-" }} end {{ "}}" }}
+              {{ "{{-" }} end {{ "}}" }}
+          pruneObjectBehavior: None
+          remediationAction: enforce
+          severity: high
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: check-cluster-storage-nodes
+        spec:
+          remediationAction: inform
+          severity: high
+          object-templates-raw: |
+              {{ "{{-" }} /* Specify the parameters needed to create the MachineSet  */ {{ "-}}" }}
+              {{ "{{-" }} $machineset_role := "storage" {{ "}}" }}
+              {{ "{{-" }} $zones := list{{ range (toStrings .Values.storageNodes.zones) }} "{{ . }}"{{ end }} {{ "}}" }}
+              {{ "{{-" }} $infrastructure_id := (lookup "config.openshift.io/v1" "Infrastructure" "" "cluster").status.infrastructureName {{ "}}" }}
+              {{ "{{-" }} /* Generate the MachineSet for each zone as specified  */ {{ "-}}" }}
+              {{ "{{-" }} range $zone := $zones {{ "}}" }}
+              - complianceType: musthave
+                objectDefinition:
+                  apiVersion: machine.openshift.io/v1beta1
+                  kind: MachineSet
+                  metadata:
+                    labels:
+                      machine.openshift.io/cluster-api-cluster: {{ "{{" }} $infrastructure_id {{ "}}" }}
+                    name: {{ "{{" }} $infrastructure_id {{ "}}" }}-{{ "{{" }} $machineset_role {{ "}}" }}-{{ "{{" }} $zone {{ "}}" }}
+                    namespace: openshift-machine-api
+                  status:
+                    readyReplicas: {{ "{{" }} fromClusterClaim "storage-nodes" {{ "}}" }}
+              {{ "{{-" }} end {{ "}}" }}
+---
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: placement-policy-storage-nodes
+  namespace: open-cluster-policies
+spec:
+  clusterSets:
+  {{- range .Values.storageNodes.clusterSets }}
+    - {{ . }}
+  {{- end }}
+  predicates:
+    - requiredClusterSelector:
+        claimSelector:
+          matchExpressions:
+            - key: storage-nodes
+              operator: Exists
+  tolerations:
+    - key: cluster.open-cluster-management.io/unreachable
+      operator: Exists
+    - key: cluster.open-cluster-management.io/unavailable
+      operator: Exists
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: placement-policy-storage-nodes
+  namespace: open-cluster-policies
+placementRef:
+  name: placement-policy-storage-nodes
+  apiGroup: cluster.open-cluster-management.io
+  kind: Placement
+subjects:
+  - name: policy-storage-nodes
+    apiGroup: policy.open-cluster-management.io
+    kind: Policy
