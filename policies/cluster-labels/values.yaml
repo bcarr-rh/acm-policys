@@ -8,19 +8,19 @@ acmversion: "2.12"
 debug: true
 enabled: true
 autoshiftLabelPrefix: "autoshift.io/"
-policy_namespace: open-cluster-policies
-# hubClusterSets:
-#   hub:
-#     labels: 
-#       # infra-nodes-numcpu: '8'
-#       # infra-nodes-memory-mib:  '24576'
-#       # infra-nodes-numcores-per-socket:  '4'
-#       # infra-nodes:  '6'
-#       # worker-nodes-numcpu:  '8'
-#       # worker-nodes-memory-mib:  '32768'
-#       # worker-nodes-numcores-per-socket:  '4'
-#       # worker-nodes:  '3'
-#       # test-worked: 'false'
+policy_namespace: "open-cluster-policies"
+hubClusterSets:
+  hub:
+    labels: 
+       # infra-nodes-numcpu: '8'
+       # infra-nodes-memory-mib:  '24576'
+       # infra-nodes-numcores-per-socket:  '4'
+       # infra-nodes:  '6'
+       # worker-nodes-numcpu:  '8'
+       # worker-nodes-memory-mib:  '32768'
+       # worker-nodes-numcores-per-socket:  '4'
+       # worker-nodes:  '3'
+       # test-worked: 'false'
 # managedClusterSets:
 #   managed:
 #     labels: 
