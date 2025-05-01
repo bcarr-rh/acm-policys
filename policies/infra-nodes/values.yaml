@@ -6,7 +6,7 @@ infraNodes:
   labelPrefix: "autoshift.io/"
   remediationAction: "inform"
   clusterSets:
-    - hub
+    - hubofhubs
     - managed
   imageRegistry: 
     migrate: true

@@ -2,10 +2,9 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-autoshiftGitRepo: https://github.com/auto-shift/autoshiftv2.git
-autoshiftGitBranchTag: main
+autoshiftGitRepo: https://github.com/bcarr-rh/acm-policys.git
+autoshiftGitBranchTag: labels-merge
 autoshiftPolicyNamespace: "open-cluster-policies"
-
 selfManagedHubSet: hubofhubs
 
 # Hub Cluster Sets with Feature Flags. Blank will remove
@@ -112,7 +111,7 @@ hubClusterSets:
       compliance-source: redhat-operators
       compliance-source-namespace: openshift-marketplace
       compliance-channel: stable
-  hub1:
+  managed-hub:
     labels:
       self-managed: 'false'
       ### infra-nodes
