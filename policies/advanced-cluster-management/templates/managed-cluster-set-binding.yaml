@@ -4,7 +4,7 @@ apiVersion: cluster.open-cluster-management.io/v1beta2
 kind: ManagedClusterSetBinding
 metadata:
   name: {{ $clusterSet }}
-  namespace: "{{ $.Values.policy_namespace }}"
+  namespace: "{{ $.Values.autoshiftPolicyNamespace }}"
   annotations:
     argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
     argocd.argoproj.io/sync-wave: "6"
@@ -17,7 +17,7 @@ apiVersion: cluster.open-cluster-management.io/v1beta2
 kind: ManagedClusterSetBinding
 metadata:
   name: {{ $clusterSet }}
-  namespace: "{{ $.Values.policy_namespace }}"
+  namespace: "{{ $.Values.autoshiftPolicyNamespace }}"
   annotations:
     argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
     argocd.argoproj.io/sync-wave: "6"

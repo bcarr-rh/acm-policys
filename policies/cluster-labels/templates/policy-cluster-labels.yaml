@@ -2,7 +2,7 @@
 {{- $hubClusterSet := $.Values.hubClusterSet | default "hub" }}
 {{- $policyName := (print "policy-cluster-labels" "-" ($.Values.deploymentName | default "default")) }}
 {{- $placementName := printf "placement-%s" $policyName }}
-{{- $policyNamespace := $.Values.policy_namespace }}
+{{- $policyNamespace := $.Values.autoshiftPolicyNamespace }}
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:

@@ -1,5 +1,5 @@
 # Default values for rhtas-operator.
-policy_namespace: open-cluster-policies
+autoshiftPolicyNamespace: open-cluster-policies
 rhtasOperator:
   name: rhtas-operator
   namespace: openshift-operators

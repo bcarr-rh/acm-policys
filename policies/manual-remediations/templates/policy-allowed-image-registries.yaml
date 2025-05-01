@@ -2,7 +2,7 @@ apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
   name: policy-allowed-image-registries
-  namespace: {{ .Values.policy_namespace }}
+  namespace: {{ .Values.autoshiftPolicyNamespace }}
   annotations:
     policy.open-cluster-management.io/categories: CM Configuration Management
     policy.open-cluster-management.io/controls: CM-2 Baseline Configuration
@@ -43,7 +43,7 @@ apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
 metadata:
   name: placement-policy-allowed-image-registries
-  namespace: {{ .Values.policy_namespace }}
+  namespace: {{ .Values.autoshiftPolicyNamespace }}
 spec:
   clusterSets:
   {{- range $clusterSet, $value := .Values.managedClusterSets }}
@@ -70,7 +70,7 @@ apiVersion: policy.open-cluster-management.io/v1
 kind: PlacementBinding
 metadata:
   name: placement-policy-allowed-image-registries
-  namespace: {{ .Values.policy_namespace }}
+  namespace: {{ .Values.autoshiftPolicyNamespace }}
 placementRef:
   name: placement-policy-allowed-image-registries
   apiGroup: cluster.open-cluster-management.io

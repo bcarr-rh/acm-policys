@@ -1,7 +1,7 @@
 # Default values for remediations.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-policy_namespace: open-cluster-policies
+autoshiftPolicyNamespace: open-cluster-policies
 remediations:
   allowedRegistries:
     - domainName: registry.redhat.io

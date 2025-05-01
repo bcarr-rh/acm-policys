@@ -7,7 +7,7 @@ apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
   name: policy-gitops-systems-argocd
-  namespace: {{ .Values.policy_namespace }}
+  namespace: {{ .Values.autoshiftPolicyNamespace }}
   annotations:
     policy.open-cluster-management.io/standards: NIST SP 800-53
     policy.open-cluster-management.io/categories: CM Configuration Management
@@ -16,7 +16,7 @@ spec:
   disabled: false
   dependencies:
     - name: policy-gitops-operator-install
-      namespace: {{ .Values.policy_namespace }}
+      namespace: {{ .Values.autoshiftPolicyNamespace }}
       apiVersion: policy.open-cluster-management.io/v1
       compliance: Compliant
       kind: Policy
@@ -134,7 +134,7 @@ apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
 metadata:
   name: placement-policy-gitops-systems-argocd
-  namespace: {{ .Values.policy_namespace }}
+  namespace: {{ .Values.autoshiftPolicyNamespace }}
 spec:
   clusterSets:
   {{- range $clusterSet, $value := $.Values.hubClusterSets }}
@@ -150,7 +150,7 @@ apiVersion: policy.open-cluster-management.io/v1
 kind: PlacementBinding
 metadata:
   name: placement-policy-gitops-systems-argocd
-  namespace: {{ .Values.policy_namespace }}
+  namespace: {{ .Values.autoshiftPolicyNamespace }}
 placementRef:
   name: placement-policy-gitops-systems-argocd
   apiGroup: cluster.open-cluster-management.io

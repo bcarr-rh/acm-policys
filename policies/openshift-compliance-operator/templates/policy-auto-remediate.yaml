@@ -2,7 +2,7 @@ apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
   name: policy-auto-remediate
-  namespace: {{ .Values.policy_namespace }}
+  namespace: {{ .Values.autoshiftPolicyNamespace }}
   annotations:
     policy.open-cluster-management.io/categories: CM Configuration Management
     policy.open-cluster-management.io/controls: CM-2 Baseline Configuration
@@ -10,7 +10,7 @@ metadata:
 spec:
   dependencies:
     - name: policy-stig-scan
-      namespace: {{ .Values.policy_namespace }}
+      namespace: {{ .Values.autoshiftPolicyNamespace }}
       apiVersion: policy.open-cluster-management.io/v1
       compliance: Compliant
       kind: Policy
@@ -24,7 +24,7 @@ spec:
           name: auto-remediate
         spec:
           object-templates-raw: |
-              {{ "{{" }}hub range (fromConfigMap "{{ .Values.policy_namespace }}" "stig-remediation" "ocp4-stig" | trim | split "\n") hub{{ "}}" }}
+              {{ "{{" }}hub range (fromConfigMap "{{ .Values.autoshiftPolicyNamespace }}" "stig-remediation" "ocp4-stig" | trim | split "\n") hub{{ "}}" }}
               - complianceType: musthave
                 objectDefinition:
                   apiVersion: compliance.openshift.io/v1alpha1
@@ -36,7 +36,7 @@ spec:
                     apply: true
               {{ "{{" }}hub end hub{{ "}}" }}
 
-              {{ "{{" }}hub range (fromConfigMap "{{ .Values.policy_namespace }}" "stig-remediation" "rhcos4-stig" | trim | split "\n") hub{{ "}}" }}
+              {{ "{{" }}hub range (fromConfigMap "{{ .Values.autoshiftPolicyNamespace }}" "stig-remediation" "rhcos4-stig" | trim | split "\n") hub{{ "}}" }}
               - complianceType: musthave
                 objectDefinition:
                   apiVersion: compliance.openshift.io/v1alpha1
@@ -55,7 +55,7 @@ apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
 metadata:
   name: placement-policy-auto-remediate
-  namespace: {{ .Values.policy_namespace }}
+  namespace: {{ .Values.autoshiftPolicyNamespace }}
 spec:
   clusterSets:
   {{- range $clusterSet, $value := $.Values.managedClusterSets }}
@@ -82,7 +82,7 @@ apiVersion: policy.open-cluster-management.io/v1
 kind: PlacementBinding
 metadata:
   name: placement-policy-auto-remediate
-  namespace: {{ .Values.policy_namespace }}
+  namespace: {{ .Values.autoshiftPolicyNamespace }}
 placementRef:
   name: placement-policy-auto-remediate
   apiGroup: cluster.open-cluster-management.io
