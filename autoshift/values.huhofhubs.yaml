@@ -4,6 +4,7 @@
 
 autoshiftGitRepo: https://github.com/auto-shift/autoshiftv2.git
 autoshiftGitBranchTag: main
+autoshiftPolicyNamespace: "open-cluster-policies"
 
 selfManagedHubSet: hubofhubs
 

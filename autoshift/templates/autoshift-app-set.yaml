@@ -37,7 +37,7 @@ spec:
           - values.yaml
           valuesObject:
             selfManagedHubSet: {{ .Values.selfManagedHubSet }}
-            policy_namespace: {{ printf "policies-%s" .Release.Name }}
+            autoshiftPolicyNamespace: {{ .Values.autoshiftPolicyNamespace | default "open-cluster-policies" }}
             {{- if .Values.hubClusterSets }}
             hubClusterSets:
             {{-  range $cluster, $clustervalue := .Values.hubClusterSets }}
