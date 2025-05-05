@@ -111,7 +111,7 @@ hubClusterSets:
       compliance-source: redhat-operators
       compliance-source-namespace: openshift-marketplace
       compliance-channel: stable
-  managed-hub:
+  managed-hubs:
     selfManaged: 'false'
     labels:
       self-managed: 'false'
