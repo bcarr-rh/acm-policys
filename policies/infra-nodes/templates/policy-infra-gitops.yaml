@@ -6,7 +6,7 @@ apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
   name: {{ $policyName }}
-  namespace: {{ .Values.policy_namespace }}
+  namespace: {{ .Values.autoshiftPolicyNamespace }}
   annotations:
     policy.open-cluster-management.io/categories: CM Configuration Management
     policy.open-cluster-management.io/controls: CM-2 Baseline Configuration
@@ -20,7 +20,7 @@ spec:
     compliance: Compliant
     kind: Policy
     name: {{ . }}
-    namespace: {{ $.Values.policy_namespace }}
+    namespace: {{ $.Values.autoshiftPolicyNamespace }}
   {{- end }}
   policy-templates:
     - objectDefinition:
@@ -51,7 +51,7 @@ apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
 metadata:
   name: {{ $placementName }}
-  namespace: {{ .Values.policy_namespace }}
+  namespace: {{ .Values.autoshiftPolicyNamespace }}
 spec:
   clusterSets:
   {{- range .Values.infraNodes.clusterSets }}
@@ -73,7 +73,7 @@ apiVersion: policy.open-cluster-management.io/v1
 kind: PlacementBinding
 metadata:
   name: {{ $placementName }}
-  namespace: {{ .Values.policy_namespace }}
+  namespace: {{ .Values.autoshiftPolicyNamespace }}
 placementRef:
   name: {{ $placementName }}
   apiGroup: cluster.open-cluster-management.io

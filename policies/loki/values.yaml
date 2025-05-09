@@ -1,7 +1,27 @@
-# Default values for loki.
+# Labels 
+# loki<bool>: If not set Loki will not be managed. Dependent on ODF Multi Object Gateway
+# loki-channel<String>: default stable-6.1
+# loki-install-plan-approval<String>: default Automatic
+# loki-source<String>: default redhat-operators
+# loki-sourcenamespace<String>: default openshift-marketplace
+# loki-size<String>: default 1x.extra-small
+# loki-storageclass<String>: default gp3-csi
+# loki-lokistack-name<String>: default logging-lokistack
+
+# logging<bool>: If not set OpenShift Logging will not be managed, Dependent on Loki and COO
+# logging-channel<String>: default stable-6.1
+# logging-install-plan-approval<String>: default Automatic
+# logging-source<String>: default redhat-operators
+# logging-source-namespace<String>: default openshift-marketplace
+
+# coo<bool>: If not set Cluster Observability Operator will not be managed
+# coo-channel<String>: default stable
+# coo-install-plan-approval<String>: default Automatic
+# coo-source<String>: default redhat-operators
+# coo-source-namespace<String>: default openshift-marketplace# Default values for loki.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-policy_namespace: open-cluster-policies
+autoshiftPolicyNamespace: open-cluster-policies
 loki:
     name: loki-operator
     namespace: openshift-operators-redhat

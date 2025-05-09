@@ -1,7 +1,7 @@
 # Default values for gitops-dev.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates
-policy_namespace: open-cluster-policies
+autoshiftPolicyNamespace: open-cluster-policies
 teams:
   dev:
     gitops_rbac_policies:

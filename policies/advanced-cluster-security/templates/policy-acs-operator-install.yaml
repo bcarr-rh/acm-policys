@@ -2,7 +2,7 @@ apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
   name: policy-acs-operator-install
-  namespace: {{ .Values.policy_namespace }}
+  namespace: {{ .Values.autoshiftPolicyNamespace }}
   annotations:
     argocd.argoproj.io/sync-options: Prune=false,SkipDryRunOnMissingResource=true
     argocd.argoproj.io/compare-options: IgnoreExtraneous
@@ -60,7 +60,7 @@ apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
 metadata:
   name: policy-acs-operator-install-placement
-  namespace: {{ .Values.policy_namespace }}
+  namespace: {{ .Values.autoshiftPolicyNamespace }}
   annotations:
     argocd.argoproj.io/sync-wave: "1"
 spec:
@@ -89,7 +89,7 @@ apiVersion: policy.open-cluster-management.io/v1
 kind: PlacementBinding
 metadata:
   name: policy-acs-operator-install-placement
-  namespace: {{ .Values.policy_namespace }}
+  namespace: {{ .Values.autoshiftPolicyNamespace }}
   annotations:
     argocd.argoproj.io/sync-wave: "1"
 placementRef:

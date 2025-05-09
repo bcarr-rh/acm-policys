@@ -1,5 +1,6 @@
-{{- if (.Values.enabled | default false) }}
-{{- range $cluster, $data := $.Values.clusters }}
+{{- $policyNamespace := $.Values.autoshiftPolicyNamespace }}
+{{- range $cluster, $data := ($.Values.clusters | default dict) }}
+  {{- $configMapNamespace := $data.configMapNamespace | default $policyNamespace }}
 ---
   {{- $prefixedClusterLabels := dict -}}
   {{- range $label, $value := $data.labels -}}
@@ -14,14 +15,17 @@ apiVersion: v1
 kind: ConfigMap
 metadata: 
   name: "{{ printf "managed-cluster.%s" $cluster }}"
-  namespace: "{{ $.Values.policy_namespace }}" 
+  namespace: "{{ $.Values.autoshiftPolicyNamespace }}" 
+  labels:
+    autoshift.io/cluster-labels: "true"
 data: 
   values: '{{ $data | toJson }}'
   labels: '{{ $prefixedClusterLabels | toJson }}'
 {{- end }}
 
-{{- range $clusterSet, $data := merge ($.Values.hubClusterSets | default dict) ($.Values.managedClusterSets | default dict) }}
+{{- range $clusterSet, $data := merge (dict) ($.Values.hubClusterSets | default dict) ($.Values.managedClusterSets | default dict) }}
 ---
+  {{- $configMapNamespace := $data.configMapNamespace | default $policyNamespace }}
   {{- $prefixedClusterSetLabels := dict -}}
   {{- range $label, $value := $data.labels -}}
     {{- if eq ($value | trim) "" -}}
@@ -35,9 +39,8 @@ apiVersion: v1
 kind: ConfigMap
 metadata: 
   name: {{ printf "cluster-set.%s" $clusterSet }}
-  namespace: "{{ $.Values.policy_namespace }}" 
+  namespace: "{{ $.Values.autoshiftPolicyNamespace }}" 
 data:
   values: '{{ $data | toJson }}'
   labels: '{{ $prefixedClusterSetLabels | toJson }}'
-{{- end }}
 {{- end }}

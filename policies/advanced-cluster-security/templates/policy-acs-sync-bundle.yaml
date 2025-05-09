@@ -16,7 +16,7 @@ spec:
   disabled: false
   dependencies:
     - name: policy-acs-operator-install
-      namespace: {{ $.Values.policy_namespace }}
+      namespace: {{ $.Values.autoshiftPolicyNamespace }}
       apiVersion: policy.open-cluster-management.io/v1
       compliance: Compliant
       kind: Policy

@@ -2,9 +2,9 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-autoshiftGitRepo: https://github.com/auto-shift/autoshiftv2.git
-autoshiftGitBranchTag: main
-
+autoshiftGitRepo: https://github.com/bcarr-rh/acm-policys.git
+autoshiftGitBranchTag: labels-merge
+autoshiftPolicyNamespace: "open-cluster-policies"
 selfManagedHubSet: hubofhubs
 
 # Hub Cluster Sets with Feature Flags. Blank will remove
@@ -31,7 +31,7 @@ hubClusterSets:
       storage-nodes-numcores-per-socket: ''
       storage-nodes-zones: ''
       ### OpenShift Data Foundation
-      odf: 'true'
+      odf: 'false'
       odf-multi-cloud-gateway: standalone
       odf-nooba-pvpool: ''
       odf-nooba-store-size: ''
@@ -46,7 +46,7 @@ hubClusterSets:
       odf-source: redhat-operators
       odf-source-namespace: openshift-marketplace
       ### Advanced Cluster Security
-      acs: 'true'
+      acs: 'false'
       acs-channel: stable
       acs-install-plan-approval: Automatic
       acs-source: redhat-operators
@@ -64,7 +64,7 @@ hubClusterSets:
       dev-hub-source: redhat-operators
       dev-hub-source-namespace: openshift-marketplace
       ### OpenShift Pipelines
-      pipelines: 'true'
+      pipelines: 'false'
       pipelines-channel: latest
       pipelines-install-plan-approval: Automatic
       pipelines-source: redhat-operators
@@ -84,7 +84,7 @@ hubClusterSets:
       ### Developer OpenShift Gitops
       gitops-dev: 'false'
       ### Loki
-      loki: 'true' 
+      loki: 'false' 
       loki-channel: stable-6.2
       loki-install-plan-approval: Automatic
       loki-source: redhat-operators
@@ -93,25 +93,26 @@ hubClusterSets:
       loki-storageclass: gp3-csi
       loki-lokistack-name: logging-lokistack
       ### OpenShift Logging
-      logging: 'true'
+      logging: 'false'
       logging-channel:  stable-6.2
       logging-install-plan-approval: Automatic
       logging-source: redhat-operators
       logging-source-namespace: openshift-marketplace
       ### Cluster Observability Operator
-      coo: 'true'
+      coo: 'false'
       coo-channel: stable
       coo-install-plan-approval: Automatic
       coo-source: redhat-operators
       coo-source-namespace: openshift-marketplace
       ### Compliance Operator Stig Apply
-      compliance: 'true'
+      compliance: 'false'
       compliance-name: compliance-operator
       compliance-install-plan-approval: Automatic
       compliance-source: redhat-operators
       compliance-source-namespace: openshift-marketplace
       compliance-channel: stable
-  hub1:
+  managed-hubs:
+    selfManaged: 'false'
     labels:
       self-managed: 'false'
       ### infra-nodes
@@ -233,7 +234,7 @@ hubClusterSets:
       storage-nodes-numcpu: ''
       storage-nodes-memory-mib: ''
       storage-nodes-numcores-per-socket: ''
-      storage-nodes-zones: ''
+      stordge-nodes-zones: ''
       ### OpenShift Data Foundation
       odf: 'true'
       odf-multi-cloud-gateway: standalone

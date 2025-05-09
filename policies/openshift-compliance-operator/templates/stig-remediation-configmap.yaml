@@ -9,7 +9,7 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: stig-remediation
-  namespace: {{ .Values.policy_namespace }}
+  namespace: {{ .Values.autoshiftPolicyNamespace }}
 data:
   ocp4-stig: |
     ocp4-stig-api-server-encryption-provider-cipher

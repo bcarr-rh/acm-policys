@@ -6,7 +6,7 @@ apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
   name: {{ $policyName }}
-  namespace: {{ .Values.policy_namespace }}
+  namespace: {{ .Values.autoshiftPolicyNamespace }}
   annotations:
     policy.open-cluster-management.io/categories: CM Configuration Management
     policy.open-cluster-management.io/controls: CM-2 Baseline Configuration
@@ -21,14 +21,27 @@ spec:
           name: {{ $configPolicyName }}
         spec:
           object-templates-raw: |
-              {{ "{{-" }} /* Specify the parameters needed to create the MachineSet  */ {{ "-}}" }}
-              {{ "{{-" }} $machineset_role := "infra" {{ "}}" }}
-              {{ "{{-" }} $zones := list{{ range (toStrings .Values.infraNodes.zones) }} "{{ . }}"{{ end }} {{ "}}" }}
-              {{ "{{-" }} $infrastructure_id := (lookup "config.openshift.io/v1" "Infrastructure" "" "cluster").status.infrastructureName {{ "}}" }}
-              {{ "{{-" }} $worker_ms := (index (lookup "machine.openshift.io/v1beta1" "MachineSet" "openshift-machine-api" "").items 0) {{ "}}" }}
-              {{ "{{-" }} /* Generate the MachineSet for each zone as specified  */ {{ "-}}" }}
-              {{ "{{-" }} range $zone := $zones {{ "}}" }}
-              - complianceType: musthave
+          {{ "{{-" }} /* Specify the parameters needed to create the MachineSet  */ {{ "-}}" }}
+          {{ "{{-" }} $ms :=   (index (lookup "machine.openshift.io/v1beta1" "MachineSet" "openshift-machine-api" "") "items" | default list) {{ "}}" }}
+          {{ "{{-" }} $workers := dict {{ "}}" }}
+          {{ "{{-" }} range $index, $item := $ms {{ "}}" }}
+            {{ "{{-" }} $labels := index $item "spec" "template" "metadata" "labels" {{ "}}" }}
+            {{ "{{-" }} if  eq (index $labels "machine.openshift.io/cluster-api-machine-role") "worker" {{ "}}" }}
+              {{ "{{-" }} $_ := set $workers "worker" $item {{ "}}" }}
+              {{ "{{-" }} break {{ "}}" }}
+            {{ "{{-" }} end {{ "}}" }}
+          {{ "{{-" }} end {{ "}}" }}
+          {{ "{{-" }} $machineset_role := "infra" {{ "}}" }}
+          {{ "{{-" }} $infrastructure_id := (lookup "config.openshift.io/v1" "Infrastructure" "" "cluster").status.infrastructureName {{ "}}" }}
+          {{ "{{-" }} $worker_ms := (index $workers "worker" | default dict) {{ "}}" }}
+          {{ "{{-" }} if (empty $worker_ms) {{ "}}" }}
+            {{ "{{-" }} print "THIS IS AN ERROR MESSAGE BECAUSE THE WORKER_MS WAS NOT SET" {{ "}}" }}
+          {{ "{{-" }} end {{ "}}" }}
+          {{ "{{-" }} $machineset_role := "infra" {{ "}}" }}
+          {{ "{{-" }} $zones := list {{ range (toStrings .Values.infraNodes.zones) }} "{{ . }}"{{ end }} {{ "}}" }}
+          {{ "{{-" }} $infrastructure_id := (lookup "config.openshift.io/v1" "Infrastructure" "" "cluster").status.infrastructureName {{ "}}" }}
+          {{ "{{-" }} range $zone := $zones {{ "}}" }}
+            - complianceType: musthave
                 objectDefinition:
                   apiVersion: machine.openshift.io/v1beta1
                   kind: MachineSet
@@ -168,7 +181,7 @@ apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
 metadata:
   name: {{ $placementName }}
-  namespace: {{ .Values.policy_namespace }}
+  namespace: {{ .Values.autoshiftPolicyNamespace }}
 spec:
   clusterSets:
   {{- range .Values.infraNodes.clusterSets }}
@@ -190,7 +203,7 @@ apiVersion: policy.open-cluster-management.io/v1
 kind: PlacementBinding
 metadata:
   name: {{ $placementName }}
-  namespace: {{ .Values.policy_namespace }}
+  namespace: {{ .Values.autoshiftPolicyNamespace }}
 placementRef:
   name: {{ $placementName }}
   apiGroup: cluster.open-cluster-management.io

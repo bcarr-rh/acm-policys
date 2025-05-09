@@ -1,12 +1,12 @@
 # Default values for infra-nodes.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-policy_namespace: open-cluster-policies
+autoshiftPolicyNamespace: open-cluster-policies
 infraNodes:
   labelPrefix: "autoshift.io/"
   remediationAction: "inform"
   clusterSets:
-    - hub
+    - hubofhubs
     - managed
   imageRegistry: 
     migrate: true

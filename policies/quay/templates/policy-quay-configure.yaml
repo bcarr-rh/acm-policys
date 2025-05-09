@@ -2,7 +2,7 @@ apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
   name: policy-quay-configure
-  namespace: {{ .Values.policy_namespace }}
+  namespace: {{ .Values.autoshiftPolicyNamespace }}
   annotations:
     policy.open-cluster-management.io/standards: NIST SP 800-53
     policy.open-cluster-management.io/categories: CA Security Assessment and Authorization
@@ -14,7 +14,7 @@ spec:
     compliance: Compliant
     kind: Policy
     name: policy-quay-deploy
-    namespace: {{ .Values.policy_namespace }}
+    namespace: {{ .Values.autoshiftPolicyNamespace }}
   policy-templates:
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
@@ -87,7 +87,7 @@ spec:
                 kind: ConfigMap
                 metadata:
                   name: quay-config
-                  namespace: {{ .Values.policy_namespace }}
+                  namespace: {{ .Values.autoshiftPolicyNamespace }}
                 data:
                   host: '{{ "{{" }} (lookup "route.openshift.io/v1" "Route" "{{ .Values.quay.enterpriseNamespace }}" "registry-quay" ).spec.host {{ "}}" }}'
             - complianceType: musthave
@@ -254,7 +254,7 @@ apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
 metadata:
   name: placement-policy-quay-configure
-  namespace: {{ .Values.policy_namespace }}
+  namespace: {{ .Values.autoshiftPolicyNamespace }}
 spec:
   clusterSets:
   clusterSets:
@@ -282,7 +282,7 @@ apiVersion: policy.open-cluster-management.io/v1
 kind: PlacementBinding
 metadata:
   name: placement-policy-quay-configure
-  namespace: {{ .Values.policy_namespace }}
+  namespace: {{ .Values.autoshiftPolicyNamespace }}
 placementRef:
   name: placement-policy-quay-configure
   apiGroup: cluster.open-cluster-management.io
