@@ -22,8 +22,8 @@ spec:
               {{ "{{-" }} /* Specify the parameters needed to create the MachineSet  */ {{ "-}}" }}
               {{ "{{-" }} $machineset_role := "storage" {{ "}}" }}
               {{ "{{hub-" }} $hubzones := list "A" {{ "hub}}" }}
+              {{ "{{hub-" }} $hubzones := append $hubzones "B" {{ "hub}}" }}
               {{ "{{hub-" }} range $clusterlabelkey, $clusterlabelvalue := .ManagedClusterLabels {{ "hub}}" }}
-              {{ "{{hub-" }} $hubzones := append $hubzones $clusterlabelvalue {{ "hub}}" }}
               {{ "{{hub-" }} if "$clusterlabelkey" | hasPrefix "autoshift.io/storage-nodes-zone" {{ "hub}}" }}
               {{ "{{hub-" }} $hubzones := append $hubzones $clusterlabelvalue {{ "hub}}" }}
               {{ "{{hub-" }} end {{ "hub}}" }}
