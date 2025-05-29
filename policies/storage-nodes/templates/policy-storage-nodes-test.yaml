@@ -27,7 +27,7 @@ spec:
               {{ "{{hub-" }} $hubzones = append $hubzones (dict "key" $clusterlabelkey "value" $clusterlabelvalue) {{ "hub}}" }}
               {{ "{{hub-" }} end {{ "hub}}" }}
               {{ "{{hub- " }} end {{ "hub}}" }}
-              {{ "{{-" }} $zones := list {{ "{{hub " }} range $z := $hubzones }} {{ "{{hub" }} quote $z.value {{ "hub}}" }} {{ "{{hub" }}  end {{ "hub}}" }} {{ "}}" }}
+              {{ "{{-" }} $zones := list {{ "{{hub " }} range $z := $hubzones {{ "hub}}" }} {{ "{{hub" }} quote $z.value {{ "hub}}" }} {{ "{{hub" }}  end {{ "hub}}" }} {{ "}}" }}
               {{ "{{-" }} $infrastructure_id := (lookup "config.openshift.io/v1" "Infrastructure" "" "cluster").status.infrastructureName {{ "}}" }}
               {{ "{{-" }} /* Generate the MachineSet for each zone as specified  */ {{ "-}}" }}
               {{ "{{-" }} range $zone := $zones {{ "}}" }}
