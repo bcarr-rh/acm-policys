@@ -62,9 +62,7 @@ spec:
         labelSelector:
           matchExpressions:
             - key: 'autoshift.io/storage-nodes'
-              operator: in
-              values:
-              - 'true'
+              operator: exists
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists
