@@ -23,7 +23,7 @@ spec:
               {{ "{{-" }} $machineset_role := "storage" {{ "}}" }}
               {{ "{{hub-" }} $hubzones := list "A" {{ "hub}}" }}
               {{ "{{hub-" }} $labels := dict (index .ManagedClusterLabels "autoshift.io/storage-nodes-zone-1") {{ "hub}}" }}
-              {{ "{{hub-" }} deepCopy .ManagedClusterLabels | merge $labels {{ "hub}}" }}
+              {{ "{{hub-" }} $labels := merge $labels .ManagedClusterLabels {{ "hub}}" }}
               {{ "{{hub-" }} range $clusterlabelkey, $clusterlabelvalue := $labels {{ "hub}}" }}
               {{ "{{hub-" }} $hubzones := append $hubzones "B" {{ "hub}}" }}
               {{ "{{hub-" }} if "$clusterlabelkey" | hasPrefix "autoshift.io/storage-nodes-zone" {{ "hub}}" }}
