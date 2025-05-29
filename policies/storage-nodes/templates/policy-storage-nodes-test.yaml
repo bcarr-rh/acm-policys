@@ -22,12 +22,9 @@ spec:
               {{ "{{-" }} /* Specify the parameters needed to create the MachineSet  */ {{ "-}}" }}
               {{ "{{-" }} $machineset_role := "storage" {{ "}}" }}
               {{ "{{hub-" }} $hubzones := list "A" {{ "hub}}" }}
-              {{ "{{hub-" }} $labels := dict {{ "hub}}" }}
-              {{ "{{hub-" }} $labels := merge $labels .ManagedClusterLabels {{ "hub}}" }}
-              {{ "{{hub-" }} range $clusterlabelkey, $clusterlabelvalue := $labels {{ "hub}}" }}
-              {{ "{{hub-" }} $hubzones := append $hubzones "B" {{ "hub}}" }}
-              {{ "{{hub-" }} if "$clusterlabelkey" | hasPrefix "autoshift.io/storage-nodes-zone" {{ "hub}}" }}
-              {{ "{{hub-" }} $hubzones := append $hubzones $clusterlabelvalue {{ "hub}}" }}
+              {{ "{{hub-" }} range $clusterlabelkey := keys .ManagedClusterLabels {{ "hub}}" }}
+              {{ "{{hub-" }} if $clusterlabelkey | hasPrefix "autoshift.io/storage-nodes-zone" {{ "hub}}" }}
+              {{ "{{hub-" }} $hubzones := append $hubzones (index .ManagedClusterLabels $clusterlabelkey) {{ "hub}}" }}
               {{ "{{hub-" }} end {{ "hub}}" }}
               {{ "{{hub-" }} end {{ "hub}}" }}
               {{ "{{-" }} $zones := list {{ "{{hub " }} range $z := $hubzones {{ "hub}}" }} "{{ "{{hub" }} $z {{ "hub}}" }}" {{ "{{hub" }} end {{ "hub}}" }} {{ "}}" }}
