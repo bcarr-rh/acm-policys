@@ -20,7 +20,7 @@ spec:
               {{ "{{-" }} /* Specify the parameters needed to create the MachineSet  */ {{ "-}}" }}
               {{ "{{hub-" }} $hubzones := list {{ "hub}}" }}
               {{ "{{hub-" }} range $clusterlabelkey, $clusterlabelvalue := .ManagedClusterLabels {{ "hub}}" }}
-              {{ "{{hub-" }} if hasPrefix $clusterlabelkey "storage-nodes-zone" {{ "hub}}" }}
+              {{ "{{hub-" }} if hasPrefix $clusterlabelkey "autoshift.io/storage-nodes-zone" {{ "hub}}" }}
               {{ "{{hub-" }} $hubzones = append $hubzones $clusterlabelvalue {{ "hub}}" }}
               {{ "{{hub-" }} end {{ "hub}}" }}
               {{ "{{hub- " }} end {{ "hub}}" }}
@@ -40,7 +40,7 @@ spec:
                     name: {{ "{{" }} $infrastructure_id {{ "}}" }}-{{ "{{" }} $machineset_role {{ "}}" }}-{{ "{{" }} $zone {{ "}}" }}
                     namespace: openshift-machine-api
                   spec:
-                    replicas: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/storage-nodes" hub{{ "}}" }}'
+                    replicas: {{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/storage-nodes" hub{{ "}}" }}
                     selector:
                       matchLabels:
                         machine.openshift.io/cluster-api-cluster: {{ "{{" }} $infrastructure_id {{ "}}" }}

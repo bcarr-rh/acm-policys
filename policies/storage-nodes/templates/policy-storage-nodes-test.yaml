@@ -23,7 +23,7 @@ spec:
               {{ "{{-" }} $machineset_role := "storage" {{ "}}" }}
               {{ "{{hub-" }} $hubzones := list {{ "hub}}" }}
               {{ "{{hub-" }} range $clusterlabelkey, $clusterlabelvalue := .ManagedClusterLabels {{ "hub}}" }}
-              {{ "{{hub-" }} if hasPrefix $clusterlabelkey "storage-nodes-zone" {{ "hub}}" }}
+              {{ "{{hub-" }} if hasPrefix $clusterlabelkey "autoshift.io/storage-nodes-zone" {{ "hub}}" }}
               {{ "{{hub-" }} $hubzones = append $hubzones $clusterlabelvalue {{ "hub}}" }}
               {{ "{{hub-" }} end {{ "hub}}" }}
               {{ "{{hub- " }} end {{ "hub}}" }}
