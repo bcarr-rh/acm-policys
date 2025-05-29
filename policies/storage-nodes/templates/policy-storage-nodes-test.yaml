@@ -21,10 +21,16 @@ spec:
           object-templates-raw: |
               {{ "{{-" }} /* Specify the parameters needed to create the MachineSet  */ {{ "-}}" }}
               {{ "{{-" }} $machineset_role := "storage" {{ "}}" }}
-              {{ "{{-" }} $infrastructure_id := (lookup "config.openshift.io/v1" "Infrastructure" "" "cluster").status.infrastructureName {{ "}}" }}
-              {{ "{{hub-" }} range $clusterlabelkey, $zonevalue := .ManagedClusterLabels {{ "hub}}" }}
+              {{ "{{hub-" }} $hubzones := list {{ "hub}}" }}
+              {{ "{{hub-" }} range $clusterlabelkey, $clusterlabelvalue := .ManagedClusterLabels {{ "hub}}" }}
               {{ "{{hub-" }} if hasPrefix "$clusterlabelkey" "autoshift.io/storage-nodes-zone" {{ "hub}}" }}
+              {{ "{{hub-" }} $hubzones = append $hubzones "$clusterlabelvalue" {{ "hub}}" }}
+              {{ "{{hub-" }} end {{ "hub}}" }}
+              {{ "{{hub-" }} end {{ "hub}}" }}
+              {{ "{{-" }} $zones := list {{ "{{hub " }} range $z := $hubzones {{ "hub}}" }} {{ "{{hub" }} quote $z {{ "hub}}" }} {{ "{{hub" }}  end {{ "hub}}" }} {{ "}}" }}
+              {{ "{{-" }} $infrastructure_id := (lookup "config.openshift.io/v1" "Infrastructure" "" "cluster").status.infrastructureName {{ "}}" }}
               {{ "{{-" }} /* Generate the MachineSet for each zone as specified  */ {{ "-}}" }}
+              {{ "{{-" }} range $zone := $zones {{ "}}" }}
               - complianceType: musthave
                 objectDefinition:
                   apiVersion: machine.openshift.io/v1beta1
@@ -32,12 +38,11 @@ spec:
                   metadata:
                     labels:
                       machine.openshift.io/cluster-api-cluster: {{ "{{" }} $infrastructure_id {{ "}}" }}
-                    name: {{ "{{" }} $infrastructure_id {{ "}}" }}-{{ "{{" }} $machineset_role {{ "}}" }}-{{ "{{hub" }} $zonevalue {{ "hub}}" }}
+                    name: {{ "{{" }} $infrastructure_id {{ "}}" }}-{{ "{{" }} $machineset_role {{ "}}" }}-{{ "{{" }} $zone {{ "}}" }}
                     namespace: openshift-machine-api
                   status:
                     readyReplicas: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/storage-nodes" hub{{ "}}" }}'
-              {{ "{{hub-" }} end {{ "hub}}" }}
-              {{ "{{hub-" }} end {{ "hub}}" }}
+              {{ "{{-" }} end {{ "}}" }}
 ---
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
