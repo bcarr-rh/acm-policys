@@ -21,13 +21,13 @@ spec:
           object-templates-raw: |
               {{ "{{-" }} /* Specify the parameters needed to create the MachineSet  */ {{ "-}}" }}
               {{ "{{-" }} $machineset_role := "storage" {{ "}}" }}
-              {{ "{{hub-" }} $hubzones := list 'A' {{ "hub}}" }}
+              {{ "{{hub-" }} $hubzones := list "A" {{ "hub}}" }}
               {{ "{{hub-" }} range $clusterlabelkey, $clusterlabelvalue := .ManagedClusterLabels {{ "hub}}" }}
               {{ "{{hub-" }} if "$clusterlabelkey" | hasPrefix "autoshift.io/storage-nodes-zone" {{ "hub}}" }}
               {{ "{{hub-" }} $hubzones = append $hubzones "$clusterlabelvalue" {{ "hub}}" }}
               {{ "{{hub-" }} end {{ "hub}}" }}
               {{ "{{hub-" }} end {{ "hub}}" }}
-              {{ "{{-" }} $zones := list {{ "{{hub " }} range $z := $hubzones {{ "hub}}" }} {{ "{{hub" }} quote $z {{ "hub}}" }} {{ "{{hub" }} end {{ "hub}}" }} {{ "}}" }}
+              {{ "{{-" }} $zones := list {{ "{{hub " }} range $z := $hubzones {{ "hub}}" }} "{{ "{{hub" }} $z {{ "hub}}" }}" {{ "{{hub" }} end {{ "hub}}" }} {{ "}}" }}
               {{ "{{-" }} $infrastructure_id := (lookup "config.openshift.io/v1" "Infrastructure" "" "cluster").status.infrastructureName {{ "}}" }}
               {{ "{{-" }} /* Generate the MachineSet for each zone as specified  */ {{ "-}}" }}
               {{ "{{-" }} range $zone := $zones {{ "}}" }}
