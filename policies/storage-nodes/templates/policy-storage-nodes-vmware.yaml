@@ -177,6 +177,10 @@ spec:
               operator: in
               values:
               - 'true'
+            - key: 'autoshift.io/storage-nodes-provider'
+              operator: in
+              values:
+              - 'vmware'
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists

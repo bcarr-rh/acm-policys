@@ -37,11 +37,13 @@ hubClusterSets:
       worker-nodes-numcores-per-socket: ''
       worker-nodes-zones: ''
       ### storage-nodes
-      storage-nodes: ''
+      storage-nodes: '0'
+      storage-nodes-zone-1: 'us-east-2c'
+      storage-nodes-intance-type: 'i4i.8xlarge'
+      storage-nodes-provider: aws
       storage-nodes-numcpu: ''
       storage-nodes-memory-mib: ''
       storage-nodes-numcores-per-socket: ''
-      storage-nodes-zones: ''
       ### OpenShift Data Foundation
       odf: 'true'
       odf-multi-cloud-gateway: standalone
