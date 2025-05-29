@@ -21,7 +21,7 @@ spec:
           object-templates-raw: |
               {{ "{{-" }} /* Specify the parameters needed to create the MachineSet  */ {{ "-}}" }}
               {{ "{{-" }} $machineset_role := "storage" {{ "}}" }}
-              {{ "{{hub-" }} $hubzones := list "A" {{ "hub}}" }}
+              {{ "{{hub-" }} $hubzones := list "index "autoshift.io/storage-nodes-zone-1" .ManagedClusterLabels " {{ "hub}}" }}
               {{ "{{hub-" }} range $clusterlabelkey, $clusterlabelvalue := index .ManagedClusterLabels {{ "hub}}" }}
               {{ "{{hub-" }} $hubzones := append $hubzones "B" {{ "hub}}" }}
               {{ "{{hub-" }} if "$clusterlabelkey" | hasPrefix "autoshift.io/storage-nodes-zone" {{ "hub}}" }}
