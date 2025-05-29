@@ -149,7 +149,7 @@ spec:
             - key: 'autoshift.io/storage-nodes'
               operator: Exists
             - key: 'autoshift.io/storage-nodes-provider'
-              operator: in
+              operator: In
               values:
               - 'vmware'
   tolerations:
