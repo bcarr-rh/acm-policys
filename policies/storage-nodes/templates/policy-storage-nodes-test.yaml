@@ -21,8 +21,10 @@ spec:
           object-templates-raw: |
               {{ "{{-" }} /* Specify the parameters needed to create the MachineSet  */ {{ "-}}" }}
               {{ "{{-" }} $machineset_role := "storage" {{ "}}" }}
-              {{ "{{hub-" }} $hubzones := list (index .ManagedClusterLabels "autoshift.io/storage-nodes-zone-1") {{ "hub}}" }}
-              {{ "{{hub-" }} range $clusterlabelkey, $clusterlabelvalue := index .ManagedClusterLabels {{ "hub}}" }}
+              {{ "{{hub-" }} $hubzones := list "A" {{ "hub}}" }}
+              {{ "{{hub-" }} $labels := dict (index .ManagedClusterLabels "autoshift.io/storage-nodes-zone-1") {{ "hub}}" }}
+              {{ "{{hub-" }} deepCopy .ManagedClusterLabels | merge $labels {{ "hub}}" }}
+              {{ "{{hub-" }} range $clusterlabelkey, $clusterlabelvalue := $labels {{ "hub}}" }}
               {{ "{{hub-" }} $hubzones := append $hubzones "B" {{ "hub}}" }}
               {{ "{{hub-" }} if "$clusterlabelkey" | hasPrefix "autoshift.io/storage-nodes-zone" {{ "hub}}" }}
               {{ "{{hub-" }} $hubzones := append $hubzones $clusterlabelvalue {{ "hub}}" }}
