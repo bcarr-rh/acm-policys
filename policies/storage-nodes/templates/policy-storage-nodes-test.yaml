@@ -23,7 +23,7 @@ spec:
               {{ "{{-" }} $machineset_role := "storage" {{ "}}" }}
               {{ "{{-" }} $infrastructure_id := (lookup "config.openshift.io/v1" "Infrastructure" "" "cluster").status.infrastructureName {{ "}}" }}
               {{ "{{hub-" }} range $clusterlabelkey, $zonevalue := .ManagedClusterLabels {{ "hub}}" }}
-              {{ "{{hub-" }} if hasPrefix $clusterlabelkey "autoshift.io/storage-nodes-zone" {{ "hub}}" }}
+              {{ "{{hub-" }} if hasPrefix "$clusterlabelkey" "autoshift.io/storage-nodes-zone" {{ "hub}}" }}
               {{ "{{-" }} /* Generate the MachineSet for each zone as specified  */ {{ "-}}" }}
               - complianceType: musthave
                 objectDefinition:
