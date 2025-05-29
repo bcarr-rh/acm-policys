@@ -20,9 +20,9 @@ spec:
               {{ "{{-" }} /* Specify the parameters needed to create the MachineSet  */ {{ "-}}" }}
               {{ "{{hub-" }} $hubzones := list {{ "hub}}" }}
               {{ "{{hub-" }} range $clusterlabelkey, $clusterlabelvalue := .ManagedClusterLabels {{ "hub}}" }}
-                {{ "{{hub-" }} if hasPrefix $clusterlabelkey "storage-nodes-zone" {{ "hub}}" }}
-                  {{ "{{hub-" }} $hubzones = append $hubzones (dict "key" $clusterlabelkey "value" $clusterlabelvalue) {{ "hub}}" }}
-                {{ "{{hub-" }} end {{ "hub}}" }}
+              {{ "{{hub-" }} if hasPrefix $clusterlabelkey "storage-nodes-zone" {{ "hub}}" }}
+              {{ "{{hub-" }} $hubzones = append $hubzones $clusterlabelvalue {{ "hub}}" }}
+              {{ "{{hub-" }} end {{ "hub}}" }}
               {{ "{{hub- " }} end {{ "hub}}" }}
               {{ "{{-" }} $zones := list {{ "{{hub " }} range $z := $hubzones {{ "hub}}" }} {{ "{{hub" }} quote $z.value {{ "hub}}" }} {{ "{{hub" }}  end {{ "hub}}" }} {{ "}}" }}
               {{ "{{-" }} $machineset_role := "storage" {{ "}}" }}
