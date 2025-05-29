@@ -33,9 +33,8 @@ spec:
                   namespace: {{ $.Values.policy_namespace }}
                 data:
                   lookupResult: |
-                    {{ "{{hub" }} .ManagedClusterLabels {{ "hub}}" }}
                     {{ "{{hub" }} range $key, $value := .ManagedClusterLabels {{ "hub}}" }}
-                    {{ "{{hub" }} "key: $key value :$value" {{ "hub}}" }}
+                    {{ "{{hub" }} printf "%s %s" $key $value {{ "hub}}" }}
                     {{ "{{hub" }} end {{ "hub}}" }}
 ---
 {{/* (index ((index (lookup "v1" "ConfigMap" "{{ .Values.policy_namespace }}" (printf "cluster-set.%s"  $clusterSet)) "data" "values") | fromJson) "labels") | default dict */}}
