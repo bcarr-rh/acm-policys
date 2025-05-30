@@ -24,26 +24,32 @@ hubClusterSets:
       acm-source: redhat-operators
       acm-source-namespace: openshift-marketplace
       acm-availability-config: 'basic'
-      ### infra-nodes
+      ### Infrastructure Nodes
       infra-nodes: ''
       infra-nodes-numcpu: ''
       infra-nodes-memory-mib: ''
       infra-nodes-numcores-per-socket: ''
       infra-nodes-zones: ''
-      ### worker-nodes
+      ### Worker Nodes
       worker-nodes: ''
       worker-nodes-numcpu: ''
       worker-nodes-memory-mib: ''
       worker-nodes-numcores-per-socket: ''
       worker-nodes-zones: ''
-      ### storage-nodes
-      storage-nodes: '0'
+      ### Storage Nodes
+      storage-nodes: '3'
       storage-nodes-zone-1: 'us-east-2c'
       storage-nodes-instance-type: 'i4i.8xlarge'
       storage-nodes-provider: aws
       storage-nodes-numcpu: ''
       storage-nodes-memory-mib: ''
       storage-nodes-numcores-per-socket: ''
+      ### Local Storage Operator
+      local-storage: 'true'
+      local-storage-channel: stable
+      local-storage-install-plan-approval: Automatic
+      local-storage-source: redhat-operators
+      local-storage-source-namespace: openshift-marketplace
       ### OpenShift Data Foundation
       odf: 'true'
       odf-multi-cloud-gateway: standalone
@@ -129,24 +135,30 @@ hubClusterSets:
 managedClusterSets:
   managed:
     labels:
-      ### infra-nodes
+      ### Infrastructure Nodes
       infra-nodes: ''
       infra-nodes-numcpu: ''
       infra-nodes-memory-mib: ''
       infra-nodes-numcores-per-socket: ''
       infra-nodes-zones: ''
-      ### worker-nodes
+      ### Worker Nodes
       worker-nodes: ''
       worker-nodes-numcpu: ''
       worker-nodes-memory-mib: ''
       worker-nodes-numcores-per-socket: ''
       worker-nodes-zones: ''
-      ### storage-nodes
+      ### Storage Nodes
       storage-nodes: ''
       storage-nodes-numcpu: ''
       storage-nodes-memory-mib: ''
       storage-nodes-numcores-per-socket: ''
       storage-nodes-zones: ''
+      ### Local Storage Operator
+      local-storage: 'false'
+      local-storage-channel: stable
+      local-storage-install-plan-approval: Automatic
+      local-storage-source: redhat-operators
+      local-storage-source-namespace: openshift-marketplace
       ### OpenShift Data Foundation
       odf: 'true'
       odf-multi-cloud-gateway: standalone
