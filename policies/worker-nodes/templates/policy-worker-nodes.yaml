@@ -89,9 +89,7 @@ spec:
         labelSelector:
           matchExpressions:
             - key: 'autoshift.io/worker-nodes'
-              operator: in
-              values:
-              - 'true'
+              operator: Exists
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists

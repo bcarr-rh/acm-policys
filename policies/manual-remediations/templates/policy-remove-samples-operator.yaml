@@ -48,7 +48,7 @@ spec:
         labelSelector:
           matchExpressions:
             - key: 'autoshift.io/manual-remediations'
-              operator: in
+              operator: In
               values:
               - 'true'
   tolerations:

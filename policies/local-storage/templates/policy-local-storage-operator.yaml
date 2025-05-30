@@ -92,7 +92,7 @@ spec:
         labelSelector:
           matchExpressions:
             - key: 'autoshift.io/local-storage'
-              operator: in
+              operator: In
               values:
               - 'true'
   tolerations:
