@@ -95,7 +95,7 @@ spec:
                               filters:
                                 - name: 'tag:Name'
                                   values:
-                                    - {{ "{{" }} $infrastructure_id {{ "}}" }}-private-{{ "{{" }} $zone {{ "}}" }}
+                                    - {{ "{{" }} $infrastructure_id {{ "}}" }}-subnet-private-{{ "{{" }} $zone {{ "}}" }}
                             apiVersion: machine.openshift.io/v1beta1
                             iamInstanceProfile:
                               id: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.iamInstanceProfile.id {{ "}}" }}
