@@ -39,7 +39,7 @@ hubClusterSets:
       ### storage-nodes
       storage-nodes: '0'
       storage-nodes-zone-1: 'us-east-2c'
-      storage-nodes-intance-type: 'i4i.8xlarge'
+      storage-nodes-instance-type: 'i4i.8xlarge'
       storage-nodes-provider: aws
       storage-nodes-numcpu: ''
       storage-nodes-memory-mib: ''
