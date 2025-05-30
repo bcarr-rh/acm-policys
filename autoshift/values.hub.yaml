@@ -52,11 +52,11 @@ hubClusterSets:
       local-storage-source-namespace: openshift-marketplace
       ### OpenShift Data Foundation
       odf: 'true'
-      odf-multi-cloud-gateway: standalone
+      odf-multi-cloud-gateway: standard
       odf-nooba-pvpool: ''
       odf-nooba-store-size: ''
       odf-nooba-store-num-volumes: ''
-      odf-ocs-storage-class-name: gp3-csi
+      odf-ocs-storage-class-name: ''
       odf-ocs-storage-size: ''
       odf-ocs-storage-count: ''
       odf-ocs-storage-replicas: ''
