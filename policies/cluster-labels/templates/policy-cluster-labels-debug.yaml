@@ -34,6 +34,9 @@ spec:
                 data:
                   lookupResult: |
                     {{ "{{" }} $zones := list {{ "{{hub" }} range $label, $labelvalue := .ManagedClusterLabels {{ "hub}}" }}{{ "{{hub" }} if $label | hasPrefix "autoshift.io/storage-nodes-zone" {{ "hub}}" }} "{{ "{{hub" }} $labelvalue {{ "hub}}" }}" {{ "{{hub" }} end {{ "hub}}" }}{{ "{{hub" }} end {{ "hub}}" }} {{ "}}" }}
+                    {{ "{{" }} range $zone := $zones {{ "}}" }}
+                    {{ "{{" }} printf "%s" $zone {{ "}}" }}
+                    {{ "{{" }} end {{ "}}" }}
 ---
 {{/* (index ((index (lookup "v1" "ConfigMap" "{{ .Values.policy_namespace }}" (printf "cluster-set.%s"  $clusterSet)) "data" "values") | fromJson) "labels") | default dict */}}
                     {{/*{{ "{{-" }} (lookup "cluster.open-cluster-management.io/v1" "ManagedCluster" "" "") | toRawJson {{ "}}" }} */}}
