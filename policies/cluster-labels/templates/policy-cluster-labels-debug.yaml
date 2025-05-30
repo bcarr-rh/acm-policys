@@ -33,14 +33,14 @@ spec:
                   namespace: {{ $.Values.policy_namespace }}
                 data:
                   lookupResult: |
-                    {{ "{{hub-" }} $hubzones := dict {{ "hub}}" }}
-                    {{ "{{hub-" }} range $key, $value := .ManagedClusterLabels {{ "hub}}" }}
-                    {{ "{{hub-" }} if $key | hasPrefix "autoshift.io/storage-nodes-zone" {{ "hub}}" }}
-                    {{ "{{hub-" }} $hubzones := set $hubzones $key $value {{ "hub}}" }}
-                    {{ "{{hub-" }} printf "%s %s" $key $value {{ "hub}}" }}
-                    {{ "{{hub-" }} end {{ "hub}}" }}
-                    {{ "{{hub-" }} end {{ "hub}}" }}
-                    {{ "{{-" }} $zones := list {{ "{{hub " }} range $k, $v := $hubzones {{ "hub}}" }} "{{ "{{hub" }} $v {{ "hub}}" }}" {{ "{{hub" }} end {{ "hub}}" }} {{ "}}" }}
+                    {{ "{{hub" }} $hubzones := dict {{ "hub}}" }}
+                    {{ "{{hub" }} range $key, $value := .ManagedClusterLabels {{ "hub}}" }}
+                    {{ "{{hub" }} if $key | hasPrefix "autoshift.io/storage-nodes-zone" {{ "hub}}" }}
+                    {{ "{{hub" }} $hubzones := set $hubzones $key $value {{ "hub}}" }}
+                    {{ "{{hub" }} printf "%s %s" $key $value {{ "hub}}" }}
+                    {{ "{{hub" }} end {{ "hub}}" }}
+                    {{ "{{hub" }} end {{ "hub}}" }}
+                    {{ "{{" }} $zones := list {{ "{{hub " }} range $k, $v := $hubzones {{ "hub}}" }} "{{ "{{hub" }} $v {{ "hub}}" }}" {{ "{{hub" }} end {{ "hub}}" }} {{ "}}" }}
 ---
 {{/* (index ((index (lookup "v1" "ConfigMap" "{{ .Values.policy_namespace }}" (printf "cluster-set.%s"  $clusterSet)) "data" "values") | fromJson) "labels") | default dict */}}
                     {{/*{{ "{{-" }} (lookup "cluster.open-cluster-management.io/v1" "ManagedCluster" "" "") | toRawJson {{ "}}" }} */}}
