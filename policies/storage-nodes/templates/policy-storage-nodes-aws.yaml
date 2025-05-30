@@ -34,7 +34,7 @@ spec:
                     name: {{ "{{" }} $infrastructure_id {{ "}}" }}-{{ "{{" }} $machineset_role {{ "}}" }}-{{ "{{" }} $zone {{ "}}" }}
                     namespace: openshift-machine-api
                   spec:
-                    replicas: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/storage-nodes" hub{{ "}}" }}'
+                    replicas: {{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/storage-nodes" hub{{ "}}" }}
                     selector:
                       matchLabels:
                         machine.openshift.io/cluster-api-cluster: {{ "{{" }} $infrastructure_id {{ "}}" }}
