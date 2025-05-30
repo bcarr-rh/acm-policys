@@ -36,7 +36,7 @@ spec:
                     {{ "{{hub" }} $hubzones := list "A" {{ "hub}}" }}
                     {{ "{{hub" }} range $key, $value := .ManagedClusterLabels {{ "hub}}" }}
                     {{ "{{hub" }} if $key | hasPrefix "autoshift.io/storage-nodes-zone" {{ "hub}}" }}
-                    {{ "{{hub" }} $hubzones := append $hubzones $value {{ "hub}}" }}
+                    {{ "{{hub" }} $hubzones := append $hubzones "$value" {{ "hub}}" }}
                     {{ "{{hub" }} printf "%s %s" $key $value {{ "hub}}" }}
                     {{ "{{hub" }} end {{ "hub}}" }}
                     {{ "{{hub" }} end {{ "hub}}" }}
