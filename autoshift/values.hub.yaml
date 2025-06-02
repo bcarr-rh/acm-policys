@@ -38,7 +38,7 @@ hubClusterSets:
       worker-nodes-zones: ''
       ### Storage Nodes
       storage-nodes: '3'
-      storage-nodes-zone-1: 'us-east-2c'
+      storage-nodes-zone-1: 'us-east-2a'
       storage-nodes-instance-type: 'i4i.8xlarge'
       storage-nodes-provider: aws
       storage-nodes-numcpu: ''
