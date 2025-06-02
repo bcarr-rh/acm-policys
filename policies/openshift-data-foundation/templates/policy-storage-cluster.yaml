@@ -62,7 +62,7 @@ spec:
                 spec:
                   storageDeviceSets:
                     - config: {}
-                      count: {{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/odf-ocs-storage-count" | default "{{ .Values.odf.ocsStorageCount }}" | toInt hub{{ "}}" }}
+                      count: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/odf-ocs-storage-count" | default "{{ .Values.odf.ocsStorageCount }}" | toInt hub{{ "}}" }}'
                       dataPVCTemplate:
                         metadata: {}
                         spec:
@@ -84,7 +84,7 @@ spec:
                       name: ocs-deviceset
                       placement: {}
                       preparePlacement: {}
-                      replica: {{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/odf-ocs-storage-replicas" | default "{{ .Values.odf.ocsStorageReplicas }}" | toInt hub{{ "}}" }}
+                      replica: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/odf-ocs-storage-replicas" | default "{{ .Values.odf.ocsStorageReplicas }}" | toInt hub{{ "}}" }}'
                       resources: {}
                   encryption:
                     clusterWide: true
