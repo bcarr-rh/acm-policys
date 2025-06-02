@@ -58,10 +58,10 @@ hubClusterSets:
       odf-nooba-store-num-volumes: ''
       odf-ocs-storage-class-name: ''
       odf-ocs-storage-size: ''
-      odf-ocs-storage-count: ''
-      odf-ocs-storage-replicas: ''
+      odf-ocs-storage-count: '6'
+      odf-ocs-storage-replicas: '1'
       odf-resource-profile: balanced
-      odf-channel: stable-4.17
+      odf-channel: stable-4.18
       odf-install-plan-approval: Automatic
       odf-source: redhat-operators
       odf-source-namespace: openshift-marketplace

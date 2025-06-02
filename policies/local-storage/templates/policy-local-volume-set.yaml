@@ -41,7 +41,6 @@ spec:
                       deviceTypes:
                         - disk
                       minSize: 200G
-                    maxDeviceCount: 10
                     nodeSelector:
                       nodeSelectorTerms:
                         - matchExpressions:
