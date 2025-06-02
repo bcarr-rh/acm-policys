@@ -23,7 +23,7 @@ hubClusterSets:
       acm-install-plan-approval: Automatic
       acm-source: redhat-operators
       acm-source-namespace: openshift-marketplace
-      acm-availability-config: 'basic'
+      acm-availability-config: 'High'
       ### Infrastructure Nodes
       infra-nodes: ''
       infra-nodes-numcpu: ''
