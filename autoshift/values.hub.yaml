@@ -51,7 +51,7 @@ hubClusterSets:
       local-storage-source: redhat-operators
       local-storage-source-namespace: openshift-marketplace
       ### OpenShift Data Foundation
-      odf: 'false'
+      odf: 'true'
       odf-multi-cloud-gateway: standard
       odf-nooba-pvpool: ''
       odf-nooba-store-size: ''
