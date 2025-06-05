@@ -23,6 +23,9 @@ spec:
               {{ "{{-" }} $infrastructure_id := (lookup "config.openshift.io/v1" "Infrastructure" "" "cluster").status.infrastructureName {{ "}}" }}
               {{ "{{-" }} $worker_ms := (index (lookup "machine.openshift.io/v1beta1" "MachineSet" "openshift-machine-api" "").items 0) {{ "}}" }}
               {{ "{{-" }} /* Generate the MachineSet for each zone as specified  */ {{ "-}}" }}
+              {{ "{{-" }} if not $zones {{ "}}" }}
+              {{ "{{-" }} $zone := $worker_ms.spec.template.spec.providerSpec.value.placement.region {{ "}}" }}
+              {{ "{{-" }} end {{ "}}" }}
               {{ "{{-" }} range $zone := $zones {{ "}}" }}
               - complianceType: musthave
                 objectDefinition:
@@ -62,7 +65,7 @@ spec:
                               name: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.userDataSecret.name {{ "}}" }}
                             placement:
                               availabilityZone: {{ "{{" }} $zone {{ "}}" }}
-                              region: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.placement.region {{ "}}" }}
+                              region: {{ "{{" }} "{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/storage-nodes-region" hub{{ "}}" }}" | default $worker_ms.spec.template.spec.providerSpec.value.placement.region {{ "}}" }}
                             credentialsSecret:
                               name: {{ "{{" }} $worker_ms.spec.template.spec.providerSpec.value.credentialsSecret.name {{ "}}" }}
                             instanceType: {{ "{{" }} "{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/storage-nodes-instance-type" hub{{ "}}" }}" | default $worker_ms.spec.template.spec.providerSpec.value.instanceType {{ "}}" }}
