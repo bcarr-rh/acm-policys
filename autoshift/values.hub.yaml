@@ -29,13 +29,13 @@ hubClusterSets:
       infra-nodes-numcpu: ''
       infra-nodes-memory-mib: ''
       infra-nodes-numcores-per-socket: ''
-      infra-nodes-zones: ''
+      infra-nodes-zone-1: ''
       ### Worker Nodes
       worker-nodes: ''
       worker-nodes-numcpu: ''
       worker-nodes-memory-mib: ''
       worker-nodes-numcores-per-socket: ''
-      worker-nodes-zones: ''
+      worker-nodes-zone-1: ''
       ### Storage Nodes
       storage-nodes: '3'
       # storage-nodes-zone-1: 'us-east-2a'
