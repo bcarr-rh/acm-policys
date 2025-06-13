@@ -4,10 +4,7 @@
 policy_namespace: open-cluster-policies
 infraNodes:
   labelPrefix: "autoshift.io/"
-  remediationAction: "inform"
-  clusterSets:
-    - hub
-    - managed
+  remediationAction: "enforce"
   imageRegistry: 
     migrate: true
     remediationAction: enforce
@@ -25,14 +22,12 @@ infraNodes:
     kind: GitopsService
     metadata:
       name: cluster
-  zones:
-    - us-east-2b
   externalIngress:
     clusterSets:
       - managed  
   dependencies: 
     install: 
-      - "policy-infra-nodes"
+      - "policy-infra-nodes-test"
     remove: 
       - policy-remove-infra-gitops 
       - policy-remove-infra-image-registry
