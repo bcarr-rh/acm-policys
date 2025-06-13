@@ -23,9 +23,8 @@ spec:
               {{ "{{-" }} $infrastructure_id := (lookup "config.openshift.io/v1" "Infrastructure" "" "cluster").status.infrastructureName {{ "}}" }}
               {{ "{{-" }} $worker_ms := (index (lookup "machine.openshift.io/v1beta1" "MachineSet" "openshift-machine-api" "").items 0) {{ "}}" }}
               {{ "{{-" }} /* Generate the MachineSet for each zone as specified  */ {{ "-}}" }}
-              {{ "{{-" }} printf "%s" (len $zones){{ "}}" }}
-              {{ "{{-" }} if eq "(len $zones)" "0" {{ "}}" }}
-              {{ "{{-" }} $zone := $worker_ms.spec.template.spec.providerSpec.value.placement.region {{ "}}" }}
+              {{ "{{-" }} if eq 0 (len $zones) {{ "}}" }}
+              {{ "{{-" }} $zones := list $worker_ms.spec.template.spec.providerSpec.value.placement.region {{ "}}" }}
               {{ "{{-" }} end {{ "}}" }}
               {{ "{{-" }} range $zone := $zones {{ "}}" }}
               - complianceType: musthave
