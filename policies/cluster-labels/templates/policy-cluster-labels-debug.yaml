@@ -43,7 +43,7 @@ spec:
                     {{ "{{-" }} if eq 0 (len $zones) {{ "}}" }}
                     {{ "{{-" }} $zones := list "$worker_ms.spec.template.spec.providerSpec.value.placement.availabilityZone" {{ "}}" }}
                     {{ "{{-" }} end {{ "}}" }}
-                    { "{{" }} $zones {{ "}}" }
+                    { "{{" }} $zones {{ "}}" }}
                     {{ "{{-" }} range $zone := $zones {{ "}}" }}
                     - complianceType: musthave
                       objectDefinition:
