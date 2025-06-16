@@ -1,7 +1,7 @@
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
-  name: policy-worker-nodes
+  name: policy-worker-nodes-vmware
   namespace: {{ .Values.policy_namespace }}
   annotations:
     policy.open-cluster-management.io/categories: CM Configuration Management
@@ -14,7 +14,7 @@ spec:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: create-worker-nodes
+          name: create-worker-nodes-vmware
         spec:
           object-templates-raw: |
               {{ "{{-" }} /* Specify the parameters needed to create the MachineSet  */ {{ "-}}" }}
@@ -32,7 +32,7 @@ spec:
                     namespace: openshift-machine-api
                   spec:
                     deletePolicy: Oldest
-                    replicas: {{ "{{" }} fromClusterClaim "worker-nodes" {{ "}}" }}
+                    replicas: {{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/worker-nodes" hub{{ "}}" }}
                     template:
                       spec:
                         providerSpec:
@@ -44,37 +44,11 @@ spec:
           pruneObjectBehavior: None
           remediationAction: enforce
           severity: high
-    - objectDefinition:
-        apiVersion: policy.open-cluster-management.io/v1
-        kind: ConfigurationPolicy
-        metadata:
-          name: check-cluster-worker-nodes
-        spec:
-          remediationAction: inform
-          severity: high
-          object-templates-raw: |
-              {{ "{{-" }} /* Specify the parameters needed to create the MachineSet  */ {{ "-}}" }}
-              {{ "{{-" }} $machineset_role := "worker" {{ "}}" }}
-              {{ "{{-" }} $zones := list{{ range (toStrings .Values.workerNodes.zones) }} "{{ . }}"{{ end }} {{ "}}" }}
-              {{ "{{-" }} $infrastructure_id := (lookup "config.openshift.io/v1" "Infrastructure" "" "cluster").status.infrastructureName {{ "}}" }}
-              {{ "{{-" }} $worker_ms := (index (lookup "machine.openshift.io/v1beta1" "MachineSet" "openshift-machine-api" "").items 0) {{ "}}" }}
-              {{ "{{-" }} /* Generate the MachineSet for each zone as specified  */ {{ "-}}" }}
-              {{ "{{-" }} range $zone := $zones {{ "}}" }}
-              - complianceType: musthave
-                objectDefinition:
-                  apiVersion: machine.openshift.io/v1beta1
-                  kind: MachineSet
-                  metadata:
-                    name: {{ "{{" }} $infrastructure_id {{ "}}" }}-{{ "{{" }} $machineset_role {{ "}}" }}-{{ "{{" }} $zone {{ "}}" }}
-                    namespace: openshift-machine-api
-                  status:
-                    readyReplicas:  {{ "{{" }} fromClusterClaim "worker-nodes" {{ "}}" }}
-              {{ "{{-" }} end {{ "}}" }}
 ---
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
 metadata:
-  name: placement-policy-worker-nodes
+  name: placement-policy-worker-nodes-vmware
   namespace: {{ .Values.policy_namespace }}
 spec:
   clusterSets:
@@ -90,6 +64,10 @@ spec:
           matchExpressions:
             - key: 'autoshift.io/worker-nodes'
               operator: Exists
+            - key: 'autoshift.io/worker-nodes-provider'
+              operator: In
+              values:
+                - vmware
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists
@@ -99,13 +77,13 @@ spec:
 apiVersion: policy.open-cluster-management.io/v1
 kind: PlacementBinding
 metadata:
-  name: placement-policy-worker-nodes
+  name: placement-policy-worker-nodes-vmware
   namespace: {{ .Values.policy_namespace }}
 placementRef:
-  name: placement-policy-worker-nodes
+  name: placement-policy-worker-nodes-vmware
   apiGroup: cluster.open-cluster-management.io
   kind: Placement
 subjects:
-  - name: policy-worker-nodes
+  - name: policy-worker-nodes-vmware
     apiGroup: policy.open-cluster-management.io
     kind: Policy
