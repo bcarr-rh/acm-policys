@@ -18,6 +18,10 @@ spec:
     serviceAccountName: autoshift-policy-service-account
   dependencies:
     - name: policy-gitops-systems-argocd
+      namespace: {{ .Values.policy_namespace }}
+      apiVersion: policy.open-cluster-management.io/v1
+      compliance: Compliant
+      kind: Policy
   policy-templates:
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
