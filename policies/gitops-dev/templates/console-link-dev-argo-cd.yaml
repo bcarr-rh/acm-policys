@@ -5,7 +5,7 @@ apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
   name: policy-gitops-{{ $team }}-console-link
-  namespace: openshift-gitops-{{ $team }}
+  namespace: {{ $.Values.policy_namespace }}
   annotations:
     argocd.argoproj.io/sync-options: Prune=false,SkipDryRunOnMissingResource=true
     argocd.argoproj.io/compare-options: IgnoreExtraneous
@@ -43,7 +43,7 @@ apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
 metadata:
   name: policy-gitops-{{ $team }}-console-link-placement
-  namespace: openshift-gitops-{{ $team }}
+  namespace: {{ $.Values.policy_namespace }}
 spec:
   clusterSets:
   {{- range $clusterSet, $value := $.Values.managedClusterSets }}
@@ -62,7 +62,7 @@ apiVersion: policy.open-cluster-management.io/v1
 kind: PlacementBinding
 metadata:
   name: policy-gitops-{{ $team }}-console-link-placement
-  namespace: openshift-gitops-{{ $team }}
+  namespace: {{ $.Values.policy_namespace }}
 placementRef:
   name: policy-gitops-{{ $team }}-console-link-placement
   apiGroup: cluster.open-cluster-management.io
