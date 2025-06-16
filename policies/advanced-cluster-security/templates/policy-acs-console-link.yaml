@@ -42,7 +42,7 @@ apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
 metadata:
   name: policy-acs-console-link-placement
-  namespace: {{ .Values.acs.namespace }}
+  namespace: {{ .Values.policy_namespace }}
   annotations:
     argocd.argoproj.io/sync-wave: "3"
 spec:
@@ -71,7 +71,7 @@ apiVersion: policy.open-cluster-management.io/v1
 kind: PlacementBinding
 metadata:
   name: policy-acs-console-link-placement
-  namespace: {{ .Values.acs.namespace }}
+  namespace: {{ .Values.policy_namespace }}
   annotations:
     argocd.argoproj.io/sync-wave: "3"
 placementRef:
