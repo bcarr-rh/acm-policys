@@ -2,7 +2,7 @@ apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
   name: policy-acs-console-link
-  namespace: {{ .Values.acs.namespace }}
+  namespace: {{ .Values.policy_namespace }}
   annotations:
     argocd.argoproj.io/sync-options: Prune=false,SkipDryRunOnMissingResource=true
     argocd.argoproj.io/compare-options: IgnoreExtraneous
@@ -13,6 +13,8 @@ metadata:
 spec:
   remediationAction: enforce
   disabled: false
+  hubTemplateOptions:
+    serviceAccountName: autoshift-policy-service-account
   policy-templates:
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1

@@ -22,9 +22,6 @@ infraNodes:
     kind: GitopsService
     metadata:
       name: cluster
-  externalIngress:
-    clusterSets:
-      - managed  
   dependencies: 
     install: 
       - "policy-infra-nodes-test"
