@@ -48,13 +48,13 @@ hubClusterSets:
       storage-nodes-memory-mib: ''
       storage-nodes-numcores-per-socket: ''
       ### Local Storage Operator
-      local-storage: 'true'
+      local-storage: 'false'
       local-storage-channel: stable
       local-storage-install-plan-approval: Automatic
       local-storage-source: redhat-operators
       local-storage-source-namespace: openshift-marketplace
       ### OpenShift Data Foundation
-      odf: 'true'
+      odf: 'false'
       odf-multi-cloud-gateway: standard
       odf-nooba-pvpool: ''
       odf-nooba-store-size: ''
