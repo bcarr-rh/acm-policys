@@ -42,7 +42,7 @@ hubClusterSets:
       # storage-nodes-zone-2: 'us-east-2b'
       # storage-nodes-zone-3: 'us-east-2c'
       # storage-nodes-region: 'us-east-2'
-      storage-nodes-instance-type: 'i4i.8xlarge'
+      storage-nodes-instance-type: 'm6in.8xlarge'
       storage-nodes-provider: aws
       storage-nodes-numcpu: ''
       storage-nodes-memory-mib: ''
@@ -54,13 +54,13 @@ hubClusterSets:
       local-storage-source: redhat-operators
       local-storage-source-namespace: openshift-marketplace
       ### OpenShift Data Foundation
-      odf: 'false'
+      odf: 'true'
       odf-multi-cloud-gateway: standard
       odf-nooba-pvpool: ''
       odf-nooba-store-size: ''
       odf-nooba-store-num-volumes: ''
-      odf-ocs-storage-class-name: ''
-      odf-ocs-storage-size: ''
+      odf-ocs-storage-class-name: 'gp3-csi'
+      odf-ocs-storage-size: '2Ti'
       odf-ocs-storage-count: '2'
       odf-ocs-storage-replicas: '3'
       odf-resource-profile: balanced
