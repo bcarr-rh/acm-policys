@@ -68,7 +68,7 @@ spec:
                         spec:
                           accessModes:
                             - ReadWriteOnce
-                          {{ "{{" }}hub- if ne (index .ManagedClusterLabels "autoshift.io/local-storage" | default "") "true" hub{{ "}}" }}
+                          {{ "{{" }}hub- if eq (index .ManagedClusterLabels "autoshift.io/local-storage" | default "") "true" hub{{ "}}" }}
                           resources:
                             requests:
                               storage: '1' # will use whole PV from local storage
