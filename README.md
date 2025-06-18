@@ -1,4 +1,7 @@
 # AutoShiftv2
+## What is AutoShift?
+
+AutoShiftv2 is an Infrastructure-as-Code (IaC) framework designed to manage infrastructure components after an OpenShift installation using Advanced Cluster Management (ACM). It provides a modular, extensible model to support all infrastructure elements deployed on OpenShift — including those in OpenShift Platform Plus. AutoShiftv2 emphasizes easy adoption, configurable features (toggle on/off), and production-ready capabilities for upgrades and maintenance.
 
 ## Hub Architecture
 ![alt text](images/AutoShiftv2-Hub.jpg)
