@@ -23,37 +23,48 @@ hubClusterSets:
       acm-install-plan-approval: Automatic
       acm-source: redhat-operators
       acm-source-namespace: openshift-marketplace
-      acm-availability-config: 'basic'
-      ### infra-nodes
+      acm-availability-config: 'High'
+      ### Infrastructure Nodes
       infra-nodes: ''
       infra-nodes-numcpu: ''
       infra-nodes-memory-mib: ''
       infra-nodes-numcores-per-socket: ''
-      infra-nodes-zones: ''
-      ### worker-nodes
+      infra-nodes-zone-1: ''
+      ### Worker Nodes
       worker-nodes: ''
       worker-nodes-numcpu: ''
       worker-nodes-memory-mib: ''
       worker-nodes-numcores-per-socket: ''
-      worker-nodes-zones: ''
-      ### storage-nodes
-      storage-nodes: ''
+      worker-nodes-zone-1: ''
+      ### Storage Nodes
+      storage-nodes: '3'
+      # storage-nodes-zone-1: 'us-east-2a'
+      # storage-nodes-zone-2: 'us-east-2b'
+      # storage-nodes-zone-3: 'us-east-2c'
+      # storage-nodes-region: 'us-east-2'
+      storage-nodes-instance-type: 'm6in.8xlarge'
+      storage-nodes-provider: aws
       storage-nodes-numcpu: ''
       storage-nodes-memory-mib: ''
       storage-nodes-numcores-per-socket: ''
-      storage-nodes-zones: ''
+      ### Local Storage Operator
+      local-storage: 'false'
+      local-storage-channel: stable
+      local-storage-install-plan-approval: Automatic
+      local-storage-source: redhat-operators
+      local-storage-source-namespace: openshift-marketplace
       ### OpenShift Data Foundation
       odf: 'true'
-      odf-multi-cloud-gateway: standalone
+      odf-multi-cloud-gateway: standard
       odf-nooba-pvpool: ''
       odf-nooba-store-size: ''
       odf-nooba-store-num-volumes: ''
-      odf-ocs-storage-class-name: gp3-csi
-      odf-ocs-storage-size: ''
-      odf-ocs-storage-count: ''
-      odf-ocs-storage-replicas: ''
+      odf-ocs-storage-class-name: 'gp3-csi'
+      odf-ocs-storage-size: '2Ti'
+      odf-ocs-storage-count: '2'
+      odf-ocs-storage-replicas: '3'
       odf-resource-profile: balanced
-      odf-channel: stable-4.17
+      odf-channel: stable-4.18
       odf-install-plan-approval: Automatic
       odf-source: redhat-operators
       odf-source-namespace: openshift-marketplace
@@ -127,24 +138,30 @@ hubClusterSets:
 managedClusterSets:
   managed:
     labels:
-      ### infra-nodes
+      ### Infrastructure Nodes
       infra-nodes: ''
       infra-nodes-numcpu: ''
       infra-nodes-memory-mib: ''
       infra-nodes-numcores-per-socket: ''
       infra-nodes-zones: ''
-      ### worker-nodes
+      ### Worker Nodes
       worker-nodes: ''
       worker-nodes-numcpu: ''
       worker-nodes-memory-mib: ''
       worker-nodes-numcores-per-socket: ''
       worker-nodes-zones: ''
-      ### storage-nodes
+      ### Storage Nodes
       storage-nodes: ''
       storage-nodes-numcpu: ''
       storage-nodes-memory-mib: ''
       storage-nodes-numcores-per-socket: ''
       storage-nodes-zones: ''
+      ### Local Storage Operator
+      local-storage: 'false'
+      local-storage-channel: stable
+      local-storage-install-plan-approval: Automatic
+      local-storage-source: redhat-operators
+      local-storage-source-namespace: openshift-marketplace
       ### OpenShift Data Foundation
       odf: 'true'
       odf-multi-cloud-gateway: standalone

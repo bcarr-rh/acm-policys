@@ -12,6 +12,7 @@ gitops:
   installPlanApproval: Automatic
   name: openshift-gitops-operator
   argoName: infra-gitops
+  disableDefaultArgoCD: true
   rbac_policies:
   - 'g, openshift-systems, role:admin'
   # OPTIONAL

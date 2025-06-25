@@ -10,7 +10,7 @@ acm:
   installPlanApproval: Automatic
   name: advanced-cluster-management
   disable_hub_self_management: false
-  availabilityConfig: Basic
+  availabilityConfig: High
   enable_backup: false
   gitops_namespace: openshift-gitops
 # hubClusterSets:

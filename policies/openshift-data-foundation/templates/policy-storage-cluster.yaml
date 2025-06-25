@@ -62,34 +62,37 @@ spec:
                 spec:
                   storageDeviceSets:
                     - config: {}
-                      resources: {}
-                      placement: {}
-                      name: ocs-deviceset
+                      count: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/odf-ocs-storage-count" | default "{{ .Values.odf.ocsStorageCount }}" | toInt hub{{ "}}" }}'
                       dataPVCTemplate:
                         metadata: {}
                         spec:
                           accessModes:
                             - ReadWriteOnce
+                          {{ "{{" }}hub- if eq (index .ManagedClusterLabels "autoshift.io/local-storage" | default "") "true" hub{{ "}}" }}
+                          resources:
+                            requests:
+                              storage: '1' # will use whole PV from local storage
+                          storageClassName: nvme-storageclass
+                          {{ "{{" }}hub- else hub{{ "}}" }}
                           resources:
                             requests:
                               storage: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/odf-ocs-storage-size" | default "{{ .Values.odf.ocsStorageSize}}" hub{{ "}}" }}'
-                          {{ "{{" }}hub- if ne (index .ManagedClusterLabels "autoshift.io/local-storage" | default "") "" hub{{ "}}" }}
-                          storageClassName: nvme-storageclass
-                          {{ "{{" }}hub- else hub{{ "}}" }}
                           storageClassName: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/odf-ocs-storage-class-name" | default "{{ .Values.odf.ocsStorageClassName }}" hub{{ "}}" }}'
                           {{ "{{" }}hub- end hub{{ "}}" }}
                           volumeMode: Block
-                      count: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/odf-ocs-storage-count" | default "{{ .Values.odf.ocsStorageCount }}" | toInt hub{{ "}}" }}'
-                      replica: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/odf-ocs-storage-replicas" | default "{{ .Values.odf.ocsStorageReplicas }}" | toInt hub{{ "}}" }}'
-                      portable: true
+                        status: {}
+                      name: ocs-deviceset
+                      placement: {}
                       preparePlacement: {}
+                      replica: '{{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/odf-ocs-storage-replicas" | default "{{ .Values.odf.ocsStorageReplicas }}" | toInt hub{{ "}}" }}'
+                      resources: {}
                   encryption:
                     clusterWide: true
                     enable: true
                     keyRotation:
                       schedule: '@weekly'
                     kms: {}
-                  mirroring: {}
+                  monDataDirHostPath: '/var/lib/rook'
                   managedResources:
                     cephObjectStoreUsers: {}
                     cephCluster: {}

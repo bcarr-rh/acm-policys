@@ -68,7 +68,7 @@ spec:
         labelSelector:
           matchExpressions:
             - key: 'autoshift.io/machine-health-checks'
-              operator: in
+              operator: In
               values:
               - 'true'
   tolerations:

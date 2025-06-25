@@ -3,7 +3,7 @@ apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
   name: policy-acs-sync-bundle
-  namespace: {{ $.Values.acs.namespace }}
+  namespace: {{ .Values.policy_namespace }}
   annotations:
     argocd.argoproj.io/sync-options: Prune=false,SkipDryRunOnMissingResource=true
     argocd.argoproj.io/compare-options: IgnoreExtraneous
@@ -14,6 +14,8 @@ metadata:
 spec:
   remediationAction: enforce
   disabled: false
+  hubTemplateOptions:
+    serviceAccountName: autoshift-policy-service-account
   dependencies:
     - name: policy-acs-operator-install
       namespace: {{ $.Values.policy_namespace }}
@@ -78,7 +80,7 @@ apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
 metadata:
   name: policy-acs-sync-bundle-placement
-  namespace: {{ $.Values.acs.namespace }}
+  namespace: {{ .Values.policy_namespace }}
   annotations:
     argocd.argoproj.io/sync-wave: "3"
 spec:
@@ -104,7 +106,7 @@ apiVersion: policy.open-cluster-management.io/v1
 kind: PlacementBinding
 metadata:
   name: policy-acs-sync-bundle-placement
-  namespace: {{ $.Values.acs.namespace }}
+  namespace: {{ .Values.policy_namespace }}
   annotations:
     argocd.argoproj.io/sync-wave: "3"
 placementRef:

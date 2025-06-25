@@ -3,7 +3,7 @@ apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
   name: policy-system-gitops-console-link
-  namespace: {{ .Values.gitops.argoNamespace }}
+  namespace: {{ .Values.policy_namespace }}
   annotations:
     argocd.argoproj.io/sync-options: Prune=false,SkipDryRunOnMissingResource=true
     argocd.argoproj.io/compare-options: IgnoreExtraneous
@@ -14,6 +14,14 @@ metadata:
 spec:
   remediationAction: enforce
   disabled: false
+  hubTemplateOptions:
+    serviceAccountName: autoshift-policy-service-account
+  dependencies:
+    - name: policy-gitops-systems-argocd
+      namespace: {{ .Values.policy_namespace }}
+      apiVersion: policy.open-cluster-management.io/v1
+      compliance: Compliant
+      kind: Policy
   policy-templates:
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
@@ -42,7 +50,7 @@ apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
 metadata:
   name: policy-system-gitops-console-link-placement
-  namespace: {{ .Values.gitops.argoNamespace }}
+  namespace: {{ .Values.policy_namespace }}
   annotations:
     argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
     argocd.argoproj.io/sync-wave: "8"
@@ -61,7 +69,7 @@ apiVersion: policy.open-cluster-management.io/v1
 kind: PlacementBinding
 metadata:
   name: policy-system-gitops-console-link-placement
-  namespace: {{ .Values.gitops.argoNamespace }}
+  namespace: {{ .Values.policy_namespace }}
   annotations:
     argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
     argocd.argoproj.io/sync-wave: "8"

@@ -1,7 +1,7 @@
-{{ $policyName := "policy-remove-infra-nodes" }} 
-{{ $configPolicyName := "remove-infra-nodes" }}
+{{ $policyName := "policy-infra-nodes-test" }}
+{{ $configPolicyName :=  "create-infra-nodes-test" }}
+{{ $labelPrefix := .Values.infraNodes.labelPrefix | default "autoshift.io/" }}
 {{ $placementName := printf "placement-%s" $policyName }}
-{{ $labelPrefix := .Values.infraNodes.labelPrefix}}
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
@@ -13,15 +13,6 @@ metadata:
     policy.open-cluster-management.io/standards: NIST SP 800-53
 spec:
   disabled: false
-  remediationAction: enforce
-  dependencies: 
-  {{- range .Values.infraNodes.dependencies.remove }}
-  - apiVersion: policy.open-cluster-management.io/v1
-    compliance: Compliant
-    kind: Policy
-    name: {{ . }}
-    namespace: {{ $.Values.policy_namespace }}
-  {{- end }}
   policy-templates:
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
@@ -29,6 +20,8 @@ spec:
         metadata:
           name: {{ $configPolicyName }}
         spec:
+          remediationAction: inform
+          severity: high
           object-templates-raw: |
               {{ "{{-" }} /* Specify the parameters needed to create the MachineSet  */ {{ "-}}" }}
               {{ "{{-" }} $machineset_role := "infra" {{ "}}" }}
@@ -37,7 +30,7 @@ spec:
               {{ "{{-" }} $worker_ms := (index (lookup "machine.openshift.io/v1beta1" "MachineSet" "openshift-machine-api" "").items 0) {{ "}}" }}
               {{ "{{-" }} /* Generate the MachineSet for each zone as specified or default to worker az */ {{ "-}}" }}
               {{ "{{-" }} range $zone := ternary (list $worker_ms.spec.template.spec.providerSpec.value.placement.availabilityZone ) $zones_from_labels (eq 0 (len $zones_from_labels)) {{ "}}" }}
-              - complianceType: mustnothave
+              - complianceType: musthave
                 objectDefinition:
                   apiVersion: machine.openshift.io/v1beta1
                   kind: MachineSet
@@ -46,10 +39,9 @@ spec:
                       machine.openshift.io/cluster-api-cluster: {{ "{{" }} $infrastructure_id {{ "}}" }}
                     name: {{ "{{" }} $infrastructure_id {{ "}}" }}-{{ "{{" }} $machineset_role {{ "}}" }}-{{ "{{" }} $zone {{ "}}" }}
                     namespace: openshift-machine-api
+                  spec:
+                    replicas: {{ "{{hub" }} index .ManagedClusterLabels "{{ printf "%s%s" $labelPrefix "infra-nodes" }}" {{ "hub}}" }}
               {{ "{{-" }} end {{ "}}" }}
-          pruneObjectBehavior: {{ .Values.infraNodes.pruneObjectBehavior | default "DeleteAll" }}
-          remediationAction: {{ .Values.infraNodes.remediationAction | default "enforce" }}
-          severity: high
 ---
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
@@ -69,7 +61,7 @@ spec:
         labelSelector:
           matchExpressions:
             - key: {{ printf "%s%s" $labelPrefix "infra-nodes" }}
-              operator: DoesNotExist
+              operator: Exists
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
       operator: Exists

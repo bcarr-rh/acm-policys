@@ -32,6 +32,18 @@ spec:
           object-templates:
             - complianceType: musthave
               objectDefinition:
+                apiVersion: operators.coreos.com/v1alpha1
+                kind: Subscription
+                metadata:
+                  name: {{ .Values.gitops.name }}
+                  namespace: {{ .Values.gitops.namespace }}
+                spec:
+                  config:
+                    env:
+                    - name: DISABLE_DEFAULT_ARGOCD_INSTANCE
+                      value:  {{ .Values.gitops.disableDefaultArgoCD | quote }}
+            - complianceType: musthave
+              objectDefinition:
                 apiVersion: rbac.authorization.k8s.io/v1
                 kind: ClusterRoleBinding
                 metadata:

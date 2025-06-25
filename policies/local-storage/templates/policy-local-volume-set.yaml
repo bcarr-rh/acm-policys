@@ -16,7 +16,7 @@ spec:
       apiVersion: policy.open-cluster-management.io/v1
       compliance: Compliant
       kind: Policy
-    - name: policy-storage-nodes
+    - name: policy-storage-nodes-test
       namespace: {{ .Values.policy_namespace }}
       apiVersion: policy.open-cluster-management.io/v1
       compliance: Compliant
@@ -41,7 +41,6 @@ spec:
                       deviceTypes:
                         - disk
                       minSize: 200G
-                    maxDeviceCount: 10
                     nodeSelector:
                       nodeSelectorTerms:
                         - matchExpressions:
@@ -75,7 +74,7 @@ spec:
         labelSelector:
           matchExpressions:
             - key: 'autoshift.io/local-storage'
-              operator: in
+              operator: In
               values:
               - 'true'
   tolerations:
