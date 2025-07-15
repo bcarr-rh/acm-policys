@@ -2,8 +2,5 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 policy_namespace: open-cluster-policies
-storageNodes:
-  zones:
-    - us-east-2c
 # Defaults to worker node instance type for first machine set if finds
 instanceType: m6in.8xlarge

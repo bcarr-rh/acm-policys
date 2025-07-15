@@ -37,9 +37,9 @@ spec:
                       spec:
                         providerSpec:
                           value:
-                            numCoresPerSocket: {{ "{{" }} fromClusterClaim "worker-nodes-numcores-per-socket" {{ "}}" }}
-                            memoryMiB: {{ "{{" }} fromClusterClaim "worker-nodes-memory-mib" {{ "}}" }}
-                            numCPUs: {{ "{{" }} fromClusterClaim "worker-nodes-numcpu" {{ "}}" }}
+                            numCoresPerSocket: {{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/worker-nodes-numcores-per-socket" hub{{ "}}" }}
+                            memoryMiB: {{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/worker-nodes-memory-mib" hub{{ "}}" }}
+                            numCPUs: {{ "{{" }}hub index .ManagedClusterLabels "autoshift.io/worker-nodes-numcpu" hub{{ "}}" }}
               {{ "{{-" }} end {{ "}}" }}
           pruneObjectBehavior: None
           remediationAction: enforce
